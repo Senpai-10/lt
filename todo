@@ -22,3 +22,8 @@ create a makefile
 cp target/release file to
 ~/.local/bin/ user
 or /usr/bin/ for system install
+
+or a install.sh
+ask if user what to install for user or system
+cargo build -r
+cp ./target/release/todo to user or system installation path
