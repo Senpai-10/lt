@@ -1,0 +1,24 @@
+./todo
+
+NOTE:
+    use incremental ids
+    if a task gets deleted or a new task added change ids
+    or
+    use array index as id
+
+subcommands
+    add     | add a new task
+    delete  | delete a task (-i for interactive)
+    clear   | clear all tasks (add a warning before execution)
+    edit    | edit a task (-i for interactive)
+    list    | list all tasks
+    done    | mark as done (-i for interactive)
+    undone  | mark as undone (-i for interactive)
+
+NOTE: create local file if file arg is not provided
+
+TODO:
+create a makefile
+cp target/release file to
+~/.local/bin/ user
+or /usr/bin/ for system install
