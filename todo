@@ -17,13 +17,8 @@ subcommands
 
 NOTE: create local file if file arg is not provided
 
-TODO:
-create a makefile
-cp target/release file to
-~/.local/bin/ user
-or /usr/bin/ for system install
+install with
+`cargo install --git https://github.com/senpai-10/todo`
+or clone and cargo install
 
-or a install.sh
-ask if user what to install for user or system
-cargo build -r
-cp ./target/release/todo to user or system installation path
+uninstall `cargo uninstall todo`
