@@ -12,42 +12,48 @@ pub struct Cli {
 
 #[derive(Debug, Subcommand)]
 pub enum Commands {
+    /// Add a new task
     Add {
+        task: String,
+
         #[clap(short, long)]
-        list: bool,
+        category: String,
     },
 
+    /// delete a task
     Delete {
         #[clap(short, long)]
-        list: bool,
+        task_id: usize,
     },
 
+    /// edit a task
     Edit {
         #[clap(short, long)]
-        list: bool,
+        task_id: usize,
     },
 
+    /// list all tasks or a category
     List {
         #[clap(short, long)]
-        list: bool,
+        category: Option<String>,
     },
 
+    /// mark a task as done
     Done {
         #[clap(short, long)]
-        list: bool,
+        task_id: bool,
     },
 
+    /// mark a task as undone
     Undone {
         #[clap(short, long)]
-        list: bool,
+        task_id: bool,
+    },
+
+    /// clear all tasks or a category
+    Clear {
+        #[clap(short, long)]
+        category: Option<String>,
     },
 }
 
-// subcommands
-//     add     | add a new task
-//     delete  | delete a task (-i for interactive)
-//     clear   | clear all tasks (add a warning before execution)
-//     edit    | edit a task (-i for interactive)
-//     list    | list all tasks
-//     done    | mark as done (-i for interactive)
-//     undone  | mark as undone (-i for interactive)
