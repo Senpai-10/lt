@@ -1,5 +1,8 @@
 ./todo
 
+NOTE: see: taskbook
+           https://www.ubuntupit.com/taskbook-a-board-based-tasks-and-notes-app-for-linux/
+
 NOTE:
     use incremental ids
     if a task gets deleted or a new task added change ids
