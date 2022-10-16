@@ -1,8 +1,8 @@
 mod cli;
 mod filesystem;
 
-use cli::{Cli, Commands};
 use clap::Parser;
+use cli::{Cli, Commands};
 
 use serde::{Deserialize, Serialize};
 
@@ -34,14 +34,31 @@ fn main() {
             println!("category: {}", task.category);
             println!("task: {}", task.task);
             println!("is done: {}", task.is_done);
-
         }
-        Some(Commands::Delete { task_id }) => {}
-        Some(Commands::Edit { task_id }) => {}
-        Some(Commands::List { category }) => {}
-        Some(Commands::Done { task_id }) => {}
-        Some(Commands::Undone { task_id }) => {}
-        Some(Commands::Clear { category }) => {}
+        
+        Some(Commands::Delete { task_id }) => {
+            todo!("delete command")
+        }
+        
+        Some(Commands::Edit { task_id }) => {
+            todo!("edit command")
+        }
+        
+        Some(Commands::List { category }) => {
+            todo!("list command")
+        }
+        
+        Some(Commands::Done { task_id }) => {
+            todo!("done command")
+        }
+        
+        Some(Commands::Undone { task_id }) => {
+            todo!("undone command")
+        }
+
+        Some(Commands::Clear { category }) => {
+            todo!("clear command")
+        }
 
         None => {}
     }
