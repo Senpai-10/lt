@@ -4,12 +4,12 @@
 mod cli;
 mod filesystem;
 
-use colored::Colorize;
 use clap::Parser;
 use cli::{Cli, Commands};
-use rusqlite::{Connection, Result};
-use nanoid::nanoid;
+use colored::Colorize;
 use dotenv::dotenv;
+use nanoid::nanoid;
+use rusqlite::{Connection, Result};
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -17,7 +17,7 @@ struct Task {
     pub id: String,
     pub category: String,
     pub text: String,
-    pub is_done: bool
+    pub is_done: bool,
 }
 
 fn main() -> Result<()> {
@@ -26,7 +26,7 @@ fn main() -> Result<()> {
 
     let db_file = match cli.file {
         Some(file) => file,
-        None => String::from("todo.db")
+        None => String::from("todo.db"),
     };
 
     let conn = Connection::open(db_file)?;
@@ -51,12 +51,17 @@ fn main() -> Result<()> {
                 id: id,
                 category: category.into(),
                 text: task.into(),
-                is_done: false
+                is_done: false,
             };
 
             conn.execute(
                 "INSERT INTO tasks (id, category, text, is_done) VALUES (?1, ?2, ?3, ?4)",
-                (&new_task.id, &new_task.category, &new_task.text, &new_task.is_done),
+                (
+                    &new_task.id,
+                    &new_task.category,
+                    &new_task.text,
+                    &new_task.is_done,
+                ),
             )?;
         }
 
@@ -75,44 +80,55 @@ fn main() -> Result<()> {
                     id: row.get(0)?,
                     category: row.get(1)?,
                     text: row.get(2)?,
-                    is_done: row.get(3)?
+                    is_done: row.get(3)?,
                 })
             })?;
 
             let mut categories: HashMap<String, Vec<Task>> = HashMap::new();
+            let mut done_count: HashMap<String, usize> = HashMap::new();
 
             for task in tasks_iter {
                 let task = task.unwrap();
                 let key = &task.category;
 
-                categories.entry(key.into()).or_insert(Vec::new()).push(task);
+                if task.is_done {
+                    let count = done_count
+                                    .entry(key.into())
+                                    .or_insert(0);
+                    *count += 1;
+                }
+
+                categories
+                    .entry(key.into())
+                    .or_insert(Vec::new())
+                    .push(task);
             }
 
             for key in categories.keys().into_iter() {
                 let tasks = categories.get(key).unwrap();
+                let dones = done_count.get(key).unwrap_or(&(0 as usize));
 
-                // TODO: add DONE/TOTAL
-                println!("{} [{}]",
+                println!(
+                    "\n{} [{}/{}]",
                     format!("@{}", key).bright_cyan().bold().underline(),
-                    tasks.len());
+                    dones,
+                    tasks.len()
+                );
 
                 for task in tasks {
                     let is_done: String = match task.is_done {
                         true => {
                             format!("{}", "".bright_green())
-                        },
+                        }
                         false => {
                             format!("{}", "")
                         }
                     };
 
-                    let msg = format!("{0} {1} {2}",
-                        task.id,
-                        is_done,
-                        task.text
-                    );
+                    let msg = format!("{0} {1} {2}", task.id, is_done, task.text);
 
-                    println!("  {}",
+                    println!(
+                        "  {}",
                         if task.is_done {
                             msg.bright_black().to_string()
                         } else {
@@ -120,8 +136,6 @@ fn main() -> Result<()> {
                         }
                     );
                 }
-
-                println!();
             }
         }
 
