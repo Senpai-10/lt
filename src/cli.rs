@@ -6,6 +6,9 @@ use clap::{Parser, Subcommand};
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
 pub struct Cli {
+    #[clap(short, long)]
+    pub file: Option<String>,
+
     #[clap(subcommand)]
     pub commands: Option<Commands>,
 }
