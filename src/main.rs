@@ -3,11 +3,14 @@
 
 mod cli;
 mod filesystem;
+
+use colored::Colorize;
 use clap::Parser;
 use cli::{Cli, Commands};
 use rusqlite::{Connection, Result};
 use nanoid::nanoid;
 use dotenv::dotenv;
+use std::collections::HashMap;
 
 #[derive(Debug)]
 struct Task {
@@ -76,8 +79,49 @@ fn main() -> Result<()> {
                 })
             })?;
 
+            let mut categories: HashMap<String, Vec<Task>> = HashMap::new();
+
             for task in tasks_iter {
-                println!("Found task {:?}", task.unwrap());
+                let task = task.unwrap();
+                let key = &task.category;
+
+                categories.entry(key.into()).or_insert(Vec::new()).push(task);
+            }
+
+            for key in categories.keys().into_iter() {
+                let tasks = categories.get(key).unwrap();
+
+                // TODO: add DONE/TOTAL
+                println!("{} [{}]",
+                    format!("@{}", key).bright_cyan().bold().underline(),
+                    tasks.len());
+
+                for task in tasks {
+                    let is_done: String = match task.is_done {
+                        true => {
+                            format!("{}", "".bright_green())
+                        },
+                        false => {
+                            format!("{}", "")
+                        }
+                    };
+
+                    let msg = format!("{0} {1} {2}",
+                        task.id,
+                        is_done,
+                        task.text
+                    );
+
+                    println!("  {}",
+                        if task.is_done {
+                            msg.bright_black().to_string()
+                        } else {
+                            msg
+                        }
+                    );
+                }
+
+                println!();
             }
         }
 
