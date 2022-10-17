@@ -25,3 +25,10 @@ install with
 or clone and cargo install
 
 uninstall `cargo uninstall todo`
+
+CREATE TABLE tasks (
+    id          VARCHAR     NOT NULL PRIMARY KEY,
+    category    VARCHAR     NOT NULL,
+    text        TEXT        NOT NULL,
+    is_done     BOOLEAN     NOT NULL DEFAULT 'false'
+)
