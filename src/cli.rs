@@ -26,13 +26,13 @@ pub enum Commands {
     /// delete a task
     Delete {
         #[clap(short, long)]
-        task_id: usize,
+        task_id: String,
     },
 
     /// edit a task
     Edit {
         #[clap(short, long)]
-        task_id: usize,
+        task_id: String,
     },
 
     /// list all tasks or a category
@@ -44,19 +44,16 @@ pub enum Commands {
     /// mark a task as done
     Done {
         #[clap(short, long)]
-        task_id: bool,
+        task_id: String,
     },
 
     /// mark a task as undone
     Undone {
         #[clap(short, long)]
-        task_id: bool,
+        task_id: String,
     },
 
     /// clear all tasks or a category
-    Clear {
-        #[clap(short, long)]
-        category: Option<String>,
-    },
+    Clear {},
 }
 

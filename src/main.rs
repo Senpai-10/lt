@@ -5,11 +5,12 @@ mod cli;
 mod filesystem;
 
 use clap::Parser;
+use inquire;
 use cli::{Cli, Commands};
 use colored::Colorize;
 use dotenv::dotenv;
 use nanoid::nanoid;
-use rusqlite::{Connection, Result};
+use rusqlite::{Connection, Result, params};
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -92,9 +93,7 @@ fn main() -> Result<()> {
                 let key = &task.category;
 
                 if task.is_done {
-                    let count = done_count
-                                    .entry(key.into())
-                                    .or_insert(0);
+                    let count = done_count.entry(key.into()).or_insert(0);
                     *count += 1;
                 }
 
@@ -140,15 +139,21 @@ fn main() -> Result<()> {
         }
 
         Some(Commands::Done { task_id }) => {
-            println!("{}", task_id)
+            conn.execute("UPDATE tasks SET is_done = ?1 WHERE id = ?2", params![true, task_id])?;
         }
 
         Some(Commands::Undone { task_id }) => {
-            println!("{}", task_id)
+            conn.execute("UPDATE tasks SET is_done = ?1 WHERE id = ?2", params![false, task_id])?;
         }
 
-        Some(Commands::Clear { category }) => {
-            println!("{:?}", category)
+        Some(Commands::Clear {}) => {
+            let confirm = inquire::Confirm::new("Are you sure you want to drop tasks table")
+                .with_default(false)
+                .prompt().unwrap();
+
+            if confirm == true {
+                conn.execute("DROP TABLE tasks", ())?;
+            }
         }
 
         None => {}
