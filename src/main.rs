@@ -87,6 +87,8 @@ fn main() -> Result<()> {
 
             let mut categories: HashMap<String, Vec<Task>> = HashMap::new();
             let mut done_count: HashMap<String, usize> = HashMap::new();
+            let mut total_done = 0;
+            let mut total_tasks = 0;
 
             for task in tasks_iter {
                 let task = task.unwrap();
@@ -95,12 +97,15 @@ fn main() -> Result<()> {
                 if task.is_done {
                     let count = done_count.entry(key.into()).or_insert(0);
                     *count += 1;
+                    total_done += 1;
                 }
 
                 categories
                     .entry(key.into())
                     .or_insert(Vec::new())
                     .push(task);
+
+                total_tasks += 1;
             }
 
             for key in categories.keys().into_iter() {
@@ -120,11 +125,11 @@ fn main() -> Result<()> {
                             format!("{}", "".bright_green())
                         }
                         false => {
-                            format!("{}", "")
+                            format!("{}", "".bright_magenta())
                         }
                     };
 
-                    let msg = format!("{0} {1} {2}", task.id, is_done, task.text);
+                    let msg = format!("{0} {1} {2}", task.id.bright_black(), is_done, task.text);
 
                     println!(
                         "  {}",
@@ -136,6 +141,19 @@ fn main() -> Result<()> {
                     );
                 }
             }
+
+            println!();
+
+            println!("{}",
+                format!("{}% of all tasks complete.", calculate_percentage(total_done, total_tasks)).bright_black()
+            );
+
+            println!("{}",
+                format!("{} done, {} undone",
+                    total_done.to_string().bright_green(),
+                    (total_tasks - total_done).to_string().bright_magenta()
+                ).bright_black()
+            )
         }
 
         Some(Commands::Done { task_id }) => {
@@ -160,4 +178,8 @@ fn main() -> Result<()> {
     }
 
     Ok(())
+}
+
+fn calculate_percentage(part: i32, whole: i32) -> i32 {
+    100 * part / whole
 }
