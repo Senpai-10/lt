@@ -63,8 +63,19 @@ fn main() -> Result<()> {
             )?;
         }
 
-        Some(Commands::Delete { task_id }) => {
-            println!("{}", task_id)
+        Some(Commands::Delete { ids }) => {
+            for id in ids {
+                match conn.execute("DELETE FROM tasks WHERE id = ?", [id]) {
+                    Ok(number_of_updated_row) => {
+                        if number_of_updated_row > 0 {
+                            println!("task {} is removed", id)
+                        }
+                    }
+                    Err(err) => {
+                        println!("Failed: {}", err)
+                    }
+                }
+            }
         }
 
         Some(Commands::Edit { ids }) => {
@@ -118,10 +129,7 @@ fn main() -> Result<()> {
             }
 
             if total_tasks == 0 {
-                println!(
-                    "{}",
-                    format!("No tasks found!").bright_black()
-                );
+                println!("{}", format!("No tasks found!").bright_black());
                 exit(0);
             }
 
