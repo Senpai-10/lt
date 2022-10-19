@@ -1,5 +1,5 @@
-use rusqlite::Connection;
 use colored::Colorize;
+use rusqlite::Connection;
 
 #[derive(Debug)]
 pub struct Task {
@@ -28,15 +28,16 @@ pub fn print_tasks(category: &String, dones: &usize, tasks: &Vec<Task>) {
         };
 
         let styled_text: String = match task.is_done {
-            true => {
-                task.text.strikethrough().to_string()
-            }
-            false => {
-                task.text.to_string()
-            }
+            true => task.text.strikethrough().to_string(),
+            false => task.text.to_string(),
         };
 
-        let msg = format!("{0} {1} {2}", task.id.bright_black(), styled_is_done, styled_text);
+        let msg = format!(
+            "{0} {1} {2}",
+            task.id.bright_black(),
+            styled_is_done,
+            styled_text
+        );
 
         println!(
             "  {}",
@@ -46,21 +47,22 @@ pub fn print_tasks(category: &String, dones: &usize, tasks: &Vec<Task>) {
                 msg
             }
         );
-
     }
 }
 
 pub fn get_all_tasks(conn: &Connection) -> Vec<Task> {
     let mut stmt = conn.prepare("SELECT * FROM tasks").unwrap();
 
-    let rows = stmt.query_map([], |row| {
-        Ok(Task {
-            id: row.get(0)?,
-            category: row.get(1)?,
-            text: row.get(2)?,
-            is_done: row.get(3)?,
+    let rows = stmt
+        .query_map([], |row| {
+            Ok(Task {
+                id: row.get(0)?,
+                category: row.get(1)?,
+                text: row.get(2)?,
+                is_done: row.get(3)?,
+            })
         })
-    }).unwrap();
+        .unwrap();
 
     let mut tasks: Vec<Task> = Vec::new();
 
@@ -74,18 +76,13 @@ pub fn get_all_tasks(conn: &Connection) -> Vec<Task> {
 }
 
 pub fn get_task(conn: &Connection, task_id: &String) -> Task {
-    conn.query_row(
-        "SELECT * FROM tasks WHERE id = ?",
-        [task_id],
-        |row| {
-            Ok(
-                Task {
-                    id: row.get(0)?,
-                    category: row.get(1)?,
-                    text: row.get(2)?,
-                    is_done: row.get(3)?,
-                }
-            )
-        },
-    ).unwrap()
+    conn.query_row("SELECT * FROM tasks WHERE id = ?", [task_id], |row| {
+        Ok(Task {
+            id: row.get(0)?,
+            category: row.get(1)?,
+            text: row.get(2)?,
+            is_done: row.get(3)?,
+        })
+    })
+    .unwrap()
 }
