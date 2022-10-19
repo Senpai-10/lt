@@ -4,19 +4,17 @@
 mod cli;
 mod db;
 mod helpers;
-mod tasks;
 
 use clap::Parser;
 use cli::{Cli, Commands};
 use colored::Colorize;
-use db::get_task;
+use db::{get_task, get_all_tasks, print_tasks, Task};
 use dotenv::dotenv;
 use helpers::generate_id;
 use inquire;
 use rusqlite::{params, Connection, Result};
 use std::collections::HashMap;
 use std::process::exit;
-use tasks::{print_tasks, Task};
 
 fn main() -> Result<()> {
     dotenv().ok();
@@ -97,23 +95,14 @@ fn main() -> Result<()> {
         }
 
         Some(Commands::List { category }) => {
-            let mut stmt = conn.prepare("SELECT * FROM tasks")?;
-            let tasks_iter = stmt.query_map([], |row| {
-                Ok(Task {
-                    id: row.get(0)?,
-                    category: row.get(1)?,
-                    text: row.get(2)?,
-                    is_done: row.get(3)?,
-                })
-            })?;
+            let tasks = get_all_tasks(&conn);
 
             let mut categories: HashMap<String, Vec<Task>> = HashMap::new();
             let mut done_count: HashMap<String, usize> = HashMap::new();
+            let total_tasks: i32 = tasks.len() as i32;
             let mut total_done = 0;
-            let mut total_tasks = 0;
 
-            for task in tasks_iter {
-                let task = task.unwrap();
+            for task in tasks {
                 let key = &task.category;
 
                 if task.is_done {
@@ -126,8 +115,6 @@ fn main() -> Result<()> {
                     .entry(key.into())
                     .or_insert(Vec::new())
                     .push(task);
-
-                total_tasks += 1;
             }
 
             if total_tasks == 0 {
