@@ -18,7 +18,7 @@ pub fn print_tasks(category: &String, dones: &usize, tasks: &Vec<Task>) {
     );
 
     for task in tasks {
-        let is_done: String = match task.is_done {
+        let styled_is_done: String = match task.is_done {
             true => {
                 format!("{}", "".bright_green())
             }
@@ -27,7 +27,16 @@ pub fn print_tasks(category: &String, dones: &usize, tasks: &Vec<Task>) {
             }
         };
 
-        let msg = format!("{0} {1} {2}", task.id.bright_black(), is_done, task.text);
+        let styled_text: String = match task.is_done {
+            true => {
+                task.text.strikethrough().to_string()
+            }
+            false => {
+                task.text.to_string()
+            }
+        };
+
+        let msg = format!("{0} {1} {2}", task.id.bright_black(), styled_is_done, styled_text);
 
         println!(
             "  {}",
