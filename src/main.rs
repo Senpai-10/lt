@@ -5,15 +5,15 @@ mod cli;
 mod tasks;
 
 use clap::Parser;
-use inquire;
 use cli::{Cli, Commands};
 use colored::Colorize;
 use dotenv::dotenv;
+use inquire;
 use nanoid::nanoid;
-use rusqlite::{Connection, Result, params};
+use rusqlite::{params, Connection, Result};
 use std::collections::HashMap;
 use std::process::exit;
-use tasks::{Task, print_tasks};
+use tasks::{print_tasks, Task};
 
 fn main() -> Result<()> {
     dotenv().ok();
@@ -65,7 +65,27 @@ fn main() -> Result<()> {
         }
 
         Some(Commands::Edit { task_id }) => {
-            println!("{}", task_id)
+            let task = conn.query_row(
+                "SELECT * FROM tasks WHERE id = ?",
+                [task_id],
+                |row| {
+                    Ok(
+                        Task {
+                            id: row.get(0)?,
+                            category: row.get(1)?,
+                            text: row.get(2)?,
+                            is_done: row.get(3)?,
+                        }
+                    )
+                },
+            )?;
+
+            let new_text = inquire::Text::new("update task").with_initial_value(&task.text).prompt().unwrap();
+
+            conn.execute(
+                "UPDATE tasks SET text = ?1 WHERE id = ?2",
+                [new_text, task_id.into()]
+            )?;
         }
 
         Some(Commands::List { category }) => {
@@ -111,13 +131,13 @@ fn main() -> Result<()> {
                             let dones = done_count.get(category).unwrap_or(&(0 as usize));
 
                             print_tasks(category, dones, tasks);
-                        },
+                        }
                         None => {
                             println!("category '{}' is not found", category);
                             exit(1);
                         }
                     }
-                },
+                }
                 None => {
                     for key in categories.keys().into_iter() {
                         let tasks = categories.get(key).unwrap();
@@ -128,32 +148,47 @@ fn main() -> Result<()> {
 
                     println!();
 
-                    println!("{}",
-                        format!("{}% of all tasks complete.", calculate_percentage(total_done, total_tasks)).bright_black()
+                    println!(
+                        "{}",
+                        format!(
+                            "{}% of all tasks complete.",
+                            calculate_percentage(total_done, total_tasks)
+                        )
+                        .bright_black()
                     );
 
-                    println!("{}",
-                        format!("{} done, {} undone",
+                    println!(
+                        "{}",
+                        format!(
+                            "{} done, {} undone",
                             total_done.to_string().bright_green(),
                             (total_tasks - total_done).to_string().bright_magenta()
-                        ).bright_black()
+                        )
+                        .bright_black()
                     )
                 }
             }
         }
 
         Some(Commands::Done { task_id }) => {
-            conn.execute("UPDATE tasks SET is_done = ?1 WHERE id = ?2", params![true, task_id])?;
+            conn.execute(
+                "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
+                params![true, task_id],
+            )?;
         }
 
         Some(Commands::Undone { task_id }) => {
-            conn.execute("UPDATE tasks SET is_done = ?1 WHERE id = ?2", params![false, task_id])?;
+            conn.execute(
+                "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
+                params![false, task_id],
+            )?;
         }
 
         Some(Commands::Clear {}) => {
             let confirm = inquire::Confirm::new("Are you sure you want to remove all tasks")
                 .with_default(false)
-                .prompt().unwrap();
+                .prompt()
+                .unwrap();
 
             if confirm == true {
                 conn.execute("DROP TABLE tasks", ())?;
