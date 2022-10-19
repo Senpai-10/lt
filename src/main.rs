@@ -13,7 +13,6 @@ use db::get_task;
 use dotenv::dotenv;
 use helpers::generate_id;
 use inquire;
-use nanoid::nanoid;
 use rusqlite::{params, Connection, Result};
 use std::collections::HashMap;
 use std::process::exit;
@@ -94,6 +93,8 @@ fn main() -> Result<()> {
                     is_done: row.get(3)?,
                 })
             })?;
+
+
 
             let mut categories: HashMap<String, Vec<Task>> = HashMap::new();
             let mut done_count: HashMap<String, usize> = HashMap::new();
@@ -207,5 +208,9 @@ fn main() -> Result<()> {
 }
 
 fn calculate_percentage(part: i32, whole: i32) -> i32 {
+    if part == 0 || whole == 0 {
+        return 0;
+    }
+
     100 * part / whole
 }
