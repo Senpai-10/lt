@@ -35,7 +35,7 @@ fn main() -> Result<()> {
                  is_done     BOOLEAN     NOT NULL DEFAULT 'false'
             )
         "#,
-        (), // empty list of parameters.
+        (),
     )?;
 
     match &cli.commands {
