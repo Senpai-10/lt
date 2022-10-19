@@ -8,7 +8,7 @@ mod helpers;
 use clap::Parser;
 use cli::{Cli, Commands};
 use colored::Colorize;
-use db::{get_task, get_all_tasks, print_tasks, Task};
+use db::{get_all_tasks, get_task, print_tasks, Task};
 use dotenv::dotenv;
 use helpers::generate_id;
 use inquire;
@@ -170,27 +170,40 @@ fn main() -> Result<()> {
             }
         }
 
-        Some(Commands::Done { task_id }) => {
-            match conn.execute(
-                "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
-                params![true, task_id],
-            ) {
-                Ok(number_of_updated_row) => {
-                    if number_of_updated_row > 0 {
-                        println!("task {} is done", task_id)
+        Some(Commands::Done { ids }) => {
+            for id in ids {
+                match conn.execute(
+                    "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
+                    params![true, id],
+                ) {
+                    Ok(number_of_updated_row) => {
+                        if number_of_updated_row > 0 {
+                            println!("task {} is done", id)
+                        }
                     }
-                }
-                Err(err) => {
-                    println!("Failed: {}", err)
+                    Err(err) => {
+                        println!("Failed: {}", err)
+                    }
                 }
             }
         }
 
-        Some(Commands::Undone { task_id }) => {
-            conn.execute(
-                "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
-                params![false, task_id],
-            )?;
+        Some(Commands::Undone { ids }) => {
+            for id in ids {
+                match conn.execute(
+                    "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
+                    params![false, id],
+                ) {
+                    Ok(number_of_updated_row) => {
+                        if number_of_updated_row > 0 {
+                            println!("task {} is undone", id)
+                        }
+                    }
+                    Err(err) => {
+                        println!("Failed: {}", err)
+                    }
+                }
+            }
         }
 
         Some(Commands::Clear {}) => {

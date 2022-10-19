@@ -40,12 +40,12 @@ pub enum Commands {
 
     /// mark a task as done
     Done {
-        task_id: String,
+        ids: Vec<String>,
     },
 
     /// mark a task as undone
     Undone {
-        task_id: String,
+        ids: Vec<String>,
     },
 
     /// clear all tasks or a category
