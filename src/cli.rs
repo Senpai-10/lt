@@ -25,7 +25,7 @@ pub enum Commands {
 
     /// delete a task
     Delete {
-        task_id: String,
+        ids: Vec<String>,
     },
 
     /// edit a task
