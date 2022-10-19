@@ -151,7 +151,7 @@ fn main() -> Result<()> {
         }
 
         Some(Commands::Clear {}) => {
-            let confirm = inquire::Confirm::new("Are you sure you want to drop tasks table")
+            let confirm = inquire::Confirm::new("Are you sure you want to remove all tasks")
                 .with_default(false)
                 .prompt().unwrap();
 
