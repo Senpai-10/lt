@@ -67,8 +67,10 @@ fn main() -> Result<()> {
             for id in ids {
                 match conn.execute("DELETE FROM tasks WHERE id = ?", [id]) {
                     Ok(number_of_updated_row) => {
-                        if number_of_updated_row > 0 {
+                        if number_of_updated_row != 0 {
                             println!("task {} is removed", id)
+                        } else {
+                            println!("no task with id '{}' is found!", id)
                         }
                     }
                     Err(err) => {
