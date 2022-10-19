@@ -65,7 +65,7 @@ fn main() -> Result<()> {
                 match tasks::remove_task(&conn, id) {
                     Ok(number_of_updated_row) => {
                         if number_of_updated_row != 0 {
-                            println!("task {} is removed", id)
+                            println!("task {} was removed", id)
                         } else {
                             println!("no task with id '{}' is found!", id)
                         }
