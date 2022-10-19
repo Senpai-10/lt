@@ -3,6 +3,7 @@
 
 mod cli;
 mod filesystem;
+mod tasks;
 
 use clap::Parser;
 use inquire;
@@ -12,14 +13,8 @@ use dotenv::dotenv;
 use nanoid::nanoid;
 use rusqlite::{Connection, Result, params};
 use std::collections::HashMap;
-
-#[derive(Debug)]
-struct Task {
-    pub id: String,
-    pub category: String,
-    pub text: String,
-    pub is_done: bool,
-}
+use std::process::exit;
+use tasks::{Task, print_tasks};
 
 fn main() -> Result<()> {
     dotenv().ok();
@@ -108,52 +103,44 @@ fn main() -> Result<()> {
                 total_tasks += 1;
             }
 
-            for key in categories.keys().into_iter() {
-                let tasks = categories.get(key).unwrap();
-                let dones = done_count.get(key).unwrap_or(&(0 as usize));
+            match category {
+                Some(category) => {
+                    let tasks = categories.get(category);
 
-                println!(
-                    "\n{} [{}/{}]",
-                    format!("@{}", key).bright_cyan().bold().underline(),
-                    dones,
-                    tasks.len()
-                );
+                    match tasks {
+                        Some(tasks) => {
+                            let dones = done_count.get(category).unwrap_or(&(0 as usize));
 
-                for task in tasks {
-                    let is_done: String = match task.is_done {
-                        true => {
-                            format!("{}", "".bright_green())
+                            print_tasks(category, dones, tasks);
+                        },
+                        None => {
+                            println!("category '{}' is not found", category);
+                            exit(1);
                         }
-                        false => {
-                            format!("{}", "".bright_magenta())
-                        }
-                    };
+                    }
+                },
+                None => {
+                    for key in categories.keys().into_iter() {
+                        let tasks = categories.get(key).unwrap();
+                        let dones = done_count.get(key).unwrap_or(&(0 as usize));
 
-                    let msg = format!("{0} {1} {2}", task.id.bright_black(), is_done, task.text);
+                        print_tasks(key, dones, tasks);
+                    }
 
-                    println!(
-                        "  {}",
-                        if task.is_done {
-                            msg.bright_black().to_string()
-                        } else {
-                            msg
-                        }
+                    println!();
+
+                    println!("{}",
+                        format!("{}% of all tasks complete.", calculate_percentage(total_done, total_tasks)).bright_black()
                     );
+
+                    println!("{}",
+                        format!("{} done, {} undone",
+                            total_done.to_string().bright_green(),
+                            (total_tasks - total_done).to_string().bright_magenta()
+                        ).bright_black()
+                    )
                 }
             }
-
-            println!();
-
-            println!("{}",
-                format!("{}% of all tasks complete.", calculate_percentage(total_done, total_tasks)).bright_black()
-            );
-
-            println!("{}",
-                format!("{} done, {} undone",
-                    total_done.to_string().bright_green(),
-                    (total_tasks - total_done).to_string().bright_magenta()
-                ).bright_black()
-            )
         }
 
         Some(Commands::Done { task_id }) => {
