@@ -10,7 +10,7 @@ use cli::{Cli, Commands};
 use colored::Colorize;
 use db::{get_all_tasks, get_task, print_tasks, Task};
 use dotenv::dotenv;
-use helpers::generate_id;
+use helpers::{generate_id, calculate_percentage};
 use inquire;
 use rusqlite::{params, Connection, Result};
 use std::collections::HashMap;
@@ -223,10 +223,3 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn calculate_percentage(part: i32, whole: i32) -> i32 {
-    if part == 0 || whole == 0 {
-        return 0;
-    }
-
-    100 * part / whole
-}

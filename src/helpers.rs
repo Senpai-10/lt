@@ -9,3 +9,11 @@ pub fn generate_id(length: usize) -> String {
 
     return id
 }
+
+pub fn calculate_percentage(part: i32, whole: i32) -> i32 {
+    if part == 0 || whole == 0 {
+        return 0;
+    }
+
+    100 * part / whole
+}
