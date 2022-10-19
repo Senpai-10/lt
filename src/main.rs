@@ -2,7 +2,6 @@
 // https://github.com/rusqlite/rusqlite
 
 mod cli;
-mod filesystem;
 mod tasks;
 
 use clap::Parser;
