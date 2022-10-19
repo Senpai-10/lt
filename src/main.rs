@@ -12,7 +12,7 @@ use db::tasks;
 use dotenv::dotenv;
 use helpers::{calculate_percentage, generate_id};
 use inquire;
-use rusqlite::{params, Connection, Result};
+use rusqlite::{Connection, Result};
 use std::collections::HashMap;
 use std::process::exit;
 
@@ -50,20 +50,19 @@ fn main() -> Result<()> {
                 is_done: false,
             };
 
-            conn.execute(
-                "INSERT INTO tasks (id, category, text, is_done) VALUES (?1, ?2, ?3, ?4)",
-                (
-                    &new_task.id,
-                    &new_task.category,
-                    &new_task.text,
-                    &new_task.is_done,
-                ),
-            )?;
+            match tasks::add_task(&conn, new_task) {
+                Ok(rows_updated) => {
+                    if rows_updated != 0 {
+                        println!("New task added!")
+                    }
+                }
+                Err(err) => println!("Failed: {}", err),
+            }
         }
 
         Some(Commands::Delete { ids }) => {
             for id in ids {
-                match conn.execute("DELETE FROM tasks WHERE id = ?", [id]) {
+                match tasks::remove_task(&conn, id) {
                     Ok(number_of_updated_row) => {
                         if number_of_updated_row != 0 {
                             println!("task {} is removed", id)
@@ -87,10 +86,16 @@ fn main() -> Result<()> {
                     .prompt()
                     .unwrap();
 
-                conn.execute(
-                    "UPDATE tasks SET text = ?1 WHERE id = ?2",
-                    [new_text, id.into()],
-                )?;
+                match tasks::update_text(&conn, id.into(), new_text) {
+                    Ok(rows_updated) => {
+                        if rows_updated != 0 {
+                            println!("task {}'s text is updated!", id)
+                        }
+                    }
+                    Err(err) => {
+                        println!("Failed: {}", err)
+                    }
+                }
             }
         }
 
@@ -172,13 +177,12 @@ fn main() -> Result<()> {
 
         Some(Commands::Done { ids }) => {
             for id in ids {
-                match conn.execute(
-                    "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
-                    params![true, id],
-                ) {
-                    Ok(number_of_updated_row) => {
-                        if number_of_updated_row > 0 {
+                match tasks::update_is_done(&conn, id, true) {
+                    Ok(rows_updated) => {
+                        if rows_updated != 0 {
                             println!("task {} is done", id)
+                        } else {
+                            println!("no task with id '{}' is found!", id)
                         }
                     }
                     Err(err) => {
@@ -190,13 +194,12 @@ fn main() -> Result<()> {
 
         Some(Commands::Undone { ids }) => {
             for id in ids {
-                match conn.execute(
-                    "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
-                    params![false, id],
-                ) {
-                    Ok(number_of_updated_row) => {
-                        if number_of_updated_row > 0 {
+                match tasks::update_is_done(&conn, id, false) {
+                    Ok(rows_updated) => {
+                        if rows_updated != 0 {
                             println!("task {} is undone", id)
+                        } else {
+                            println!("no task with id '{}' is found!", id)
                         }
                     }
                     Err(err) => {
@@ -213,7 +216,7 @@ fn main() -> Result<()> {
                 .unwrap();
 
             if confirm == true {
-                conn.execute("DROP TABLE tasks", ())?;
+                tasks::remove_all_tasks(&conn);
             }
         }
 

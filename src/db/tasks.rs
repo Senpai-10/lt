@@ -87,26 +87,40 @@ pub fn query_one(conn: &Connection, task_id: &String) -> Task {
     .unwrap()
 }
 
-pub fn update_is_done(conn: &Connection, id: &String, value: bool, message: String) {
-    match conn.execute(
+pub fn update_text(conn: &Connection, id: String, text: String) -> Result<usize, rusqlite::Error> {
+    conn.execute(
+        "UPDATE tasks SET text = ?1 WHERE id = ?2",
+        [text, id],
+    )
+}
+
+pub fn update_is_done(
+    conn: &Connection,
+    id: &String,
+    value: bool,
+) -> Result<usize, rusqlite::Error> {
+    conn.execute(
         "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
         params![value, id],
-    ) {
-        Ok(number_of_updated_row) => {
-            if number_of_updated_row != 0 {
-                println!("{}", message)
-            } else {
-                println!("no task with id '{}' is found!", id)
-            }
-        }
-        Err(err) => {
-            println!("Failed: {}", err)
-        }
-    }
+    )
+}
+
+pub fn add_task(conn: &Connection, new_task: Task) -> Result<usize, rusqlite::Error> {
+    conn.execute(
+        "INSERT INTO tasks (id, category, text, is_done) VALUES (?1, ?2, ?3, ?4)",
+        (
+            &new_task.id,
+            &new_task.category,
+            &new_task.text,
+            &new_task.is_done,
+        ),
+    )
+}
+
+pub fn remove_task(conn: &Connection, id: &String) -> Result<usize, rusqlite::Error> {
+    conn.execute("DELETE FROM tasks WHERE id = ?", [id])
 }
 
 pub fn remove_all_tasks(conn: &Connection) {
     conn.execute("DROP TABLE tasks", ()).unwrap();
-
-    println!("All tasks removed!")
 }
