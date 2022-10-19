@@ -10,7 +10,7 @@ use cli::{Cli, Commands};
 use colored::Colorize;
 use db::{get_all_tasks, get_task, print_tasks, Task};
 use dotenv::dotenv;
-use helpers::{generate_id, calculate_percentage};
+use helpers::{calculate_percentage, generate_id};
 use inquire;
 use rusqlite::{params, Connection, Result};
 use std::collections::HashMap;
@@ -222,4 +222,3 @@ fn main() -> Result<()> {
 
     Ok(())
 }
-
