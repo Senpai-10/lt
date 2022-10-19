@@ -8,7 +8,7 @@ mod helpers;
 use clap::Parser;
 use cli::{Cli, Commands};
 use colored::Colorize;
-use db::{get_all_tasks, get_task, print_tasks, Task};
+use db::tasks;
 use dotenv::dotenv;
 use helpers::{calculate_percentage, generate_id};
 use inquire;
@@ -43,7 +43,7 @@ fn main() -> Result<()> {
         Some(Commands::Add { task, category }) => {
             let id = generate_id(4);
 
-            let new_task = Task {
+            let new_task = tasks::Task {
                 id,
                 category: category.into(),
                 text: task.into(),
@@ -80,7 +80,7 @@ fn main() -> Result<()> {
 
         Some(Commands::Edit { ids }) => {
             for id in ids {
-                let task = get_task(&conn, id);
+                let task = tasks::query_one(&conn, id);
 
                 let new_text = inquire::Text::new("update task:")
                     .with_initial_value(&task.text)
@@ -95,9 +95,9 @@ fn main() -> Result<()> {
         }
 
         Some(Commands::List { category }) => {
-            let tasks = get_all_tasks(&conn);
+            let tasks = tasks::query_all(&conn);
 
-            let mut categories: HashMap<String, Vec<Task>> = HashMap::new();
+            let mut categories: HashMap<String, Vec<tasks::Task>> = HashMap::new();
             let mut done_count: HashMap<String, usize> = HashMap::new();
             let total_tasks: i32 = tasks.len() as i32;
             let mut total_done = 0;
@@ -130,7 +130,7 @@ fn main() -> Result<()> {
                         Some(tasks) => {
                             let dones = done_count.get(category).unwrap_or(&(0 as usize));
 
-                            print_tasks(category, dones, tasks);
+                            tasks::print_all(category, dones, tasks);
                         }
                         None => {
                             println!("category '{}' is not found", category);
@@ -143,7 +143,7 @@ fn main() -> Result<()> {
                         let tasks = categories.get(key).unwrap();
                         let dones = done_count.get(key).unwrap_or(&(0 as usize));
 
-                        print_tasks(key, dones, tasks);
+                        tasks::print_all(key, dones, tasks);
                     }
 
                     println!();
