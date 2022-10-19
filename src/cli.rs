@@ -25,31 +25,26 @@ pub enum Commands {
 
     /// delete a task
     Delete {
-        #[clap(short, long)]
         task_id: String,
     },
 
     /// edit a task
     Edit {
-        #[clap(short, long)]
         task_id: String,
     },
 
     /// list all tasks or a category
     List {
-        #[clap(short, long)]
         category: Option<String>,
     },
 
     /// mark a task as done
     Done {
-        #[clap(short, long)]
         task_id: String,
     },
 
     /// mark a task as undone
     Undone {
-        #[clap(short, long)]
         task_id: String,
     },
 
