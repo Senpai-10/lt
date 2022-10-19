@@ -1,5 +1,5 @@
 use colored::Colorize;
-use rusqlite::Connection;
+use rusqlite::{params, Connection};
 
 #[derive(Debug)]
 pub struct Task {
@@ -85,4 +85,28 @@ pub fn query_one(conn: &Connection, task_id: &String) -> Task {
         })
     })
     .unwrap()
+}
+
+pub fn update_is_done(conn: &Connection, id: &String, value: bool, message: String) {
+    match conn.execute(
+        "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
+        params![value, id],
+    ) {
+        Ok(number_of_updated_row) => {
+            if number_of_updated_row != 0 {
+                println!("{}", message)
+            } else {
+                println!("no task with id '{}' is found!", id)
+            }
+        }
+        Err(err) => {
+            println!("Failed: {}", err)
+        }
+    }
+}
+
+pub fn remove_all_tasks(conn: &Connection) {
+    conn.execute("DROP TABLE tasks", ()).unwrap();
+
+    println!("All tasks removed!")
 }
