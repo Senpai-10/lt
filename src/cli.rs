@@ -30,7 +30,7 @@ pub enum Commands {
 
     /// edit a task
     Edit {
-        task_id: String,
+        ids: Vec<String>,
     },
 
     /// list all tasks or a category
