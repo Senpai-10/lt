@@ -94,8 +94,6 @@ fn main() -> Result<()> {
                 })
             })?;
 
-
-
             let mut categories: HashMap<String, Vec<Task>> = HashMap::new();
             let mut done_count: HashMap<String, usize> = HashMap::new();
             let mut total_done = 0;
@@ -117,6 +115,14 @@ fn main() -> Result<()> {
                     .push(task);
 
                 total_tasks += 1;
+            }
+
+            if total_tasks == 0 {
+                println!(
+                    "{}",
+                    format!("No tasks found!").bright_black()
+                );
+                exit(0);
             }
 
             match category {
