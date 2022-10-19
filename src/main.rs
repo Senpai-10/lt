@@ -3,10 +3,12 @@
 
 mod cli;
 mod tasks;
+mod db;
 
 use clap::Parser;
 use cli::{Cli, Commands};
 use colored::Colorize;
+use db::get_task;
 use dotenv::dotenv;
 use inquire;
 use nanoid::nanoid;
@@ -64,28 +66,17 @@ fn main() -> Result<()> {
             println!("{}", task_id)
         }
 
-        Some(Commands::Edit { task_id }) => {
-            let task = conn.query_row(
-                "SELECT * FROM tasks WHERE id = ?",
-                [task_id],
-                |row| {
-                    Ok(
-                        Task {
-                            id: row.get(0)?,
-                            category: row.get(1)?,
-                            text: row.get(2)?,
-                            is_done: row.get(3)?,
-                        }
-                    )
-                },
-            )?;
+        Some(Commands::Edit { ids }) => {
+            for id in ids {
+                let task = get_task(&conn, id);
 
-            let new_text = inquire::Text::new("update task").with_initial_value(&task.text).prompt().unwrap();
+                let new_text = inquire::Text::new("update task:").with_initial_value(&task.text).prompt().unwrap();
 
-            conn.execute(
-                "UPDATE tasks SET text = ?1 WHERE id = ?2",
-                [new_text, task_id.into()]
-            )?;
+                conn.execute(
+                    "UPDATE tasks SET text = ?1 WHERE id = ?2",
+                    [new_text, id.into()]
+                )?;
+            }
         }
 
         Some(Commands::List { category }) => {
@@ -171,10 +162,19 @@ fn main() -> Result<()> {
         }
 
         Some(Commands::Done { task_id }) => {
-            conn.execute(
+            match conn.execute(
                 "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
                 params![true, task_id],
-            )?;
+            ) {
+                    Ok(number_of_updated_row) => {
+                        if number_of_updated_row > 0 {
+                            println!("task {} is done", task_id)
+                        }
+                    },
+                    Err(err) => {
+                        println!("Failed: {}", err)
+                    }
+                }
         }
 
         Some(Commands::Undone { task_id }) => {
