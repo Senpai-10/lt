@@ -27,17 +27,7 @@ fn main() -> Result<()> {
 
     let conn = Connection::open(db_file)?;
 
-    conn.execute(
-        r#"
-            CREATE TABLE IF NOT EXISTS tasks (
-                 id          VARCHAR     NOT NULL PRIMARY KEY,
-                 category    VARCHAR     NOT NULL,
-                 text        TEXT        NOT NULL,
-                 is_done     BOOLEAN     NOT NULL DEFAULT 'false'
-            )
-        "#,
-        (),
-    )?;
+    db::setup(&conn)?;
 
     match &cli.commands {
         Some(Commands::Add { task, category }) => {
