@@ -110,8 +110,10 @@ pub fn update_is_done(conn: &Connection, id: &String, value: bool) {
         Ok(rows_updated) => {
             if rows_updated != 0 {
                 if value == true {
+                    // if done
                     update_priority(conn, id, 0);
                 } else {
+                    // if undone
                     update_priority(conn, id, 1);
                 }
 
