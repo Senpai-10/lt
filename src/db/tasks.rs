@@ -102,15 +102,44 @@ pub fn update_text(conn: &Connection, id: String, text: String) -> Result<usize,
     conn.execute("UPDATE tasks SET text = ?1 WHERE id = ?2", [text, id])
 }
 
-pub fn update_is_done(
-    conn: &Connection,
-    id: &String,
-    value: bool,
-) -> Result<usize, rusqlite::Error> {
-    conn.execute(
+pub fn update_is_done(conn: &Connection, id: &String, value: bool) {
+    match conn.execute(
         "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
         params![value, id],
-    )
+    ) {
+        Ok(rows_updated) => {
+            if rows_updated != 0 {
+                if value == true {
+                    update_priority(conn, id, 0);
+                } else {
+                    update_priority(conn, id, 1);
+                }
+
+                println!("task {} is done", id)
+            } else {
+                println!("no task with id '{}' is found!", id)
+            }
+        }
+        Err(err) => {
+            println!("Failed: {}", err)
+        }
+    }
+}
+
+pub fn update_priority(conn: &Connection, id: &String, n: i32) {
+    match conn.execute(
+        "UPDATE tasks SET priority = ?1 WHERE id = ?2",
+        params![n, id],
+    ) {
+        Ok(rows_updated) => {
+            if rows_updated == 0 {
+                println!("failed to set priority to {n}");
+            }
+        }
+        Err(err) => {
+            println!("Failed: {}", err)
+        }
+    }
 }
 
 pub fn add_task(conn: &Connection, new_task: Task) -> Result<usize, rusqlite::Error> {
