@@ -38,6 +38,15 @@ pub enum Commands {
         category: Option<String>,
     },
 
+    /// move a task from category to another category
+    Move {
+        /// list ids
+        ids: Vec<String>,
+
+        /// target category
+        category: String,
+    },
+
     /// mark a task as done
     Done {
         ids: Vec<String>,
