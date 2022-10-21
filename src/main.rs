@@ -1,12 +1,12 @@
 // use this https://docs.rs/sqlite/0.27.0/sqlite/
 // https://github.com/rusqlite/rusqlite
 
-mod cli;
+mod args;
 mod db;
 mod helpers;
 
 use clap::Parser;
-use cli::{Cli, Commands};
+use args::{Args, Commands};
 use colored::Colorize;
 use db::tasks;
 use dotenv::dotenv;
@@ -18,9 +18,9 @@ use std::process::exit;
 
 fn main() -> Result<()> {
     dotenv().ok();
-    let cli = Cli::parse();
+    let args = Args::parse();
 
-    let db_file = match cli.file {
+    let db_file = match args.file {
         Some(file) => file,
         None => String::from("todo.db"),
     };
@@ -29,7 +29,7 @@ fn main() -> Result<()> {
 
     db::setup(&conn)?;
 
-    match &cli.commands {
+    match &args.commands {
         Some(Commands::Add { category , id_length, task }) => {
             let id = generate_id(*id_length);
 

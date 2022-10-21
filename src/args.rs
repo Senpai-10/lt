@@ -5,7 +5,7 @@ use clap::{Parser, Subcommand};
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
-pub struct Cli {
+pub struct Args {
     #[clap(short, long)]
     pub file: Option<String>,
 
