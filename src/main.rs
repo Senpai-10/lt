@@ -161,9 +161,6 @@ fn main() -> Result<()> {
         }
 
         Some(Commands::Move { ids, category }) => {
-            println!("ids: {:?}", ids);
-            println!("category: {}", category);
-
             for id in ids {
                 tasks::move_task(&conn, category, id);
             }
