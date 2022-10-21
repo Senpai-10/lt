@@ -23,6 +23,9 @@ pub enum Commands {
         #[clap(short, long, default_value_t = 3)]
         id_length: usize,
 
+        #[clap(short, long, default_value_t = 1)]
+        priority: i32,
+
         task: String,
     },
 

@@ -30,7 +30,7 @@ fn main() -> Result<()> {
     db::setup(&conn)?;
 
     match &args.commands {
-        Some(Commands::Add { category , id_length, task }) => {
+        Some(Commands::Add { category , id_length, priority, task }) => {
             let id = generate_id(*id_length);
 
             let new_task = tasks::Task {
@@ -38,6 +38,7 @@ fn main() -> Result<()> {
                 category: category.into(),
                 text: task.into(),
                 is_done: false,
+                priority: *priority
             };
 
             match tasks::add_task(&conn, new_task) {
