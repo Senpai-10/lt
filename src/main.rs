@@ -171,35 +171,13 @@ fn main() -> Result<()> {
 
         Some(Commands::Done { ids }) => {
             for id in ids {
-                match tasks::update_is_done(&conn, id, true) {
-                    Ok(rows_updated) => {
-                        if rows_updated != 0 {
-                            println!("task {} is done", id)
-                        } else {
-                            println!("no task with id '{}' is found!", id)
-                        }
-                    }
-                    Err(err) => {
-                        println!("Failed: {}", err)
-                    }
-                }
+                tasks::update_is_done(&conn, id, true)
             }
         }
 
         Some(Commands::Undone { ids }) => {
             for id in ids {
-                match tasks::update_is_done(&conn, id, false) {
-                    Ok(rows_updated) => {
-                        if rows_updated != 0 {
-                            println!("task {} is undone", id)
-                        } else {
-                            println!("no task with id '{}' is found!", id)
-                        }
-                    }
-                    Err(err) => {
-                        println!("Failed: {}", err)
-                    }
-                }
+                tasks::update_is_done(&conn, id, false)
             }
         }
 
