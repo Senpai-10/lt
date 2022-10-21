@@ -41,6 +41,7 @@ pub enum Commands {
     /// move a task from category to another category
     Move {
         /// target category
+        #[clap(short, long)]
         category: String,
 
         /// list ids
