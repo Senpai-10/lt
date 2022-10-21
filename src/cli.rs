@@ -40,11 +40,11 @@ pub enum Commands {
 
     /// move a task from category to another category
     Move {
-        /// list ids
-        ids: Vec<String>,
-
         /// target category
         category: String,
+
+        /// list ids
+        ids: Vec<String>,
     },
 
     /// mark a task as done
