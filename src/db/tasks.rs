@@ -88,10 +88,7 @@ pub fn query_one(conn: &Connection, task_id: &String) -> Task {
 }
 
 pub fn update_text(conn: &Connection, id: String, text: String) -> Result<usize, rusqlite::Error> {
-    conn.execute(
-        "UPDATE tasks SET text = ?1 WHERE id = ?2",
-        [text, id],
-    )
+    conn.execute("UPDATE tasks SET text = ?1 WHERE id = ?2", [text, id])
 }
 
 pub fn update_is_done(
@@ -115,6 +112,22 @@ pub fn add_task(conn: &Connection, new_task: Task) -> Result<usize, rusqlite::Er
             &new_task.is_done,
         ),
     )
+}
+
+pub fn move_task(conn: &Connection, category: &String, id: &String) {
+    match conn.execute(
+        "UPDATE tasks SET category = ?1 WHERE id = ?2",
+        params![category, id],
+    ) {
+        Ok(rows_updated) => match rows_updated {
+            0 => println!("no task with id '{}' is found!", id),
+            1 => println!("task {id} moved to {category}"),
+            _ => {}
+        },
+        Err(err) => {
+            println!("Failed: {}", err)
+        }
+    }
 }
 
 pub fn remove_task(conn: &Connection, id: &String) -> Result<usize, rusqlite::Error> {
