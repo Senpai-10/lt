@@ -1,5 +1,6 @@
 use colored::Colorize;
 use rusqlite::{params, Connection};
+use std::cmp::Reverse;
 
 #[derive(Debug)]
 pub struct Task {
@@ -10,7 +11,9 @@ pub struct Task {
     pub priority: i32,
 }
 
-pub fn print_all(category: &String, dones: &usize, tasks: &Vec<Task>) {
+pub fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>) {
+    tasks.sort_by_key(|k| Reverse(k.priority));
+
     println!(
         "\n{} [{}/{}]",
         format!("@{}", category).bright_cyan().bold().underline(),
@@ -49,7 +52,7 @@ pub fn print_all(category: &String, dones: &usize, tasks: &Vec<Task>) {
                     2 => msg.bright_yellow().to_string(),
                     i if i >= 3 => msg.bright_red().to_string(),
 
-                    _ => msg
+                    _ => msg,
                 }
             }
         );
@@ -118,7 +121,7 @@ pub fn add_task(conn: &Connection, new_task: Task) -> Result<usize, rusqlite::Er
             &new_task.category,
             &new_task.text,
             &new_task.is_done,
-            &new_task.priority
+            &new_task.priority,
         ),
     )
 }

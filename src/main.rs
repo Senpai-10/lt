@@ -120,23 +120,17 @@ fn main() -> Result<()> {
 
             match category {
                 Some(category) => {
-                    let tasks = categories.get(category);
+                    let tasks = categories.get_mut(category).unwrap_or_else(|| {
+                        println!("category '{}' is not found", category);
+                        exit(1);
+                    });
 
-                    match tasks {
-                        Some(tasks) => {
-                            let dones = done_count.get(category).unwrap_or(&(0 as usize));
+                    let dones = done_count.get(category).unwrap_or(&(0 as usize));
 
-                            tasks::print_all(category, dones, tasks);
-                        }
-                        None => {
-                            println!("category '{}' is not found", category);
-                            exit(1);
-                        }
-                    }
+                    tasks::print_all(category, dones, tasks);
                 }
                 None => {
-                    for key in categories.keys().into_iter() {
-                        let tasks = categories.get(key).unwrap();
+                    for (key, tasks) in categories.iter_mut() {
                         let dones = done_count.get(key).unwrap_or(&(0 as usize));
 
                         tasks::print_all(key, dones, tasks);
