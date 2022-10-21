@@ -1,5 +1,6 @@
 use colored::Colorize;
 use rusqlite::{params, Connection};
+use std::cmp::Reverse;
 
 #[derive(Debug)]
 pub struct Task {
@@ -7,9 +8,12 @@ pub struct Task {
     pub category: String,
     pub text: String,
     pub is_done: bool,
+    pub priority: i32,
 }
 
-pub fn print_all(category: &String, dones: &usize, tasks: &Vec<Task>) {
+pub fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>) {
+    tasks.sort_by_key(|k| Reverse(k.priority));
+
     println!(
         "\n{} [{}/{}]",
         format!("@{}", category).bright_cyan().bold().underline(),
@@ -44,7 +48,12 @@ pub fn print_all(category: &String, dones: &usize, tasks: &Vec<Task>) {
             if task.is_done {
                 msg.bright_black().to_string()
             } else {
-                msg
+                match task.priority {
+                    2 => msg.bright_yellow().to_string(),
+                    i if i >= 3 => msg.bright_red().to_string(),
+
+                    _ => msg,
+                }
             }
         );
     }
@@ -60,6 +69,7 @@ pub fn query_all(conn: &Connection) -> Vec<Task> {
                 category: row.get(1)?,
                 text: row.get(2)?,
                 is_done: row.get(3)?,
+                priority: row.get(4)?,
             })
         })
         .unwrap();
@@ -82,6 +92,7 @@ pub fn query_one(conn: &Connection, task_id: &String) -> Task {
             category: row.get(1)?,
             text: row.get(2)?,
             is_done: row.get(3)?,
+            priority: row.get(4)?,
         })
     })
     .unwrap()
@@ -91,25 +102,57 @@ pub fn update_text(conn: &Connection, id: String, text: String) -> Result<usize,
     conn.execute("UPDATE tasks SET text = ?1 WHERE id = ?2", [text, id])
 }
 
-pub fn update_is_done(
-    conn: &Connection,
-    id: &String,
-    value: bool,
-) -> Result<usize, rusqlite::Error> {
-    conn.execute(
+pub fn update_is_done(conn: &Connection, id: &String, value: bool) {
+    match conn.execute(
         "UPDATE tasks SET is_done = ?1 WHERE id = ?2",
         params![value, id],
-    )
+    ) {
+        Ok(rows_updated) => {
+            if rows_updated != 0 {
+                if value == true {
+                    // if done
+                    update_priority(conn, id, 0);
+                } else {
+                    // if undone
+                    update_priority(conn, id, 1);
+                }
+
+                println!("task {} is done", id)
+            } else {
+                println!("no task with id '{}' is found!", id)
+            }
+        }
+        Err(err) => {
+            println!("Failed: {}", err)
+        }
+    }
+}
+
+pub fn update_priority(conn: &Connection, id: &String, n: i32) {
+    match conn.execute(
+        "UPDATE tasks SET priority = ?1 WHERE id = ?2",
+        params![n, id],
+    ) {
+        Ok(rows_updated) => {
+            if rows_updated == 0 {
+                println!("failed to set priority to {n}");
+            }
+        }
+        Err(err) => {
+            println!("Failed: {}", err)
+        }
+    }
 }
 
 pub fn add_task(conn: &Connection, new_task: Task) -> Result<usize, rusqlite::Error> {
     conn.execute(
-        "INSERT INTO tasks (id, category, text, is_done) VALUES (?1, ?2, ?3, ?4)",
+        "INSERT INTO tasks (id, category, text, is_done, priority) VALUES (?1, ?2, ?3, ?4, ?5)",
         (
             &new_task.id,
             &new_task.category,
             &new_task.text,
             &new_task.is_done,
+            &new_task.priority,
         ),
     )
 }

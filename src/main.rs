@@ -30,7 +30,7 @@ fn main() -> Result<()> {
     db::setup(&conn)?;
 
     match &args.commands {
-        Some(Commands::Add { category , id_length, task }) => {
+        Some(Commands::Add { category , id_length, priority, task }) => {
             let id = generate_id(*id_length);
 
             let new_task = tasks::Task {
@@ -38,6 +38,7 @@ fn main() -> Result<()> {
                 category: category.into(),
                 text: task.into(),
                 is_done: false,
+                priority: *priority
             };
 
             match tasks::add_task(&conn, new_task) {
@@ -119,23 +120,17 @@ fn main() -> Result<()> {
 
             match category {
                 Some(category) => {
-                    let tasks = categories.get(category);
+                    let tasks = categories.get_mut(category).unwrap_or_else(|| {
+                        println!("category '{}' is not found", category);
+                        exit(1);
+                    });
 
-                    match tasks {
-                        Some(tasks) => {
-                            let dones = done_count.get(category).unwrap_or(&(0 as usize));
+                    let dones = done_count.get(category).unwrap_or(&(0 as usize));
 
-                            tasks::print_all(category, dones, tasks);
-                        }
-                        None => {
-                            println!("category '{}' is not found", category);
-                            exit(1);
-                        }
-                    }
+                    tasks::print_all(category, dones, tasks);
                 }
                 None => {
-                    for key in categories.keys().into_iter() {
-                        let tasks = categories.get(key).unwrap();
+                    for (key, tasks) in categories.iter_mut() {
                         let dones = done_count.get(key).unwrap_or(&(0 as usize));
 
                         tasks::print_all(key, dones, tasks);
@@ -166,9 +161,6 @@ fn main() -> Result<()> {
         }
 
         Some(Commands::Move { ids, category }) => {
-            println!("ids: {:?}", ids);
-            println!("category: {}", category);
-
             for id in ids {
                 tasks::move_task(&conn, category, id);
             }
@@ -176,35 +168,13 @@ fn main() -> Result<()> {
 
         Some(Commands::Done { ids }) => {
             for id in ids {
-                match tasks::update_is_done(&conn, id, true) {
-                    Ok(rows_updated) => {
-                        if rows_updated != 0 {
-                            println!("task {} is done", id)
-                        } else {
-                            println!("no task with id '{}' is found!", id)
-                        }
-                    }
-                    Err(err) => {
-                        println!("Failed: {}", err)
-                    }
-                }
+                tasks::update_is_done(&conn, id, true)
             }
         }
 
         Some(Commands::Undone { ids }) => {
             for id in ids {
-                match tasks::update_is_done(&conn, id, false) {
-                    Ok(rows_updated) => {
-                        if rows_updated != 0 {
-                            println!("task {} is undone", id)
-                        } else {
-                            println!("no task with id '{}' is found!", id)
-                        }
-                    }
-                    Err(err) => {
-                        println!("Failed: {}", err)
-                    }
-                }
+                tasks::update_is_done(&conn, id, false)
             }
         }
 
