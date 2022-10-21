@@ -17,10 +17,13 @@ pub struct Cli {
 pub enum Commands {
     /// Add a new task
     Add {
-        task: String,
-
         #[clap(short, long)]
         category: String,
+
+        #[clap(short, long, default_value_t = 3)]
+        id_length: usize,
+
+        task: String,
     },
 
     /// delete a task

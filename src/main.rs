@@ -30,8 +30,8 @@ fn main() -> Result<()> {
     db::setup(&conn)?;
 
     match &cli.commands {
-        Some(Commands::Add { task, category }) => {
-            let id = generate_id(4);
+        Some(Commands::Add { category , id_length, task }) => {
+            let id = generate_id(*id_length);
 
             let new_task = tasks::Task {
                 id,
