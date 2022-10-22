@@ -1,5 +1,5 @@
-use rusqlite::Connection;
 use crate::db;
+use rusqlite::Connection;
 
 pub fn run(conn: &Connection, category: &String, ids: &Vec<String>) {
     for id in ids {

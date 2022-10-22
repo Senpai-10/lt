@@ -1,7 +1,7 @@
-use rusqlite::Connection;
-use colored::Colorize;
 use crate::db;
 use crate::helpers::generate_id;
+use colored::Colorize;
+use rusqlite::Connection;
 
 pub fn run(conn: &Connection, category: &String, id_length: &usize, priority: &i32, task: &String) {
     let id = generate_id(*id_length);

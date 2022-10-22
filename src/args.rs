@@ -79,7 +79,5 @@ pub enum Commands {
     },
 
     /// clear all tasks or from a category
-    Clear {
-        category: Option<String>,
-    },
+    Clear { category: Option<String> },
 }

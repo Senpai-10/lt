@@ -16,12 +16,11 @@ pub struct Task {
 pub fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_format: &String) {
     tasks.sort_by_key(|k| Reverse(k.priority));
 
-    let mut count = format!("[{}/{}]", dones,
-        tasks.len());
+    let mut count = format!("[{}/{}]", dones, tasks.len());
 
     // color if category is in progress
     if *dones > 0 && *dones != tasks.len() {
-        count  = count.bright_yellow().bold().to_string()
+        count = count.bright_yellow().bold().to_string()
     }
 
     // color if all tasks in category are done
@@ -221,7 +220,12 @@ pub fn move_task(conn: &Connection, category: &String, id: &String) {
     ) {
         Ok(rows_updated) => match rows_updated {
             0 => println!("no task with id '{}' is found!", id),
-            1 => println!("{}", format!("task {id} moved to {category}").bright_yellow().bold()),
+            1 => println!(
+                "{}",
+                format!("task {id} moved to {category}")
+                    .bright_yellow()
+                    .bold()
+            ),
             _ => {}
         },
         Err(err) => {

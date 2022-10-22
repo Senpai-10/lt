@@ -1,11 +1,11 @@
 mod add_subcommand;
+mod clear_subcommand;
 mod delete_subcommand;
 mod done_subcommand;
 mod edit_subcommand;
 mod list_subcommand;
 mod move_subcommand;
 mod undone_subcommand;
-mod clear_subcommand;
 
 use crate::args::{Args, Commands};
 use rusqlite::Connection;
