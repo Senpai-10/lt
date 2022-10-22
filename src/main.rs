@@ -1,13 +1,13 @@
-// use this https://docs.rs/sqlite/0.27.0/sqlite/
+// use this https://docs.rs/sqlite/1.27.0/sqlite/
 // https://github.com/rusqlite/rusqlite
 
+mod apps;
 mod args;
 mod db;
 mod helpers;
-mod apps;
 
-use clap::Parser;
 use args::Args;
+use clap::Parser;
 use dotenv::dotenv;
 use rusqlite::{Connection, Result};
 
@@ -24,7 +24,11 @@ fn main() -> Result<()> {
 
     db::setup(&conn)?;
 
-    apps::cli::run(&conn, &args);
+    if args.tui {
+        apps::tui::init();
+    } else {
+        apps::cli::init(&conn, &args);
+    }
 
     Ok(())
 }
