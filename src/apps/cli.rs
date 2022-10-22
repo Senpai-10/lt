@@ -10,7 +10,7 @@ mod clear_subcommand;
 use crate::args::{Args, Commands};
 use rusqlite::Connection;
 
-pub fn run(conn: &Connection, args: &Args) {
+pub fn init(conn: &Connection, args: &Args) {
     match &args.commands {
         Some(Commands::Add {
             category,
