@@ -218,5 +218,27 @@ pub fn remove_task(conn: &Connection, id: &String) -> Result<usize, rusqlite::Er
 }
 
 pub fn remove_all_tasks(conn: &Connection) {
-    conn.execute("DROP TABLE tasks", ()).unwrap();
+    match conn.execute("DROP TABLE tasks", ()) {
+        Ok(rows_updated) => match rows_updated {
+            0 => println!("All tasks removed!"),
+            1 => println!("failed to remove all tasks!"),
+            _ => {}
+        },
+        Err(err) => {
+            println!("Failed: {}", err)
+        }
+    }
+}
+
+pub fn remove_all_tasks_from(conn: &Connection, category: &String) {
+    match conn.execute("DELETE FROM tasks WHERE category = ?1", params![category]) {
+        Ok(rows_updated) => match rows_updated {
+            0 => println!("category '{category}' does not exists"),
+            1 => println!("Removed all tasks from {category}!"),
+            _ => {}
+        },
+        Err(err) => {
+            println!("Failed: {}", err)
+        }
+    }
 }

@@ -30,7 +30,7 @@ pub fn init(conn: &Connection, args: &Args) {
         Some(Commands::Move { ids, category }) => move_subcommand::run(conn, category, ids),
         Some(Commands::Done { ids }) => done_subcommand::run(conn, ids),
         Some(Commands::Undone { ids }) => undone_subcommand::run(conn, ids),
-        Some(Commands::Clear {}) => clear_subcommand::run(conn),
+        Some(Commands::Clear { category }) => clear_subcommand::run(conn, category),
 
         None => {}
     }
