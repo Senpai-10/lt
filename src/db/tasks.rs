@@ -1,3 +1,4 @@
+use crate::helpers::{convert_unix_timestamp, get_unix_timestamp};
 use colored::Colorize;
 use rusqlite::{params, Connection};
 use std::cmp::Reverse;
@@ -9,9 +10,10 @@ pub struct Task {
     pub text: String,
     pub is_done: bool,
     pub priority: i32,
+    pub done_date: Option<u64>,
 }
 
-pub fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>) {
+pub fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_format: &String) {
     tasks.sort_by_key(|k| Reverse(k.priority));
 
     println!(
@@ -36,11 +38,25 @@ pub fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>) {
             false => task.text.to_string(),
         };
 
+        let done_date: String = match task.done_date {
+            Some(unix_timestamp) => {
+                if !task.is_done {
+                    String::new()
+                } else {
+                    let date = convert_unix_timestamp(unix_timestamp, date_format);
+
+                    format!("{}", date.bright_green().underline())
+                }
+            }
+            None => String::new(),
+        };
+
         let msg = format!(
-            "{0} {1} {2}",
-            task.id.bright_black(),
-            styled_is_done,
-            styled_text
+            "{id} {date} {status} {text}",
+            id = task.id.bright_black(),
+            date = done_date,
+            status = styled_is_done,
+            text = styled_text
         );
 
         println!(
@@ -70,6 +86,7 @@ pub fn query_all(conn: &Connection) -> Vec<Task> {
                 text: row.get(2)?,
                 is_done: row.get(3)?,
                 priority: row.get(4)?,
+                done_date: row.get(5).unwrap_or(None),
             })
         })
         .unwrap();
@@ -93,6 +110,7 @@ pub fn query_one(conn: &Connection, task_id: &String) -> Task {
             text: row.get(2)?,
             is_done: row.get(3)?,
             priority: row.get(4)?,
+            done_date: row.get(5).unwrap_or(None),
         })
     })
     .unwrap()
@@ -111,6 +129,7 @@ pub fn update_is_done(conn: &Connection, id: &String, value: bool) {
             if rows_updated != 0 {
                 if value == true {
                     // if done
+                    update_done_date(conn, id);
                     update_priority(conn, id, 0);
                 } else {
                     // if undone
@@ -120,6 +139,26 @@ pub fn update_is_done(conn: &Connection, id: &String, value: bool) {
                 println!("task {} is done", id)
             } else {
                 println!("no task with id '{}' is found!", id)
+            }
+        }
+        Err(err) => {
+            println!("Failed: {}", err)
+        }
+    }
+}
+
+pub fn update_done_date(conn: &Connection, id: &String) {
+    let time_stamp = get_unix_timestamp();
+
+    match conn.execute(
+        "UPDATE tasks SET done_date = ?1 WHERE id = ?2",
+        params![time_stamp, id],
+    ) {
+        Ok(rows_updated) => {
+            if rows_updated == 0 {
+                println!("failed to update done_date {time_stamp}");
+            } else {
+                println!("done_date is set to {time_stamp}")
             }
         }
         Err(err) => {

@@ -42,6 +42,10 @@ pub enum Commands {
     /// list all tasks or a category
     List {
         category: Option<String>,
+
+        /// Format for date. see docs.rs/chrono/latest/chrono/format/strftime/
+        #[clap(short, long, default_value = "%Y-%m-%d %I:%M:%S %P")]
+        date_format: String,
     },
 
     /// move a task from category to another category

@@ -38,7 +38,8 @@ fn main() -> Result<()> {
                 category: category.into(),
                 text: task.into(),
                 is_done: false,
-                priority: *priority
+                priority: *priority,
+                done_date: None,
             };
 
             match tasks::add_task(&conn, new_task) {
@@ -90,7 +91,7 @@ fn main() -> Result<()> {
             }
         }
 
-        Some(Commands::List { category }) => {
+        Some(Commands::List { category, date_format }) => {
             let tasks = tasks::query_all(&conn);
 
             let mut categories: HashMap<String, Vec<tasks::Task>> = HashMap::new();
@@ -127,13 +128,13 @@ fn main() -> Result<()> {
 
                     let dones = done_count.get(category).unwrap_or(&(0 as usize));
 
-                    tasks::print_all(category, dones, tasks);
+                    tasks::print_all(category, dones, tasks, date_format);
                 }
                 None => {
                     for (key, tasks) in categories.iter_mut() {
                         let dones = done_count.get(key).unwrap_or(&(0 as usize));
 
-                        tasks::print_all(key, dones, tasks);
+                        tasks::print_all(key, dones, tasks, date_format);
                     }
 
                     println!();
