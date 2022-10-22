@@ -116,8 +116,8 @@ pub fn query_one(conn: &Connection, task_id: &String) -> Task {
     .unwrap()
 }
 
-pub fn update_text(conn: &Connection, id: String, text: String) -> Result<usize, rusqlite::Error> {
-    conn.execute("UPDATE tasks SET text = ?1 WHERE id = ?2", [text, id])
+pub fn update_text(conn: &Connection, id: &String, text: String) -> Result<usize, rusqlite::Error> {
+    conn.execute("UPDATE tasks SET text = ?1 WHERE id = ?2", [text, id.into()])
 }
 
 pub fn update_is_done(conn: &Connection, id: &String, value: bool) {
