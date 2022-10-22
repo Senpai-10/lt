@@ -6,6 +6,7 @@ use clap::{Parser, Subcommand};
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
 pub struct Args {
+    /// Database file
     #[clap(short, long)]
     pub file: Option<String>,
 
