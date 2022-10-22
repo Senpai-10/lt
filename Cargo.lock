@@ -703,6 +703,7 @@ dependencies = [
  "chrono",
  "clap",
  "colored",
+ "crossterm",
  "dotenv",
  "inquire",
  "nanoid",

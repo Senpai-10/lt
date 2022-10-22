@@ -6,11 +6,6 @@ use clap::{Parser, Subcommand};
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
 pub struct Args {
-    /// Use a tui instead of subcommands.
-    /// Any subcommand will be ignored
-    #[clap(short, long)]
-    pub tui: bool,
-
     #[clap(short, long)]
     pub file: Option<String>,
 

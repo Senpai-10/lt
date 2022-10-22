@@ -24,11 +24,7 @@ fn main() -> Result<()> {
 
     db::setup(&conn)?;
 
-    if args.tui {
-        apps::tui::init();
-    } else {
-        apps::cli::init(&conn, &args);
-    }
+    apps::cli::init(&conn, &args);
 
     Ok(())
 }
