@@ -116,8 +116,11 @@ pub fn query_one(conn: &Connection, task_id: &String) -> Task {
     .unwrap()
 }
 
-pub fn update_text(conn: &Connection, id: String, text: String) -> Result<usize, rusqlite::Error> {
-    conn.execute("UPDATE tasks SET text = ?1 WHERE id = ?2", [text, id])
+pub fn update_text(conn: &Connection, id: &String, text: String) -> Result<usize, rusqlite::Error> {
+    conn.execute(
+        "UPDATE tasks SET text = ?1 WHERE id = ?2",
+        [text, id.into()],
+    )
 }
 
 pub fn update_is_done(conn: &Connection, id: &String, value: bool) {
@@ -157,8 +160,6 @@ pub fn update_done_date(conn: &Connection, id: &String) {
         Ok(rows_updated) => {
             if rows_updated == 0 {
                 println!("failed to update done_date {time_stamp}");
-            } else {
-                println!("done_date is set to {time_stamp}")
             }
         }
         Err(err) => {
