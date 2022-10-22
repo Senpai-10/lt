@@ -1,3 +1,4 @@
+use colored::Colorize;
 use rusqlite::Connection;
 use crate::db;
 
@@ -6,7 +7,7 @@ pub fn run(conn: &Connection, ids: &Vec<String>) {
         match db::tasks::remove_task(&conn, &id) {
             Ok(number_of_updated_row) => {
                 if number_of_updated_row != 0 {
-                    println!("task {} was removed", id)
+                    println!("task {} was removed", id.bright_blue().bold())
                 } else {
                     println!("no task with id '{}' is found!", id)
                 }

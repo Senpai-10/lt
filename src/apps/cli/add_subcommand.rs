@@ -1,5 +1,5 @@
 use rusqlite::Connection;
-
+use colored::Colorize;
 use crate::db;
 use crate::helpers::generate_id;
 
@@ -18,7 +18,7 @@ pub fn run(conn: &Connection, category: &String, id_length: &usize, priority: &i
     match db::tasks::add_task(&conn, new_task) {
         Ok(rows_updated) => {
             if rows_updated != 0 {
-                println!("New task added!")
+                println!("{}", "New task added!".bright_green().bold())
             }
         }
         Err(err) => println!("Failed: {}", err),

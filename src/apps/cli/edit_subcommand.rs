@@ -1,4 +1,5 @@
 use crate::db;
+use colored::Colorize;
 use rusqlite::Connection;
 
 pub fn run(conn: &Connection, ids: &Vec<String>) {
@@ -13,7 +14,7 @@ pub fn run(conn: &Connection, ids: &Vec<String>) {
         match db::tasks::update_text(&conn, &id, new_text) {
             Ok(rows_updated) => {
                 if rows_updated != 0 {
-                    println!("task {}'s text is updated!", id)
+                    println!("task {}'s text is updated!", id.bright_blue().bold())
                 }
             }
             Err(err) => {

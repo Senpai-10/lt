@@ -16,11 +16,23 @@ pub struct Task {
 pub fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_format: &String) {
     tasks.sort_by_key(|k| Reverse(k.priority));
 
+    let mut count = format!("[{}/{}]", dones,
+        tasks.len());
+
+    // color if category is in progress
+    if *dones > 0 && *dones != tasks.len() {
+        count  = count.bright_yellow().bold().to_string()
+    }
+
+    // color if all tasks in category are done
+    if *dones == tasks.len() {
+        count = count.bright_green().bold().to_string()
+    }
+
     println!(
-        "\n{} [{}/{}]",
-        format!("@{}", category).bright_cyan().bold().underline(),
-        dones,
-        tasks.len()
+        "\n{} {}",
+        format!(" {} ", category).on_bright_cyan().black().bold(),
+        count
     );
 
     for task in tasks {
@@ -139,7 +151,12 @@ pub fn update_is_done(conn: &Connection, id: &String, value: bool) {
                     update_priority(conn, id, 1);
                 }
 
-                println!("task {} is done", id)
+                println!(
+                    "{}",
+                    format!("task {} is {}", id, if value { "done" } else { "undone" })
+                        .bright_green()
+                        .bold()
+                )
             } else {
                 println!("no task with id '{}' is found!", id)
             }
@@ -204,7 +221,7 @@ pub fn move_task(conn: &Connection, category: &String, id: &String) {
     ) {
         Ok(rows_updated) => match rows_updated {
             0 => println!("no task with id '{}' is found!", id),
-            1 => println!("task {id} moved to {category}"),
+            1 => println!("{}", format!("task {id} moved to {category}").bright_yellow().bold()),
             _ => {}
         },
         Err(err) => {
