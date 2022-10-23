@@ -13,3 +13,6 @@ dotenv = "0.15"
 inquire = "0.4.0"
 nanoid = "0.4.0"
 chrono = "0.4.22"
+directories = "4.0.1"
+toml = "0.5.9"
+serde = { version = "1.0.147", features = ["derive"] }
