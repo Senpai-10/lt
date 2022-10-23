@@ -10,6 +10,11 @@ pub struct Args {
     #[clap(short, long)]
     pub file: Option<String>,
 
+    /// Print default configs
+    /// redirect output into config.toml
+    #[clap(short, long, action)]
+    pub print_default_config: bool,
+
     #[clap(subcommand)]
     pub commands: Option<Commands>,
 }
