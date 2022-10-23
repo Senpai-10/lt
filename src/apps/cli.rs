@@ -22,17 +22,17 @@ pub fn init(conn: &Connection, args: Args, config: Config) {
             task,
         }) => add_subcommand::run(conn, config, category, id_length, priority, task),
 
-        Some(Commands::Delete { ids }) => delete_subcommand::run(conn, ids),
-        Some(Commands::Edit { ids }) => edit_subcommand::run(conn, ids),
+        Some(Commands::Delete { ids, interactive }) => delete_subcommand::run(conn, config, ids.to_vec(), interactive.to_owned()),
+        Some(Commands::Edit { ids, interactive }) => edit_subcommand::run(conn, config, ids.to_vec(), interactive.to_owned()),
 
         Some(Commands::List {
             category,
             date_format,
         }) => list_subcommand::run(conn, config, category, date_format),
 
-        Some(Commands::Move { ids, category }) => move_subcommand::run(conn, category, ids),
-        Some(Commands::Done { ids }) => done_subcommand::run(conn, ids),
-        Some(Commands::Undone { ids }) => undone_subcommand::run(conn, ids),
+        Some(Commands::Move { ids, category, interactive }) => move_subcommand::run(conn, config, category, ids.to_owned(), interactive.to_owned()),
+        Some(Commands::Done { ids, interactive }) => done_subcommand::run(conn, config, ids.to_vec(), interactive.to_owned()),
+        Some(Commands::Undone { ids, interactive }) => undone_subcommand::run(conn, config, ids.to_vec(), interactive.to_owned()),
         Some(Commands::Clear { category }) => clear_subcommand::run(conn, category),
 
         None => {}

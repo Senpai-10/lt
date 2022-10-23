@@ -43,12 +43,18 @@ pub enum Commands {
     Delete {
         /// list of ids
         ids: Vec<String>,
+
+        #[clap(short, long, action)]
+        interactive: bool,
     },
 
     /// edit a task
     Edit {
         /// list of ids
         ids: Vec<String>,
+
+        #[clap(short, long, action)]
+        interactive: bool,
     },
 
     /// list all tasks or a category
@@ -69,18 +75,27 @@ pub enum Commands {
 
         /// list ids
         ids: Vec<String>,
+
+        #[clap(short, long, action)]
+        interactive: bool,
     },
 
     /// mark a task as done
     Done {
         /// list of ids
         ids: Vec<String>,
+
+        #[clap(short, long, action)]
+        interactive: bool,
     },
 
     /// mark a task as undone
     Undone {
         /// list of ids
         ids: Vec<String>,
+
+        #[clap(short, long, action)]
+        interactive: bool,
     },
 
     /// clear all tasks or from a category
