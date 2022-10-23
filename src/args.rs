@@ -28,8 +28,8 @@ pub enum Commands {
         category: String,
 
         /// genrated id length.
-        #[clap(short, long, default_value_t = 3)]
-        id_length: usize,
+        #[clap(short, long)]
+        id_length: Option<usize>,
 
         /// set task priority.
         #[clap(short, long, default_value_t = 1)]
@@ -57,8 +57,8 @@ pub enum Commands {
         category: Option<String>,
 
         /// Format for date. see docs.rs/chrono/latest/chrono/format/strftime/
-        #[clap(short, long, default_value = "%Y-%m-%d %I:%M:%S %P")]
-        date_format: String,
+        #[clap(short, long)]
+        date_format: Option<String>,
     },
 
     /// move a task from category to another category

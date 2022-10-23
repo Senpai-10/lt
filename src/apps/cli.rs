@@ -7,17 +7,20 @@ mod list_subcommand;
 mod move_subcommand;
 mod undone_subcommand;
 
-use crate::args::{Args, Commands};
+use crate::{
+    args::{Args, Commands},
+    config::Config,
+};
 use rusqlite::Connection;
 
-pub fn init(conn: &Connection, args: &Args) {
+pub fn init(conn: &Connection, args: Args, config: Config) {
     match &args.commands {
         Some(Commands::Add {
             category,
             id_length,
             priority,
             task,
-        }) => add_subcommand::run(conn, category, id_length, priority, task),
+        }) => add_subcommand::run(conn, config, category, id_length, priority, task),
 
         Some(Commands::Delete { ids }) => delete_subcommand::run(conn, ids),
         Some(Commands::Edit { ids }) => edit_subcommand::run(conn, ids),
@@ -25,7 +28,7 @@ pub fn init(conn: &Connection, args: &Args) {
         Some(Commands::List {
             category,
             date_format,
-        }) => list_subcommand::run(conn, category, date_format),
+        }) => list_subcommand::run(conn, config, category, date_format),
 
         Some(Commands::Move { ids, category }) => move_subcommand::run(conn, category, ids),
         Some(Commands::Done { ids }) => done_subcommand::run(conn, ids),

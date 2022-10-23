@@ -27,14 +27,14 @@ fn main() -> Result<()> {
 
     let db_file: String = match &args.file {
         Some(file) => file.to_string(),
-        None => config.default_database_file,
+        None => config.default_database_file.clone(),
     };
 
     let conn = Connection::open(db_file)?;
 
     db::setup(&conn)?;
 
-    apps::cli::init(&conn, &args);
+    apps::cli::init(&conn, args, config);
 
     Ok(())
 }

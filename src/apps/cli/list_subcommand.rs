@@ -1,3 +1,4 @@
+use crate::config::Config;
 use crate::db;
 use crate::helpers::calculate_percentage;
 use colored::Colorize;
@@ -5,8 +6,13 @@ use rusqlite::Connection;
 use std::collections::HashMap;
 use std::process::exit;
 
-pub fn run(conn: &Connection, category: &Option<String>, date_format: &String) {
+pub fn run(conn: &Connection, config: Config, category: &Option<String>, date_format: &Option<String>) {
     let tasks = db::tasks::query_all(&conn);
+
+    let format = match date_format {
+        Some(format) => format,
+        None => &config.date_format
+    };
 
     let mut categories: HashMap<String, Vec<db::tasks::Task>> = HashMap::new();
     let mut done_count: HashMap<String, usize> = HashMap::new();
@@ -42,13 +48,13 @@ pub fn run(conn: &Connection, category: &Option<String>, date_format: &String) {
 
             let dones = done_count.get(category).unwrap_or(&(0 as usize));
 
-            db::tasks::print_all(category, dones, tasks, date_format);
+            db::tasks::print_all(category, dones, tasks, format);
         }
         None => {
             for (key, tasks) in categories.iter_mut() {
                 let dones = done_count.get(key).unwrap_or(&(0 as usize));
 
-                db::tasks::print_all(key, dones, tasks, date_format);
+                db::tasks::print_all(key, dones, tasks, format);
             }
 
             println!();

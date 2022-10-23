@@ -1,10 +1,16 @@
+use crate::config::Config;
 use crate::db;
 use crate::helpers::generate_id;
 use colored::Colorize;
 use rusqlite::Connection;
 
-pub fn run(conn: &Connection, category: &String, id_length: &usize, priority: &i32, task: &String) {
-    let id = generate_id(*id_length);
+pub fn run(conn: &Connection, config: Config, category: &String, id_length: &Option<usize>, priority: &i32, task: &String) {
+    let length: usize = match id_length {
+        Some(len) => *len,
+        None => config.id_length
+    };
+
+    let id = generate_id(length);
 
     let new_task = db::tasks::Task {
         id,
