@@ -1,5 +1,9 @@
-use crate::helpers::{convert_unix_timestamp, get_unix_timestamp};
+use crate::{
+    config::Config,
+    helpers::{convert_unix_timestamp, get_unix_timestamp},
+};
 use colored::Colorize;
+use inquire::MultiSelect;
 use rusqlite::{params, Connection};
 use std::cmp::Reverse;
 
@@ -84,6 +88,66 @@ pub fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_f
             }
         );
     }
+}
+
+pub fn interactive_multi_select(config: Config, tasks: &Vec<Task>) -> Vec<String> {
+    let mut indices: Vec<String> = Vec::new();
+    let mut options: Vec<String> = Vec::new();
+
+    for task in tasks {
+        let styled_is_done: String = match task.is_done {
+            true => {
+                format!("{}", "DONE")
+            }
+            false => {
+                format!("{}", "PENDING")
+            }
+        };
+
+        let done_date: String = match task.done_date {
+            Some(unix_timestamp) => {
+                if !task.is_done {
+                    String::new()
+                } else {
+                    let date = convert_unix_timestamp(unix_timestamp, &config.date_format);
+
+                    format!("{}", date)
+                }
+            }
+            None => String::new(),
+        };
+
+        let msg = format!(
+            "{id} {category} {date} {status} {text}",
+            id = task.id,
+            category = task.category,
+            date = done_date,
+            status = styled_is_done,
+            text = task.text
+        );
+
+        let formated = format!("{}", msg);
+
+        indices.push(task.id.clone());
+        options.push(formated);
+    }
+
+    let selected_options = MultiSelect::new("Select tasks:", options.clone())
+        .with_vim_mode(true)
+        .prompt();
+    let mut selected: Vec<String> = Vec::new();
+
+    match selected_options {
+        Ok(items) => {
+            for item in items {
+                let selected_index = options.iter().position(|x| *x == item).unwrap();
+                selected.push(indices.get(selected_index).unwrap().clone());
+            }
+        }
+        Err(_) => println!("The tasks list could not be processed"),
+    }
+
+    selected
 }
 
 pub fn query_all(conn: &Connection) -> Vec<Task> {
