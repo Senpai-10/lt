@@ -114,12 +114,8 @@ impl TasksManager {
 
         for task in tasks {
             let styled_is_done: String = match task.is_done {
-                true => {
-                    format!("{}", "DONE")
-                }
-                false => {
-                    format!("{}", "PENDING")
-                }
+                true => format!("{}", "DONE").bright_green().to_string(),
+                false => format!("{}", "PENDING").bright_magenta().to_string(),
             };
 
             let done_date: String = match task.done_date {
@@ -129,19 +125,24 @@ impl TasksManager {
                     } else {
                         let date = convert_unix_timestamp(unix_timestamp, &self.config.date_format);
 
-                        format!("{}", date)
+                        format!("{} ", date)
                     }
                 }
                 None => String::new(),
             };
 
+            let styled_text: String = match task.is_done {
+                true => task.text.bright_black().strikethrough().to_string(),
+                false => task.text.to_string(),
+            };
+
             let msg = format!(
-                "{id} {category} {date} {status} {text}",
-                id = task.id.bright_magenta(),
-                category = task.category,
-                date = done_date,
+                "{id} {category} {status} {date}{text}",
+                id = task.id.bright_black(),
+                category = format!("@{}", task.category).bright_cyan(),
                 status = styled_is_done,
-                text = task.text
+                date = done_date.bright_green().underline(),
+                text = styled_text
             );
 
             let formated = format!("{}", msg);
