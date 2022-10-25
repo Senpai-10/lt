@@ -34,7 +34,7 @@ fn main() -> Result<()> {
 
     db::setup(&conn)?;
 
-    apps::cli::init(&conn, args, config);
+    apps::cli::init(conn, args, config);
 
     Ok(())
 }
