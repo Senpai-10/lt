@@ -17,6 +17,23 @@ pub struct Task {
     pub done_date: Option<u64>,
 }
 
+pub struct TasksManager {
+    pub conn: Connection,
+    pub config: Config
+}
+
+impl TasksManager {
+    pub fn new(conn: Connection, config: Config) -> Self {
+        Self {
+            conn,
+            config
+        }
+    }
+
+    pub fn print_all_tasks_to_console(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_format: &String) -> () {}
+
+}
+
 pub fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_format: &String) {
     tasks.sort_by_key(|k| Reverse(k.priority));
 

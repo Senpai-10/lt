@@ -14,6 +14,8 @@ use crate::{
 use rusqlite::Connection;
 
 pub fn init(conn: &Connection, args: Args, config: Config) {
+    // let tasks_manager = crate::db::tasks::TasksManager::new(conn, config);
+
     match &args.commands {
         Some(Commands::Add {
             category,
