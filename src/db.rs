@@ -11,7 +11,7 @@ pub fn setup(conn: &Connection) -> Result<usize, rusqlite::Error> {
                 id          VARCHAR     NOT NULL PRIMARY KEY        ,
                 category    VARCHAR     NOT NULL                    ,
                 text        TEXT        NOT NULL                    ,
-                is_done     BOOLEAN     NOT NULL DEFAULT('false')   ,
+                status      TEXT        NOT NULL                    ,
                 priority    INT         NOT NULL DEFAULT(1)         ,
                 done_date   INT         NULL     DEFAULT(NULL)
             )
