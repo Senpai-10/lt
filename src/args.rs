@@ -3,7 +3,7 @@
 
 use clap::{Parser, Subcommand};
 
-use crate::db::tasks::Filter;
+use crate::db::tasks::{Filter, Status};
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
@@ -101,22 +101,10 @@ pub enum Commands {
         filter: Filter,
     },
 
-    /// mark a task as done
-    Done {
-        /// list of ids
-        ids: Vec<String>,
+    Status {
+        #[clap(short, long, arg_enum)]
+        status: Status,
 
-        /// Interactive Menu to select from
-        #[clap(short, long, action)]
-        interactive: bool,
-
-        /// Filter for interactive mode
-        #[clap(short, long, arg_enum, default_value_t=Filter::All)]
-        filter: Filter,
-    },
-
-    /// mark a task as undone
-    Undone {
         /// list of ids
         ids: Vec<String>,
 

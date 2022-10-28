@@ -1,13 +1,13 @@
 use crate::args::{Args, Commands};
 use crate::config::Config;
-use crate::db::tasks::{Task, TasksManager};
+use crate::db::tasks::{Status, Task, TasksManager};
+use crate::helpers::calculate_percentage;
 use crate::helpers::generate_id;
 use colored::Colorize;
+use inquire;
 use rusqlite::Connection;
-use crate::helpers::calculate_percentage;
 use std::collections::HashMap;
 use std::process::exit;
-use inquire;
 
 pub fn init(conn: Connection, args: Args, config: Config) {
     let tasks_manager = TasksManager::new(conn, config);
@@ -30,7 +30,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
                 id,
                 category: category.into(),
                 text: task.into(),
-                is_done: false,
+                status: Status::Pending,
                 priority,
                 done_date: None,
             };
@@ -45,7 +45,11 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             }
         }
 
-        Some(Commands::Delete { ids, interactive, filter}) => {
+        Some(Commands::Delete {
+            ids,
+            interactive,
+            filter,
+        }) => {
             let mut ids = ids;
 
             if interactive {
@@ -69,7 +73,11 @@ pub fn init(conn: Connection, args: Args, config: Config) {
                 }
             }
         }
-        Some(Commands::Edit { ids, interactive, filter}) => {
+        Some(Commands::Edit {
+            ids,
+            interactive,
+            filter,
+        }) => {
             let ids = match interactive {
                 true => {
                     let tasks = tasks_manager.query_all(filter);
@@ -103,7 +111,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
         Some(Commands::List {
             category,
             date_format,
-            filter
+            filter,
         }) => {
             let tasks = tasks_manager.query_all(filter);
 
@@ -120,7 +128,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             for task in tasks {
                 let key = &task.category;
 
-                if task.is_done {
+                if task.status == Status::Done {
                     let count = done_count.entry(key.into()).or_insert(0);
                     *count += 1;
                     total_done += 1;
@@ -183,7 +191,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             ids,
             category,
             interactive,
-            filter
+            filter,
         }) => {
             let ids = match interactive {
                 true => {
@@ -199,7 +207,12 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             }
         }
 
-        Some(Commands::Done { ids, interactive, filter}) => {
+        Some(Commands::Status {
+            status,
+            ids,
+            interactive,
+            filter,
+        }) => {
             let ids = match interactive {
                 true => {
                     let tasks = tasks_manager.query_all(filter);
@@ -210,22 +223,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             };
 
             for id in ids {
-                tasks_manager.update_is_done(&id, true)
-            }
-        }
-
-        Some(Commands::Undone { ids, interactive, filter }) => {
-            let ids = match interactive {
-                true => {
-                    let tasks = tasks_manager.query_all(filter);
-
-                    tasks_manager.interactive_multi_select(&tasks)
-                }
-                false => ids,
-            };
-
-            for id in ids {
-                tasks_manager.update_is_done(&id, false)
+                tasks_manager.update_status(&id, status);
             }
         }
 
