@@ -3,7 +3,7 @@ use rusqlite::Connection;
 pub mod tasks;
 
 /// CREATE TABLE/S
-pub fn setup(conn: &Connection) -> Result<usize, rusqlite::Error> {
+pub fn setup(conn: &Connection) -> () {
     // find a way to ALTER table and add missing columns
     conn.execute(
         r#"
@@ -20,4 +20,5 @@ pub fn setup(conn: &Connection) -> Result<usize, rusqlite::Error> {
         "#,
         (),
     )
+    .unwrap();
 }

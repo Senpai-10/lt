@@ -33,7 +33,7 @@ fn main() -> Result<()> {
 
     let conn = Connection::open(db_file)?;
 
-    db::setup(&conn)?;
+    db::setup(&conn);
 
     apps::cli::init(conn, args, config);
 
