@@ -41,6 +41,8 @@ pub fn edit(task_id: &String, editor: String, initial_value: String) -> String {
         }
     }
 
+    // cleanup because why leave the file there?
+    // fs::write will overwrite the tmp file anyway :)
     if CLEANUP_TMP_FILE {
         fs::remove_file(file_path).expect("Failed to remove tmp file!");
     }
