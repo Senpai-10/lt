@@ -38,7 +38,7 @@ pub enum Commands {
         priority: i32,
 
         /// task text
-        task: String,
+        text: Option<String>,
     },
 
     /// delete a task
