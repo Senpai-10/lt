@@ -101,6 +101,7 @@ pub enum Commands {
         filter: Filter,
     },
 
+    /// Change task's status (done, active, pending)
     Status {
         #[clap(short, long, arg_enum)]
         status: Status,
