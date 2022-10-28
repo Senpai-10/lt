@@ -6,6 +6,8 @@ use colored::Colorize;
 use inquire::MultiSelect;
 use rusqlite::{params, Connection};
 use std::cmp::Reverse;
+use std::fmt;
+use clap::ValueEnum;
 
 #[derive(Debug)]
 pub struct Task {
@@ -15,6 +17,23 @@ pub struct Task {
     pub is_done: bool,
     pub priority: i32,
     pub done_date: Option<u64>,
+}
+
+#[derive(Copy, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+pub enum Filter {
+    All,
+    Done,
+    Pending
+}
+
+impl fmt::Display for Filter {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Filter::All => write!(f, "all"),
+            Filter::Done => write!(f, "done"),
+            Filter::Pending => write!(f, "pending"),
+        }
+    }
 }
 
 pub struct TasksManager {
@@ -169,8 +188,14 @@ impl TasksManager {
         selected
     }
 
-    pub fn query_all(&self) -> Vec<Task> {
-        let mut stmt = self.conn.prepare("SELECT * FROM tasks").unwrap();
+    pub fn query_all(&self, filter: Filter) -> Vec<Task> {
+        let sql = match filter {
+            Filter::All => "SELECT * FROM tasks",
+            Filter::Done => "SELECT * FROM tasks WHERE is_done = 1",
+            Filter::Pending => "SELECT * FROM tasks WHERE is_done = 0"
+        };
+
+        let mut stmt = self.conn.prepare(sql).unwrap();
 
         let rows = stmt
             .query_map([], |row| {

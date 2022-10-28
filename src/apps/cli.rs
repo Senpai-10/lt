@@ -45,11 +45,11 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             }
         }
 
-        Some(Commands::Delete { ids, interactive }) => {
+        Some(Commands::Delete { ids, interactive, filter}) => {
             let mut ids = ids;
 
             if interactive {
-                let tasks = tasks_manager.query_all();
+                let tasks = tasks_manager.query_all(filter);
 
                 ids = tasks_manager.interactive_multi_select(&tasks);
             }
@@ -69,10 +69,10 @@ pub fn init(conn: Connection, args: Args, config: Config) {
                 }
             }
         }
-        Some(Commands::Edit { ids, interactive }) => {
+        Some(Commands::Edit { ids, interactive, filter}) => {
             let ids = match interactive {
                 true => {
-                    let tasks = tasks_manager.query_all();
+                    let tasks = tasks_manager.query_all(filter);
 
                     tasks_manager.interactive_multi_select(&tasks)
                 }
@@ -103,8 +103,9 @@ pub fn init(conn: Connection, args: Args, config: Config) {
         Some(Commands::List {
             category,
             date_format,
+            filter
         }) => {
-            let tasks = tasks_manager.query_all();
+            let tasks = tasks_manager.query_all(filter);
 
             let format = match date_format {
                 Some(format) => format,
@@ -182,10 +183,11 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             ids,
             category,
             interactive,
+            filter
         }) => {
             let ids = match interactive {
                 true => {
-                    let tasks = tasks_manager.query_all();
+                    let tasks = tasks_manager.query_all(filter);
 
                     tasks_manager.interactive_multi_select(&tasks)
                 }
@@ -197,10 +199,10 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             }
         }
 
-        Some(Commands::Done { ids, interactive }) => {
+        Some(Commands::Done { ids, interactive, filter}) => {
             let ids = match interactive {
                 true => {
-                    let tasks = tasks_manager.query_all();
+                    let tasks = tasks_manager.query_all(filter);
 
                     tasks_manager.interactive_multi_select(&tasks)
                 }
@@ -212,10 +214,10 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             }
         }
 
-        Some(Commands::Undone { ids, interactive }) => {
+        Some(Commands::Undone { ids, interactive, filter }) => {
             let ids = match interactive {
                 true => {
-                    let tasks = tasks_manager.query_all();
+                    let tasks = tasks_manager.query_all(filter);
 
                     tasks_manager.interactive_multi_select(&tasks)
                 }

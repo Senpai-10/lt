@@ -3,6 +3,8 @@
 
 use clap::{Parser, Subcommand};
 
+use crate::db::tasks::Filter;
+
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
 pub struct Args {
@@ -44,8 +46,13 @@ pub enum Commands {
         /// list of ids
         ids: Vec<String>,
 
+        /// Interactive Menu to select from
         #[clap(short, long, action)]
         interactive: bool,
+
+        /// Filter for interactive mode
+        #[clap(short, long, arg_enum, default_value_t=Filter::All)]
+        filter: Filter,
     },
 
     /// edit a task
@@ -53,8 +60,13 @@ pub enum Commands {
         /// list of ids
         ids: Vec<String>,
 
+        /// Interactive Menu to select from
         #[clap(short, long, action)]
         interactive: bool,
+
+        /// Filter for interactive mode
+        #[clap(short, long, arg_enum, default_value_t=Filter::All)]
+        filter: Filter,
     },
 
     /// list all tasks or a category
@@ -65,6 +77,10 @@ pub enum Commands {
         /// Format for date. see docs.rs/chrono/latest/chrono/format/strftime/
         #[clap(short, long)]
         date_format: Option<String>,
+
+        /// Filter list
+        #[clap(short, long, arg_enum, default_value_t=Filter::All)]
+        filter: Filter,
     },
 
     /// move a task from category to another category
@@ -76,8 +92,13 @@ pub enum Commands {
         /// list ids
         ids: Vec<String>,
 
+        /// Interactive Menu to select from
         #[clap(short, long, action)]
         interactive: bool,
+
+        /// Filter for interactive mode
+        #[clap(short, long, arg_enum, default_value_t=Filter::All)]
+        filter: Filter,
     },
 
     /// mark a task as done
@@ -85,8 +106,13 @@ pub enum Commands {
         /// list of ids
         ids: Vec<String>,
 
+        /// Interactive Menu to select from
         #[clap(short, long, action)]
         interactive: bool,
+
+        /// Filter for interactive mode
+        #[clap(short, long, arg_enum, default_value_t=Filter::All)]
+        filter: Filter,
     },
 
     /// mark a task as undone
@@ -94,8 +120,13 @@ pub enum Commands {
         /// list of ids
         ids: Vec<String>,
 
+        /// Interactive Menu to select from
         #[clap(short, long, action)]
         interactive: bool,
+
+        /// Filter for interactive mode
+        #[clap(short, long, arg_enum, default_value_t=Filter::All)]
+        filter: Filter,
     },
 
     /// clear all tasks or from a category
