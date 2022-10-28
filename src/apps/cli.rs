@@ -1,9 +1,11 @@
 use crate::args::{Args, Commands};
 use crate::config::Config;
 use crate::db::tasks::{Status, Task, TasksManager};
+use crate::editor;
 use crate::helpers::generate_id;
 use crate::helpers::{calculate_percentage, get_unix_timestamp};
 use colored::Colorize;
+use std::env;
 use inquire;
 use rusqlite::Connection;
 use std::collections::HashMap;
@@ -91,11 +93,9 @@ pub fn init(conn: Connection, args: Args, config: Config) {
 
             for id in ids {
                 let task = tasks_manager.query_one(&id);
+                let editor = env::var("EDITOR").unwrap_or("vim".into());
 
-                let new_text = inquire::Text::new("update task:")
-                    .with_initial_value(&task.text)
-                    .prompt()
-                    .unwrap();
+                let new_text = editor::edit(&id, editor, task.text);
 
                 match tasks_manager.update_text(&id, new_text) {
                     Ok(rows_updated) => {
