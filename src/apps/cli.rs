@@ -5,10 +5,10 @@ use crate::editor;
 use crate::helpers::generate_id;
 use crate::helpers::{calculate_percentage, get_unix_timestamp};
 use colored::Colorize;
-use std::env;
 use inquire;
 use rusqlite::Connection;
 use std::collections::HashMap;
+use std::env;
 use std::process::exit;
 
 pub fn init(conn: Connection, args: Args, config: Config) {
@@ -94,6 +94,15 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             for id in ids {
                 let task = tasks_manager.query_one(&id);
                 let editor = env::var("EDITOR").unwrap_or("vim".into());
+
+                let confirm = inquire::Confirm::new(&format!("Are you sure you want to edit task `{}` with `{}`", id, editor))
+                    .with_default(true)
+                    .prompt()
+                    .unwrap();
+
+                if confirm == false {
+                    continue;
+                }
 
                 let new_text = editor::edit(&id, editor, task.text);
 
