@@ -6,6 +6,7 @@ mod args;
 mod config;
 mod db;
 mod helpers;
+mod editor;
 
 use args::Args;
 use clap::Parser;
