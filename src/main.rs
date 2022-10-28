@@ -7,12 +7,12 @@ mod config;
 mod db;
 mod helpers;
 
-use std::process::exit;
 use args::Args;
 use clap::Parser;
+use config::{get_config, Config, DEFAULT_CONFIG};
 use dotenv::dotenv;
 use rusqlite::{Connection, Result};
-use config::{get_config, Config, DEFAULT_CONFIG};
+use std::process::exit;
 
 fn main() -> Result<()> {
     dotenv().ok();
