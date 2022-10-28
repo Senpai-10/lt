@@ -6,11 +6,12 @@ use nanoid::nanoid;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 pub fn generate_id(length: usize) -> String {
-    let set: [char; 16] = [
-        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'a', 'b', 'c', 'd', 'e', 'f',
-    ];
+    let charset: Vec<char> = [
+        // '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'a', 'b', 'c', 'd', 'e', 'f',
+        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
+    ].to_vec();
 
-    let id = nanoid!(length, &set);
+    let id = nanoid!(length, &charset);
 
     return id;
 }
