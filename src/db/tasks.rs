@@ -36,6 +36,12 @@ impl fmt::Display for Filter {
     }
 }
 
+pub enum Status {
+    Done,
+    Active,
+    Pending
+}
+
 pub struct TasksManager {
     pub conn: Connection,
     pub config: Config,
