@@ -2,18 +2,18 @@ use crate::{
     config::Config,
     helpers::{convert_unix_timestamp, get_unix_timestamp},
 };
+use clap::ValueEnum;
 use colored::Colorize;
 use inquire::MultiSelect;
-use rusqlite::{params, Connection, types::FromSql};
+use rusqlite::{params, types::FromSql, Connection};
 use std::cmp::Reverse;
 use std::fmt;
-use clap::ValueEnum;
 
 #[derive(Copy, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum Status {
     Done,
     Active,
-    Pending
+    Pending,
 }
 
 impl fmt::Display for Status {
@@ -34,17 +34,21 @@ impl FromSql for Status {
 
                 if str_status == "done" {
                     Status::Done
-                }
-                else if str_status == "active" {
+                } else if str_status == "active" {
                     Status::Active
-                }
-                else {
+                } else {
                     Status::Pending
                 }
-            },
-                _ => Status::Pending
+            }
+            _ => Status::Pending,
         })
     }
+}
+
+pub enum UpdateDate {
+    // Creation,
+    Completion,
+    Modification,
 }
 
 #[derive(Debug)]
@@ -54,14 +58,17 @@ pub struct Task {
     pub text: String,
     pub status: Status,
     pub priority: i32,
-    pub done_date: Option<u64>,
+    pub creation_date: u64,
+    pub completion_date: Option<u64>,
+    pub modification_date: Option<u64>,
 }
 
 #[derive(Copy, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum Filter {
     All,
     Done,
-    Pending
+    Active,
+    Pending,
 }
 
 impl fmt::Display for Filter {
@@ -69,6 +76,7 @@ impl fmt::Display for Filter {
         match self {
             Filter::All => write!(f, "all"),
             Filter::Done => write!(f, "done"),
+            Filter::Active => write!(f, "active"),
             Filter::Pending => write!(f, "pending"),
         }
     }
@@ -116,28 +124,22 @@ impl TasksManager {
             let styled_is_done: String = match task.status {
                 Status::Done => {
                     format!("{}", task.status.to_string().bright_green())
-                },
+                }
                 Status::Pending => {
                     format!("{}", task.status.to_string().bright_magenta())
-                },
+                }
                 Status::Active => {
                     format!("{}", task.status.to_string().bright_blue())
-                },
+                }
             };
 
             let styled_text: String = match task.status {
-                Status::Done => {
-                    task.text.strikethrough().to_string()
-                },
-                Status::Pending => {
-                    task.text.to_string()
-                },
-                Status::Active => {
-                    task.text.to_string()
-                },
+                Status::Done => task.text.strikethrough().to_string(),
+                Status::Pending => task.text.to_string(),
+                Status::Active => task.text.to_string(),
             };
 
-            let done_date: String = match task.done_date {
+            let done_date: String = match task.completion_date {
                 Some(unix_timestamp) => {
                     if task.status != Status::Done {
                         String::new()
@@ -186,7 +188,7 @@ impl TasksManager {
                 Status::Active => format!("{}", "ACTIVE").bright_blue().to_string(),
             };
 
-            let done_date: String = match task.done_date {
+            let done_date: String = match task.completion_date {
                 Some(unix_timestamp) => {
                     if task.status == Status::Done {
                         let date = convert_unix_timestamp(unix_timestamp, &self.config.date_format);
@@ -200,15 +202,9 @@ impl TasksManager {
             };
 
             let styled_text: String = match task.status {
-                Status::Done => {
-                    task.text.strikethrough().to_string()
-                },
-                Status::Pending => {
-                    task.text.to_string()
-                },
-                Status::Active => {
-                    task.text.to_string()
-                },
+                Status::Done => task.text.strikethrough().to_string(),
+                Status::Pending => task.text.to_string(),
+                Status::Active => task.text.to_string(),
             };
 
             let msg = format!(
@@ -245,13 +241,27 @@ impl TasksManager {
     }
 
     pub fn query_all(&self, filter: Filter) -> Vec<Task> {
-        let sql = match filter {
-            Filter::All => "SELECT * FROM tasks",
-            Filter::Done => "SELECT * FROM tasks WHERE is_done = 1",
-            Filter::Pending => "SELECT * FROM tasks WHERE is_done = 0"
-        };
+        let mut sql: String = String::from(r#"
+            SELECT
+                id,
+                category,
+                text,
+                status,
+                priority,
+                creation_date,
+                completion_date,
+                modification_date
+            FROM tasks
+            "#);
 
-        let mut stmt = self.conn.prepare(sql).unwrap();
+        match filter {
+            Filter::Done => sql.push_str(" WHERE status = 'done'"),
+            Filter::Active => sql.push_str(" WHERE status = 'active'"),
+            Filter::Pending => sql.push_str(" WHERE status = 'pending'"),
+            _ => {}
+        }
+
+        let mut stmt = self.conn.prepare(&sql).unwrap();
 
         let rows = stmt
             .query_map([], |row| {
@@ -261,7 +271,9 @@ impl TasksManager {
                     text: row.get(2)?,
                     status: row.get(3)?,
                     priority: row.get(4)?,
-                    done_date: row.get(5).unwrap_or(None),
+                    creation_date: row.get(5)?,
+                    completion_date: row.get(5).unwrap_or(None),
+                    modification_date: row.get(5).unwrap_or(None),
                 })
             })
             .unwrap();
@@ -279,14 +291,16 @@ impl TasksManager {
 
     pub fn query_one(&self, task_id: &String) -> Task {
         self.conn
-            .query_row("SELECT * FROM tasks WHERE id = ?", [task_id], |row| {
+            .query_row("SELECT id, category, text, status, priority, creation_date, completion_date, modification_date FROM tasks WHERE id = ?", [task_id], |row| {
                 Ok(Task {
                     id: row.get(0)?,
                     category: row.get(1)?,
                     text: row.get(2)?,
                     status: row.get(3)?,
                     priority: row.get(4)?,
-                    done_date: row.get(5).unwrap_or(None),
+                    creation_date: row.get(5)?,
+                    completion_date: row.get(5).unwrap_or(None),
+                    modification_date: row.get(5).unwrap_or(None),
                 })
             })
             .unwrap()
@@ -294,6 +308,8 @@ impl TasksManager {
 
     /// Update task text
     pub fn update_text(&self, id: &String, text: String) -> Result<usize, rusqlite::Error> {
+        self.update_date(id, UpdateDate::Modification);
+
         self.conn.execute(
             "UPDATE tasks SET text = ?1 WHERE id = ?2",
             [text, id.into()],
@@ -301,6 +317,8 @@ impl TasksManager {
     }
 
     pub fn update_status(&self, id: &String, status: Status) {
+        self.update_date(id, UpdateDate::Modification);
+
         match self.conn.execute(
             "UPDATE tasks SET status = ?1 WHERE id = ?2",
             params![status.to_string(), id],
@@ -309,7 +327,7 @@ impl TasksManager {
                 if rows_updated != 0 {
                     if status == Status::Done {
                         // if done
-                        self.update_done_date(id);
+                        self.update_date(id, UpdateDate::Completion);
                         self.update_priority(id, 0);
                     } else {
                         // if undone
@@ -318,9 +336,17 @@ impl TasksManager {
 
                     println!(
                         "{}",
-                        format!("task {} is {}", id, if status == Status::Done { "done" } else { "undone" })
-                            .bright_green()
-                            .bold()
+                        format!(
+                            "task {} is {}",
+                            id,
+                            if status == Status::Done {
+                                "done"
+                            } else {
+                                "undone"
+                            }
+                        )
+                        .bright_green()
+                        .bold()
                     )
                 } else {
                     println!("no task with id '{}' is found!", id)
@@ -332,16 +358,19 @@ impl TasksManager {
         }
     }
 
-    pub fn update_done_date(&self, id: &String) {
+    pub fn update_date(&self, id: &String, date_type: UpdateDate) {
         let time_stamp = get_unix_timestamp();
 
-        match self.conn.execute(
-            "UPDATE tasks SET done_date = ?1 WHERE id = ?2",
-            params![time_stamp, id],
-        ) {
+        let sql = match date_type {
+            // UpdateDate::Creation => "UPDATE tasks SET creation_date = ?1 WHERE id = ?2",
+            UpdateDate::Completion => "UPDATE tasks SET completion_date = ?1 WHERE id = ?2",
+            UpdateDate::Modification => "UPDATE tasks SET modification_date = ?1 WHERE id = ?2",
+        };
+
+        match self.conn.execute(sql, params![time_stamp, id]) {
             Ok(rows_updated) => {
                 if rows_updated == 0 {
-                    println!("failed to update done_date {time_stamp}");
+                    println!("failed to update date {time_stamp}");
                 }
             }
             Err(err) => {
@@ -351,6 +380,8 @@ impl TasksManager {
     }
 
     pub fn update_priority(&self, id: &String, n: i32) {
+        self.update_date(id, UpdateDate::Modification);
+
         match self.conn.execute(
             "UPDATE tasks SET priority = ?1 WHERE id = ?2",
             params![n, id],
@@ -368,18 +399,21 @@ impl TasksManager {
 
     pub fn add_task(&self, new_task: Task) -> Result<usize, rusqlite::Error> {
         self.conn.execute(
-            "INSERT INTO tasks (id, category, text, status, priority) VALUES (?1, ?2, ?3, ?4, ?5)",
+            "INSERT INTO tasks (id, category, text, status, priority, creation_date) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
             (
                 &new_task.id,
                 &new_task.category,
                 &new_task.text,
                 &new_task.status.to_string(),
                 &new_task.priority,
+                &new_task.creation_date
             ),
         )
     }
 
     pub fn move_task(&self, category: &String, id: &String) {
+        self.update_date(id, UpdateDate::Modification);
+
         match self.conn.execute(
             "UPDATE tasks SET category = ?1 WHERE id = ?2",
             params![category, id],
