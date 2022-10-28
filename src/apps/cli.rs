@@ -19,7 +19,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             category,
             id_length,
             priority,
-            task,
+            text,
         }) => {
             let length: usize = match id_length {
                 Some(len) => len,
@@ -28,10 +28,30 @@ pub fn init(conn: Connection, args: Args, config: Config) {
 
             let id = generate_id(length);
 
+            let text: String = match text {
+                Some(v) => v.into(),
+                None => {
+                    let editor = env::var("EDITOR").unwrap_or("vim".into());
+
+                    let confirm = inquire::Confirm::new(&format!(
+                        "No Text provided, Do you want to enter task({}) text with your editor `{}`",
+                        id, editor
+                    )).with_default(true)
+                        .prompt()
+                        .unwrap();
+
+                    if confirm == false {
+                        return
+                    }
+
+                    editor::edit(&id, editor, "".into())
+                }
+            };
+
             let new_task = Task {
                 id,
                 category: category.into(),
-                text: task.into(),
+                text: text.into(),
                 status: Status::Pending,
                 priority,
                 creation_date: get_unix_timestamp(),
@@ -95,10 +115,13 @@ pub fn init(conn: Connection, args: Args, config: Config) {
                 let task = tasks_manager.query_one(&id);
                 let editor = env::var("EDITOR").unwrap_or("vim".into());
 
-                let confirm = inquire::Confirm::new(&format!("Are you sure you want to edit task `{}` with `{}`", id, editor))
-                    .with_default(true)
-                    .prompt()
-                    .unwrap();
+                let confirm = inquire::Confirm::new(&format!(
+                    "Are you sure you want to edit task `{}` with `{}`",
+                    id, editor
+                ))
+                .with_default(true)
+                .prompt()
+                .unwrap();
 
                 if confirm == false {
                     continue;
