@@ -8,12 +8,14 @@ pub fn setup(conn: &Connection) -> Result<usize, rusqlite::Error> {
     conn.execute(
         r#"
             CREATE TABLE IF NOT EXISTS tasks (
-                id          VARCHAR     NOT NULL PRIMARY KEY        ,
-                category    VARCHAR     NOT NULL                    ,
-                text        TEXT        NOT NULL                    ,
-                status      TEXT        NOT NULL                    ,
-                priority    INT         NOT NULL DEFAULT(1)         ,
-                done_date   INT         NULL     DEFAULT(NULL)
+                id                  VARCHAR     NOT NULL PRIMARY KEY        ,
+                category            VARCHAR     NOT NULL                    ,
+                text                TEXT        NOT NULL                    ,
+                status              TEXT        NOT NULL                    ,
+                priority            INT         NOT NULL DEFAULT(1)         ,
+                creation_date       INT         NOT NULL                    ,
+                completion_date     INT         NULL     DEFAULT(NULL)      ,
+                modification_date   INT         NULL     DEFAULT(NULL)
             )
         "#,
         (),
