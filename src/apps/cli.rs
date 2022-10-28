@@ -1,8 +1,8 @@
 use crate::args::{Args, Commands};
 use crate::config::Config;
 use crate::db::tasks::{Status, Task, TasksManager};
-use crate::helpers::calculate_percentage;
 use crate::helpers::generate_id;
+use crate::helpers::{calculate_percentage, get_unix_timestamp};
 use colored::Colorize;
 use inquire;
 use rusqlite::Connection;
@@ -32,7 +32,9 @@ pub fn init(conn: Connection, args: Args, config: Config) {
                 text: task.into(),
                 status: Status::Pending,
                 priority,
-                done_date: None,
+                creation_date: get_unix_timestamp(),
+                completion_date: None,
+                modification_date: None,
             };
 
             match tasks_manager.add_task(new_task) {
