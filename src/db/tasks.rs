@@ -60,7 +60,7 @@ pub struct Task {
     pub priority: i32,
     pub creation_date: u64,
     pub completion_date: Option<u64>,
-    pub modification_date: Option<u64>,
+    pub modification_date: u64,
 }
 
 #[derive(Copy, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -133,10 +133,12 @@ impl TasksManager {
                 }
             };
 
+            let text = task.text.replace("\n", "\n\t");
+
             let styled_text: String = match task.status {
-                Status::Done => task.text.strikethrough().to_string(),
-                Status::Pending => task.text.to_string(),
-                Status::Active => task.text.to_string(),
+                Status::Done => text.bright_black().strikethrough().to_string(),
+                Status::Pending => text.to_string(),
+                Status::Active => text.to_string(),
             };
 
             let done_date: String = match task.completion_date {
@@ -152,25 +154,29 @@ impl TasksManager {
                 None => String::new(),
             };
 
+            // @category
+            // <TASK_ID> <STATUS> <PRIORITY> / <CREATION_DATE: DATE> <COMPLATION_DATE: DATE> <LASTMODIFCTION_DATE: DATE>
+            // testtext text this is a task! test test test
+            //      test test test test test test test test test
+            //      test test test test
             let msg = format!(
-                "{id} {date} {status} {text}",
+                "{id} {status} {priority} (creation date: {creation_date}, complation date: {complation_date}, last modifction: {lastmodifction_date})\n\t{text}",
                 id = task.id.bright_black(),
-                date = done_date,
                 status = styled_is_done,
+                priority = task.priority,
+                creation_date = task.creation_date,
+                complation_date = done_date,
+                lastmodifction_date = task.modification_date,
                 text = styled_text
             );
 
             println!(
                 "  {}",
-                if task.status == Status::Done {
-                    msg.bright_black().to_string()
-                } else {
-                    match task.priority {
-                        2 => msg.bright_yellow().to_string(),
-                        i if i >= 3 => msg.bright_red().to_string(),
+                match task.priority {
+                    2 => msg.bright_yellow().to_string(),
+                    i if i >= 3 => msg.bright_red().to_string(),
 
-                        _ => msg,
-                    }
+                    _ => msg,
                 }
             );
         }
@@ -241,7 +247,8 @@ impl TasksManager {
     }
 
     pub fn query_all(&self, filter: Filter) -> Vec<Task> {
-        let mut sql: String = String::from(r#"
+        let mut sql: String = String::from(
+            r#"
             SELECT
                 id,
                 category,
@@ -252,7 +259,8 @@ impl TasksManager {
                 completion_date,
                 modification_date
             FROM tasks
-            "#);
+            "#,
+        );
 
         match filter {
             Filter::Done => sql.push_str(" WHERE status = 'done'"),
@@ -273,7 +281,7 @@ impl TasksManager {
                     priority: row.get(4)?,
                     creation_date: row.get(5)?,
                     completion_date: row.get(5).unwrap_or(None),
-                    modification_date: row.get(5).unwrap_or(None),
+                    modification_date: row.get(5)?,
                 })
             })
             .unwrap();
@@ -300,7 +308,7 @@ impl TasksManager {
                     priority: row.get(4)?,
                     creation_date: row.get(5)?,
                     completion_date: row.get(5).unwrap_or(None),
-                    modification_date: row.get(5).unwrap_or(None),
+                    modification_date: row.get(5)?,
                 })
             })
             .unwrap()
@@ -399,14 +407,15 @@ impl TasksManager {
 
     pub fn add_task(&self, new_task: Task) -> Result<usize, rusqlite::Error> {
         self.conn.execute(
-            "INSERT INTO tasks (id, category, text, status, priority, creation_date) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+            "INSERT INTO tasks (id, category, text, status, priority, creation_date, modification_date) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
             (
                 &new_task.id,
                 &new_task.category,
                 &new_task.text,
                 &new_task.status.to_string(),
                 &new_task.priority,
-                &new_task.creation_date
+                &new_task.creation_date,
+                &new_task.modification_date
             ),
         )
     }
