@@ -56,7 +56,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
                 priority,
                 creation_date: get_unix_timestamp(),
                 completion_date: None,
-                modification_date: None,
+                modification_date: get_unix_timestamp(),
             };
 
             match tasks_manager.add_task(new_task) {
