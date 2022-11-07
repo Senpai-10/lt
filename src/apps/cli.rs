@@ -356,7 +356,7 @@ fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_forma
         };
 
         let msg = format!(
-                "{id} {status} {priority} (creation date: {creation_date}, complation date: {complation_date}, last modifction: {lastmodifction_date})\n\t{text}",
+                "{id} {status} {priority} (creation: {creation_date}, complation: {complation_date}, last modifction: {lastmodifction_date})\n\t{text}",
                 id = task.id.bright_black(),
                 status = styled_is_done,
                 priority = task.priority,
