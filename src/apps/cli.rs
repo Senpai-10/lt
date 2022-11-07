@@ -239,7 +239,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             };
 
             for id in ids {
-                tasks_manager.move_task(&category, &id);
+                tasks_manager.update_category(&category, &id);
             }
         }
 

@@ -261,7 +261,7 @@ impl TasksManager {
         )
     }
 
-    pub fn move_task(&self, category: &String, id: &String) {
+    pub fn update_category(&self, category: &String, id: &String) {
         self.update_date(id, UpdateDate::Modification);
 
         match self.conn.execute(
