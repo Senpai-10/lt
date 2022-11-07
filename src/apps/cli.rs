@@ -326,14 +326,26 @@ fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_forma
 
         let styled_text: String = match task.status {
             Status::Done => text.bright_black().strikethrough().to_string(),
-            Status::Pending => text.to_string(),
-            Status::Active => text.to_string(),
+            Status::Pending => text.bright_black().to_string(),
+            Status::Active => text.bright_black().to_string(),
         };
 
-        let done_date: String = match task.completion_date {
+        let creation_date: String = {
+            let date = convert_unix_timestamp(task.creation_date, date_format);
+
+            format!("{}", date.bright_green().underline())
+        };
+
+        let modification_date: String = {
+            let date = convert_unix_timestamp(task.modification_date, date_format);
+
+            format!("{}", date.bright_green().underline())
+        };
+
+        let complation_date: String = match task.completion_date {
             Some(unix_timestamp) => {
                 if task.status != Status::Done {
-                    String::new()
+                    String::from("NOT DONE")
                 } else {
                     let date = convert_unix_timestamp(unix_timestamp, date_format);
 
@@ -343,21 +355,16 @@ fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_forma
             None => String::new(),
         };
 
-        // @category
-        // <TASK_ID> <STATUS> <PRIORITY> / <CREATION_DATE: DATE> <COMPLATION_DATE: DATE> <LASTMODIFCTION_DATE: DATE>
-        // testtext text this is a task! test test test
-        //      test test test test test test test test test
-        //      test test test test
         let msg = format!(
                 "{id} {status} {priority} (creation date: {creation_date}, complation date: {complation_date}, last modifction: {lastmodifction_date})\n\t{text}",
                 id = task.id.bright_black(),
                 status = styled_is_done,
                 priority = task.priority,
-                creation_date = task.creation_date,
-                complation_date = done_date,
-                lastmodifction_date = task.modification_date,
+                creation_date = creation_date,
+                complation_date = complation_date,
+                lastmodifction_date = modification_date,
                 text = styled_text
-            );
+        );
 
         println!(
             "  {}",
@@ -377,7 +384,7 @@ fn interactive_multi_select(tasks: &Vec<Task>, date_format: &String) -> Vec<Stri
     let mut options: Vec<String> = Vec::new();
 
     for task in tasks {
-        let styled_is_done: String = match task.status {
+        let styled_status: String = match task.status {
             Status::Done => format!("{}", "DONE").bright_green().to_string(),
             Status::Pending => format!("{}", "PENDING").bright_magenta().to_string(),
             Status::Active => format!("{}", "ACTIVE").bright_blue().to_string(),
@@ -406,7 +413,7 @@ fn interactive_multi_select(tasks: &Vec<Task>, date_format: &String) -> Vec<Stri
             "{id} {category} {status} {date}{text}",
             id = task.id.bright_black(),
             category = format!("@{}", task.category).bright_cyan(),
-            status = styled_is_done,
+            status = styled_status,
             date = done_date.bright_green().underline(),
             text = styled_text
         );
