@@ -3,10 +3,12 @@ use crate::config::Config;
 use crate::db::tasks::{Status, Task, TasksManager};
 use crate::editor;
 use crate::helpers::generate_id;
-use crate::helpers::{calculate_percentage, get_unix_timestamp};
+use crate::helpers::{calculate_percentage, convert_unix_timestamp, get_unix_timestamp};
 use colored::Colorize;
 use inquire;
+use inquire::MultiSelect;
 use rusqlite::Connection;
+use std::cmp::Reverse;
 use std::collections::HashMap;
 use std::env;
 use std::process::exit;
@@ -41,7 +43,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
                         .unwrap();
 
                     if confirm == false {
-                        return
+                        return;
                     }
 
                     editor::edit(&id, editor, "".into())
@@ -79,7 +81,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             if interactive {
                 let tasks = tasks_manager.query_all(filter);
 
-                ids = tasks_manager.interactive_multi_select(&tasks);
+                ids = interactive_multi_select(&tasks, &tasks_manager.config.date_format);
             }
 
             for id in ids {
@@ -106,7 +108,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
                 true => {
                     let tasks = tasks_manager.query_all(filter);
 
-                    tasks_manager.interactive_multi_select(&tasks)
+                    interactive_multi_select(&tasks, &tasks_manager.config.date_format)
                 }
                 false => ids,
             };
@@ -188,13 +190,13 @@ pub fn init(conn: Connection, args: Args, config: Config) {
 
                     let dones = done_count.get(&category).unwrap_or(&(0 as usize));
 
-                    tasks_manager.print_all(&category, dones, tasks, &format);
+                    print_all(&category, dones, tasks, &format);
                 }
                 None => {
                     for (key, tasks) in categories.iter_mut() {
                         let dones = done_count.get(key).unwrap_or(&(0 as usize));
 
-                        tasks_manager.print_all(key, dones, tasks, &format);
+                        print_all(key, dones, tasks, &format);
                     }
 
                     println!();
@@ -231,7 +233,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
                 true => {
                     let tasks = tasks_manager.query_all(filter);
 
-                    tasks_manager.interactive_multi_select(&tasks)
+                    interactive_multi_select(&tasks, &tasks_manager.config.date_format)
                 }
                 false => ids,
             };
@@ -251,7 +253,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
                 true => {
                     let tasks = tasks_manager.query_all(filter);
 
-                    tasks_manager.interactive_multi_select(&tasks)
+                    interactive_multi_select(&tasks, &tasks_manager.config.date_format)
                 }
                 false => ids,
             };
@@ -283,4 +285,152 @@ pub fn init(conn: Connection, args: Args, config: Config) {
 
         None => {}
     }
+}
+
+/// Print all tasks from a list with styles
+fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_format: &String) -> () {
+    tasks.sort_by_key(|k| Reverse(k.priority));
+
+    let mut count = format!("[{}/{}]", dones, tasks.len());
+
+    // color if category is in progress
+    if *dones > 0 && *dones != tasks.len() {
+        count = count.bright_yellow().bold().to_string()
+    }
+
+    // color if all tasks in category are done
+    if *dones == tasks.len() {
+        count = count.bright_green().bold().to_string()
+    }
+
+    println!(
+        "\n{} {}",
+        format!(" {} ", category).on_bright_cyan().black().bold(),
+        count
+    );
+
+    for task in tasks {
+        let styled_is_done: String = match task.status {
+            Status::Done => {
+                format!("{}", task.status.to_string().bright_green())
+            }
+            Status::Pending => {
+                format!("{}", task.status.to_string().bright_magenta())
+            }
+            Status::Active => {
+                format!("{}", task.status.to_string().bright_blue())
+            }
+        };
+
+        let text = task.text.replace("\n", "\n\t");
+
+        let styled_text: String = match task.status {
+            Status::Done => text.bright_black().strikethrough().to_string(),
+            Status::Pending => text.to_string(),
+            Status::Active => text.to_string(),
+        };
+
+        let done_date: String = match task.completion_date {
+            Some(unix_timestamp) => {
+                if task.status != Status::Done {
+                    String::new()
+                } else {
+                    let date = convert_unix_timestamp(unix_timestamp, date_format);
+
+                    format!("{}", date.bright_green().underline())
+                }
+            }
+            None => String::new(),
+        };
+
+        // @category
+        // <TASK_ID> <STATUS> <PRIORITY> / <CREATION_DATE: DATE> <COMPLATION_DATE: DATE> <LASTMODIFCTION_DATE: DATE>
+        // testtext text this is a task! test test test
+        //      test test test test test test test test test
+        //      test test test test
+        let msg = format!(
+                "{id} {status} {priority} (creation date: {creation_date}, complation date: {complation_date}, last modifction: {lastmodifction_date})\n\t{text}",
+                id = task.id.bright_black(),
+                status = styled_is_done,
+                priority = task.priority,
+                creation_date = task.creation_date,
+                complation_date = done_date,
+                lastmodifction_date = task.modification_date,
+                text = styled_text
+            );
+
+        println!(
+            "  {}",
+            match task.priority {
+                2 => msg.bright_yellow().to_string(),
+                i if i >= 3 => msg.bright_red().to_string(),
+
+                _ => msg,
+            }
+        );
+    }
+}
+
+/// MultiSelect From a Vec
+fn interactive_multi_select(tasks: &Vec<Task>, date_format: &String) -> Vec<String> {
+    let mut indices: Vec<String> = Vec::new();
+    let mut options: Vec<String> = Vec::new();
+
+    for task in tasks {
+        let styled_is_done: String = match task.status {
+            Status::Done => format!("{}", "DONE").bright_green().to_string(),
+            Status::Pending => format!("{}", "PENDING").bright_magenta().to_string(),
+            Status::Active => format!("{}", "ACTIVE").bright_blue().to_string(),
+        };
+
+        let done_date: String = match task.completion_date {
+            Some(unix_timestamp) => {
+                if task.status == Status::Done {
+                    let date = convert_unix_timestamp(unix_timestamp, date_format);
+
+                    format!("{} ", date)
+                } else {
+                    String::new()
+                }
+            }
+            None => String::new(),
+        };
+
+        let styled_text: String = match task.status {
+            Status::Done => task.text.strikethrough().to_string(),
+            Status::Pending => task.text.to_string(),
+            Status::Active => task.text.to_string(),
+        };
+
+        let msg = format!(
+            "{id} {category} {status} {date}{text}",
+            id = task.id.bright_black(),
+            category = format!("@{}", task.category).bright_cyan(),
+            status = styled_is_done,
+            date = done_date.bright_green().underline(),
+            text = styled_text
+        );
+
+        let formated = format!("{}", msg);
+
+        indices.push(task.id.clone());
+        options.push(formated);
+    }
+
+    let selected_options = MultiSelect::new("Select tasks:", options.clone())
+        .with_vim_mode(true)
+        .prompt();
+    let mut selected: Vec<String> = Vec::new();
+
+    match selected_options {
+        Ok(items) => {
+            for item in items {
+                let selected_index = options.iter().position(|x| *x == item).unwrap();
+                selected.push(indices.get(selected_index).unwrap().clone());
+            }
+        }
+        Err(_) => println!("The tasks list could not be processed"),
+    }
+
+    selected
 }
