@@ -1,12 +1,7 @@
-use crate::{
-    config::Config,
-    helpers::{convert_unix_timestamp, get_unix_timestamp},
-};
+use crate::{config::Config, helpers::get_unix_timestamp};
 use clap::ValueEnum;
 use colored::Colorize;
-use inquire::MultiSelect;
 use rusqlite::{params, types::FromSql, Connection};
-use std::cmp::Reverse;
 use std::fmt;
 
 #[derive(Copy, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -60,7 +55,7 @@ pub struct Task {
     pub priority: i32,
     pub creation_date: u64,
     pub completion_date: Option<u64>,
-    pub modification_date: Option<u64>,
+    pub modification_date: u64,
 }
 
 #[derive(Copy, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
@@ -92,156 +87,9 @@ impl TasksManager {
         Self { conn, config }
     }
 
-    /// Print all tasks from a list with styles
-    pub fn print_all(
-        &self,
-        category: &String,
-        dones: &usize,
-        tasks: &mut Vec<Task>,
-        date_format: &String,
-    ) -> () {
-        tasks.sort_by_key(|k| Reverse(k.priority));
-
-        let mut count = format!("[{}/{}]", dones, tasks.len());
-
-        // color if category is in progress
-        if *dones > 0 && *dones != tasks.len() {
-            count = count.bright_yellow().bold().to_string()
-        }
-
-        // color if all tasks in category are done
-        if *dones == tasks.len() {
-            count = count.bright_green().bold().to_string()
-        }
-
-        println!(
-            "\n{} {}",
-            format!(" {} ", category).on_bright_cyan().black().bold(),
-            count
-        );
-
-        for task in tasks {
-            let styled_is_done: String = match task.status {
-                Status::Done => {
-                    format!("{}", task.status.to_string().bright_green())
-                }
-                Status::Pending => {
-                    format!("{}", task.status.to_string().bright_magenta())
-                }
-                Status::Active => {
-                    format!("{}", task.status.to_string().bright_blue())
-                }
-            };
-
-            let styled_text: String = match task.status {
-                Status::Done => task.text.strikethrough().to_string(),
-                Status::Pending => task.text.to_string(),
-                Status::Active => task.text.to_string(),
-            };
-
-            let done_date: String = match task.completion_date {
-                Some(unix_timestamp) => {
-                    if task.status != Status::Done {
-                        String::new()
-                    } else {
-                        let date = convert_unix_timestamp(unix_timestamp, date_format);
-
-                        format!("{}", date.bright_green().underline())
-                    }
-                }
-                None => String::new(),
-            };
-
-            let msg = format!(
-                "{id} {date} {status} {text}",
-                id = task.id.bright_black(),
-                date = done_date,
-                status = styled_is_done,
-                text = styled_text
-            );
-
-            println!(
-                "  {}",
-                if task.status == Status::Done {
-                    msg.bright_black().to_string()
-                } else {
-                    match task.priority {
-                        2 => msg.bright_yellow().to_string(),
-                        i if i >= 3 => msg.bright_red().to_string(),
-
-                        _ => msg,
-                    }
-                }
-            );
-        }
-    }
-
-    /// MultiSelect From a Vec
-    pub fn interactive_multi_select(&self, tasks: &Vec<Task>) -> Vec<String> {
-        let mut indices: Vec<String> = Vec::new();
-        let mut options: Vec<String> = Vec::new();
-
-        for task in tasks {
-            let styled_is_done: String = match task.status {
-                Status::Done => format!("{}", "DONE").bright_green().to_string(),
-                Status::Pending => format!("{}", "PENDING").bright_magenta().to_string(),
-                Status::Active => format!("{}", "ACTIVE").bright_blue().to_string(),
-            };
-
-            let done_date: String = match task.completion_date {
-                Some(unix_timestamp) => {
-                    if task.status == Status::Done {
-                        let date = convert_unix_timestamp(unix_timestamp, &self.config.date_format);
-
-                        format!("{} ", date)
-                    } else {
-                        String::new()
-                    }
-                }
-                None => String::new(),
-            };
-
-            let styled_text: String = match task.status {
-                Status::Done => task.text.strikethrough().to_string(),
-                Status::Pending => task.text.to_string(),
-                Status::Active => task.text.to_string(),
-            };
-
-            let msg = format!(
-                "{id} {category} {status} {date}{text}",
-                id = task.id.bright_black(),
-                category = format!("@{}", task.category).bright_cyan(),
-                status = styled_is_done,
-                date = done_date.bright_green().underline(),
-                text = styled_text
-            );
-
-            let formated = format!("{}", msg);
-
-            indices.push(task.id.clone());
-            options.push(formated);
-        }
-
-        let selected_options = MultiSelect::new("Select tasks:", options.clone())
-            .with_vim_mode(true)
-            .prompt();
-        let mut selected: Vec<String> = Vec::new();
-
-        match selected_options {
-            Ok(items) => {
-                for item in items {
-                    let selected_index = options.iter().position(|x| *x == item).unwrap();
-                    selected.push(indices.get(selected_index).unwrap().clone());
-                }
-            }
-            Err(_) => println!("The tasks list could not be processed"),
-        }
-
-        selected
-    }
-
     pub fn query_all(&self, filter: Filter) -> Vec<Task> {
-        let mut sql: String = String::from(r#"
+        let mut sql: String = String::from(
+            r#"
             SELECT
                 id,
                 category,
@@ -252,7 +100,8 @@ impl TasksManager {
                 completion_date,
                 modification_date
             FROM tasks
-            "#);
+            "#,
+        );
 
         match filter {
             Filter::Done => sql.push_str(" WHERE status = 'done'"),
@@ -273,7 +122,7 @@ impl TasksManager {
                     priority: row.get(4)?,
                     creation_date: row.get(5)?,
                     completion_date: row.get(5).unwrap_or(None),
-                    modification_date: row.get(5).unwrap_or(None),
+                    modification_date: row.get(5)?,
                 })
             })
             .unwrap();
@@ -300,7 +149,7 @@ impl TasksManager {
                     priority: row.get(4)?,
                     creation_date: row.get(5)?,
                     completion_date: row.get(5).unwrap_or(None),
-                    modification_date: row.get(5).unwrap_or(None),
+                    modification_date: row.get(5)?,
                 })
             })
             .unwrap()
@@ -399,14 +248,15 @@ impl TasksManager {
 
     pub fn add_task(&self, new_task: Task) -> Result<usize, rusqlite::Error> {
         self.conn.execute(
-            "INSERT INTO tasks (id, category, text, status, priority, creation_date) VALUES (?1, ?2, ?3, ?4, ?5, ?6)",
+            "INSERT INTO tasks (id, category, text, status, priority, creation_date, modification_date) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
             (
                 &new_task.id,
                 &new_task.category,
                 &new_task.text,
                 &new_task.status.to_string(),
                 &new_task.priority,
-                &new_task.creation_date
+                &new_task.creation_date,
+                &new_task.modification_date
             ),
         )
     }
