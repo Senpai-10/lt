@@ -1,9 +1,0 @@
-change tasks print all to
-
-@category
-  <TASK_ID> <STATUS> <PRIORITY> / <CREATION_DATE: DATE> <COMPLATION_DATE: DATE> <LASTMODIFCTION_DATE: DATE>
-        <TASK_TEXT> test test test test test test
-        test test test test test test test test test
-        test test test test
-
-replace all \n with \n\t\t to align all TASK_TEXT together
