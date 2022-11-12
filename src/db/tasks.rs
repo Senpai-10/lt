@@ -41,7 +41,6 @@ impl FromSql for Status {
 }
 
 pub enum UpdateDate {
-    // Creation,
     Completion,
     Modification,
 }
