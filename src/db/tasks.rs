@@ -49,6 +49,7 @@ pub enum UpdateDate {
 pub struct Task {
     pub id: String,
     pub category: String,
+    pub title: String,
     pub text: String,
     pub status: Status,
     pub priority: i32,
@@ -92,6 +93,7 @@ impl TasksManager {
             SELECT
                 id,
                 category,
+                title,
                 text,
                 status,
                 priority,
@@ -116,12 +118,13 @@ impl TasksManager {
                 Ok(Task {
                     id: row.get(0)?,
                     category: row.get(1)?,
-                    text: row.get(2)?,
-                    status: row.get(3)?,
-                    priority: row.get(4)?,
-                    creation_date: row.get(5)?,
-                    completion_date: row.get(5).unwrap_or(None),
-                    modification_date: row.get(5)?,
+                    title: row.get(2)?,
+                    text: row.get(3)?,
+                    status: row.get(4)?,
+                    priority: row.get(5)?,
+                    creation_date: row.get(6)?,
+                    completion_date: row.get(7).unwrap_or(None),
+                    modification_date: row.get(8)?,
                 })
             })
             .unwrap();
@@ -139,18 +142,35 @@ impl TasksManager {
 
     pub fn query_one(&self, task_id: &String) -> Task {
         self.conn
-            .query_row("SELECT id, category, text, status, priority, creation_date, completion_date, modification_date FROM tasks WHERE id = ?", [task_id], |row| {
-                Ok(Task {
-                    id: row.get(0)?,
-                    category: row.get(1)?,
-                    text: row.get(2)?,
-                    status: row.get(3)?,
-                    priority: row.get(4)?,
-                    creation_date: row.get(5)?,
-                    completion_date: row.get(5).unwrap_or(None),
-                    modification_date: row.get(5)?,
-                })
-            })
+            .query_row(
+                r#"
+                SELECT
+                    id,
+                    category,
+                    title,
+                    text,
+                    status,
+                    priority,
+                    creation_date,
+                    completion_date,
+                    modification_date
+                FROM tasks WHERE id = ?
+                "#,
+                [task_id],
+                |row| {
+                    Ok(Task {
+                        id: row.get(0)?,
+                        category: row.get(1)?,
+                        title: row.get(2)?,
+                        text: row.get(3)?,
+                        status: row.get(4)?,
+                        priority: row.get(5)?,
+                        creation_date: row.get(6)?,
+                        completion_date: row.get(7).unwrap_or(None),
+                        modification_date: row.get(8)?,
+                    })
+                },
+            )
             .unwrap()
     }
 
@@ -161,6 +181,16 @@ impl TasksManager {
         self.conn.execute(
             "UPDATE tasks SET text = ?1 WHERE id = ?2",
             [text, id.into()],
+        )
+    }
+
+    /// Update task text
+    pub fn update_title(&self, id: &String, title: String) -> Result<usize, rusqlite::Error> {
+        self.update_date(id, UpdateDate::Modification);
+
+        self.conn.execute(
+            "UPDATE tasks SET title = ?1 WHERE id = ?2",
+            [title, id.into()],
         )
     }
 
@@ -247,15 +277,39 @@ impl TasksManager {
 
     pub fn add_task(&self, new_task: Task) -> Result<usize, rusqlite::Error> {
         self.conn.execute(
-            "INSERT INTO tasks (id, category, text, status, priority, creation_date, modification_date) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
+            r#"
+            INSERT INTO tasks
+                (
+                    id,
+                    category,
+                    title,
+                    text,
+                    status,
+                    priority,
+                    creation_date,
+                    modification_date
+                )
+            VALUES
+                (
+                    ?1,
+                    ?2,
+                    ?3,
+                    ?4,
+                    ?5,
+                    ?6,
+                    ?7,
+                    ?8
+                )
+            "#,
             (
                 &new_task.id,
                 &new_task.category,
+                &new_task.title,
                 &new_task.text,
                 &new_task.status.to_string(),
                 &new_task.priority,
                 &new_task.creation_date,
-                &new_task.modification_date
+                &new_task.modification_date,
             ),
         )
     }

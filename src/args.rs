@@ -37,6 +37,10 @@ pub enum Commands {
         #[clap(short, long, default_value_t = 1)]
         priority: i32,
 
+        /// task title
+        #[clap(short, long)]
+        title: String,
+
         /// task text
         text: Option<String>,
     },

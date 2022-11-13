@@ -21,6 +21,7 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             category,
             id_length,
             priority,
+            title,
             text,
         }) => {
             let length: usize = match id_length {
@@ -52,8 +53,9 @@ pub fn init(conn: Connection, args: Args, config: Config) {
 
             let new_task = Task {
                 id,
-                category: category.into(),
-                text: text.into(),
+                category,
+                title,
+                text,
                 status: Status::Pending,
                 priority,
                 creation_date: get_unix_timestamp(),
@@ -356,13 +358,14 @@ fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_forma
         };
 
         let msg = format!(
-                "{id} {status} {priority} (creation: {creation_date}, complation: {complation_date}, last modifction: {lastmodifction_date})\n\t{text}",
+                "{id} {status} {priority} (creation: {creation_date}, complation: {complation_date}, last modifction: {lastmodifction_date})\n\t{title}\n\t{text}",
                 id = task.id.bright_black(),
                 status = styled_is_done,
                 priority = task.priority,
                 creation_date = creation_date,
                 complation_date = complation_date,
                 lastmodifction_date = modification_date,
+                title = task.title.bold(),
                 text = styled_text
         );
 
@@ -409,13 +412,15 @@ fn interactive_multi_select(tasks: &Vec<Task>, date_format: &String) -> Vec<Stri
             Status::Active => task.text.to_string(),
         };
 
+        // TODO: cut off task.text and task.title off after 8 chars
         let msg = format!(
-            "{id} {category} {status} {date}{text}",
+            "{id} {category} {status} {date}{title} {text}",
             id = task.id.bright_black(),
             category = format!("@{}", task.category).bright_cyan(),
             status = styled_status,
             date = done_date.bright_green().underline(),
-            text = styled_text
+            title = task.title.bold(),
+            text = styled_text.bright_black()
         );
 
         let formated = format!("{}", msg);
