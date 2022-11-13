@@ -58,6 +58,19 @@ pub struct Task {
     pub modification_date: u64,
 }
 
+const QUERY_SQL: &str = r#"
+    SELECT
+        id,
+        category,
+        title,
+        text,
+        status,
+        priority,
+        creation_date,
+        completion_date,
+        modification_date
+    FROM tasks"#;
+
 #[derive(Copy, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
 pub enum Filter {
     All,
@@ -89,19 +102,7 @@ impl TasksManager {
 
     pub fn query_all(&self, filter: Filter) -> Vec<Task> {
         let mut sql: String = String::from(
-            r#"
-            SELECT
-                id,
-                category,
-                title,
-                text,
-                status,
-                priority,
-                creation_date,
-                completion_date,
-                modification_date
-            FROM tasks
-            "#,
+           QUERY_SQL,
         );
 
         match filter {
@@ -141,21 +142,13 @@ impl TasksManager {
     }
 
     pub fn query_one(&self, task_id: &String) -> Task {
+        let mut sql = String::from(QUERY_SQL);
+
+        sql.push_str(" WHERE id = ?");
+
         self.conn
             .query_row(
-                r#"
-                SELECT
-                    id,
-                    category,
-                    title,
-                    text,
-                    status,
-                    priority,
-                    creation_date,
-                    completion_date,
-                    modification_date
-                FROM tasks WHERE id = ?
-                "#,
+                &sql,
                 [task_id],
                 |row| {
                     Ok(Task {
