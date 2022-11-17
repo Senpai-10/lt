@@ -11,12 +11,10 @@ mod editor;
 use args::Args;
 use clap::Parser;
 use config::{get_config, Config, DEFAULT_CONFIG};
-use dotenv::dotenv;
 use rusqlite::{Connection, Result};
 use std::process::exit;
 
 fn main() -> Result<()> {
-    dotenv().ok();
     let args = Args::parse();
 
     let config: Config = get_config();
