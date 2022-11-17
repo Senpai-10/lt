@@ -1,7 +1,7 @@
 // use this https://docs.rs/sqlite/1.27.0/sqlite/
 // https://github.com/rusqlite/rusqlite
 
-mod apps;
+mod app;
 mod args;
 mod config;
 mod db;
@@ -35,7 +35,7 @@ fn main() -> Result<()> {
 
     db::setup(&conn);
 
-    apps::cli::init(conn, args, config);
+    app::init(conn, args, config);
 
     Ok(())
 }
