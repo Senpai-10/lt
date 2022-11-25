@@ -2,8 +2,10 @@ use crate::args::{Args, Commands};
 use crate::config::Config;
 use crate::db::tasks::{Status, Task, TasksManager};
 use crate::editor;
-use crate::helpers::generate_id;
-use crate::helpers::{calculate_percentage, convert_unix_timestamp, get_unix_timestamp};
+use crate::helpers::{
+    calculate_percentage, convert_unix_timestamp, generate_id, get_unix_timestamp,
+    truncate_with_suffix,
+};
 use colored::Colorize;
 use inquire;
 use inquire::MultiSelect;
@@ -150,6 +152,8 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             category,
             date_format,
             filter,
+            max_title_length,
+            max_text_length,
         }) => {
             let tasks = tasks_manager.query_all(filter);
 
@@ -192,13 +196,13 @@ pub fn init(conn: Connection, args: Args, config: Config) {
 
                     let dones = done_count.get(&category).unwrap_or(&(0 as usize));
 
-                    print_all(&category, dones, tasks, &format);
+                    print_all(&category, dones, tasks, &format, max_title_length, max_text_length);
                 }
                 None => {
                     for (key, tasks) in categories.iter_mut() {
                         let dones = done_count.get(key).unwrap_or(&(0 as usize));
 
-                        print_all(key, dones, tasks, &format);
+                        print_all(key, dones, tasks, &format, max_title_length, max_text_length);
                     }
 
                     println!();
@@ -290,7 +294,14 @@ pub fn init(conn: Connection, args: Args, config: Config) {
 }
 
 /// Print all tasks from a list with styles
-fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_format: &String) -> () {
+fn print_all(
+    category: &String,
+    dones: &usize,
+    tasks: &mut Vec<Task>,
+    date_format: &String,
+    max_title_length: usize,
+    max_text_length: usize,
+) -> () {
     tasks.sort_by_key(|k| Reverse(k.priority));
 
     let mut count = format!("[{}/{}]", dones, tasks.len());
@@ -326,7 +337,7 @@ fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_forma
 
         let text = task.text.replace("\n", "\n\t");
 
-        let styled_text: String = match task.status {
+        let mut styled_text: String = match task.status {
             Status::Done => text.bright_black().strikethrough().to_string(),
             Status::Pending => text.bright_black().to_string(),
             Status::Active => text.bright_black().to_string(),
@@ -356,6 +367,9 @@ fn print_all(category: &String, dones: &usize, tasks: &mut Vec<Task>, date_forma
             }
             None => String::new(),
         };
+
+        truncate_with_suffix(&mut task.title, max_title_length, "...".bright_yellow().bold());
+        truncate_with_suffix(&mut styled_text, max_text_length, "...".bright_yellow().bold());
 
         let msg = format!(
                 "{id} {status} {priority} (creation: {creation_date}, complation: {complation_date}, last modifction: {lastmodifction_date})\n\t{title}\n\t{text}",
