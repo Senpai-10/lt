@@ -85,6 +85,18 @@ pub enum Commands {
         /// Filter list
         #[clap(short, long, arg_enum, default_value_t=Filter::All)]
         filter: Filter,
+
+        /// Cutoff task title after this number (Note: 0 disables this feature)
+        #[clap(short = 'm', long, default_value_t = 40)]
+        max_title_length: usize,
+
+        /// Cutoff task text after this number (Note: 0 disables this feature)
+        #[clap(short = 'M', long, default_value_t = 200)]
+        max_text_length: usize,
+
+        /// shorten title, text
+        #[clap(short, long, action)]
+        less: bool,
     },
 
     /// move a task from category to another category
