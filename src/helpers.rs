@@ -1,6 +1,7 @@
 // https://docs.rs/chrono/0.4.0/chrono/format/strftime/index.html
 
 use chrono::prelude::DateTime;
+use colored::ColoredString;
 use chrono::Local;
 use nanoid::nanoid;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
@@ -37,3 +38,15 @@ pub fn calculate_percentage(part: i32, whole: i32) -> i32 {
 
     100 * part / whole
 }
+
+/// Cut string off and add a string at the end e.g '...'
+/// Suffix is a str to put after `max_length`
+pub fn truncate_with_suffix(s: &mut String, max_length: usize, suffix: ColoredString) {
+    if max_length == 0 { return }
+
+    if s.len() > max_length && s.len() > (max_length + suffix.len()) {
+        s.truncate(max_length + suffix.len());
+        s.push_str(suffix.to_string().as_str());
+    }
+}
+
