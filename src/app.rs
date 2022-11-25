@@ -196,13 +196,27 @@ pub fn init(conn: Connection, args: Args, config: Config) {
 
                     let dones = done_count.get(&category).unwrap_or(&(0 as usize));
 
-                    print_all(&category, dones, tasks, &format, max_title_length, max_text_length);
+                    print_all(
+                        &category,
+                        dones,
+                        tasks,
+                        &format,
+                        max_title_length,
+                        max_text_length,
+                    );
                 }
                 None => {
                     for (key, tasks) in categories.iter_mut() {
                         let dones = done_count.get(key).unwrap_or(&(0 as usize));
 
-                        print_all(key, dones, tasks, &format, max_title_length, max_text_length);
+                        print_all(
+                            key,
+                            dones,
+                            tasks,
+                            &format,
+                            max_title_length,
+                            max_text_length,
+                        );
                     }
 
                     println!();
@@ -368,8 +382,16 @@ fn print_all(
             None => String::new(),
         };
 
-        truncate_with_suffix(&mut task.title, max_title_length, "...".bright_yellow().bold());
-        truncate_with_suffix(&mut styled_text, max_text_length, "...".bright_yellow().bold());
+        truncate_with_suffix(
+            &mut task.title,
+            max_title_length,
+            "...".bright_yellow().bold(),
+        );
+        truncate_with_suffix(
+            &mut styled_text,
+            max_text_length,
+            "...".bright_yellow().bold(),
+        );
 
         let msg = format!(
                 "{id} {status} {priority} (creation: {creation_date}, complation: {complation_date}, last modifction: {lastmodifction_date})\n\t{title}\n\t{text}",
