@@ -152,8 +152,9 @@ pub fn init(conn: Connection, args: Args, config: Config) {
             category,
             date_format,
             filter,
-            max_title_length,
-            max_text_length,
+            less,
+            mut max_title_length,
+            mut max_text_length,
         }) => {
             let tasks = tasks_manager.query_all(filter);
 
@@ -161,6 +162,11 @@ pub fn init(conn: Connection, args: Args, config: Config) {
                 Some(format) => format,
                 None => tasks_manager.config.date_format.to_string(),
             };
+
+            if less == false {
+                max_title_length = 0;
+                max_text_length = 0;
+            }
 
             let mut categories: HashMap<String, Vec<Task>> = HashMap::new();
             let mut done_count: HashMap<String, usize> = HashMap::new();

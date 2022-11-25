@@ -93,6 +93,10 @@ pub enum Commands {
         /// Cutoff task text after this number (Note: 0 disables this feature)
         #[clap(short = 'M', long, default_value_t = 200)]
         max_text_length: usize,
+
+        /// shorten title, text
+        #[clap(short, long, action)]
+        less: bool,
     },
 
     /// move a task from category to another category
