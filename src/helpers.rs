@@ -44,8 +44,8 @@ pub fn calculate_percentage(part: i32, whole: i32) -> i32 {
 pub fn truncate_with_suffix(s: &mut String, max_length: usize, suffix: ColoredString) {
     if max_length == 0 { return }
 
-    if s.len() > max_length && s.len() >= (max_length + suffix.len()) {
-        s.truncate(max_length + suffix.len());
+    if s.len() > max_length {
+        s.truncate(max_length);
         s.push_str(suffix.to_string().as_str());
     }
 }
