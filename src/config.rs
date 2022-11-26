@@ -23,7 +23,7 @@ date_format = "%Y-%m-%d %I:%M:%S %P"
 "#;
 
 pub fn get_config() -> Config {
-    let proj_dirs = ProjectDirs::from("com", "senpai-10", "todo").unwrap();
+    let proj_dirs = ProjectDirs::from("com", "senpai-10", "lt").unwrap();
     let config_dir = proj_dirs.config_dir();
 
     let config_file = fs::read_to_string(config_dir.join("config.toml"));
