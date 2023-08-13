@@ -1,0 +1,18 @@
+# ./.tmuxinator.yml
+
+name: lt
+root: .
+
+windows:
+    - nvim:
+          - clear
+          - nvim .
+    - backend:
+          - cd src-tauri/
+          - clear
+    - bacon:
+          - cd src-tauri/
+          - bacon -j clippy
+    - git:
+          - clear
+          - gs
