@@ -7,9 +7,8 @@ windows:
     - nvim:
           - clear
           - nvim .
-    - backend:
-          - cd src-tauri/
-          - clear
+    - run:
+          - yarn tauri dev
     - bacon:
           - cd src-tauri/
           - bacon -j clippy
