@@ -1,6 +1,0 @@
-- [] add task title
-- [] move into a tui and display a list like this
-
-    STATUS PRIORATY TITLE
-
-    on selection open preview tab on the right and show more info (dates, text)

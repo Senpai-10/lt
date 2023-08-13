@@ -1,19 +1,7 @@
-# **lt**
+# Tauri + React + Typescript
 
-Simple todo list manager
+This template should help get you started developing with Tauri, React and Typescript in Vite.
 
-## Default config
+## Recommended IDE Setup
 
-config file: `.config/lt/config.toml`
-
-```toml
-# This option is used
-# if no --file provided
-default_database_file = "todo.db"
-
-# Length of genrated id for tasks
-id_length = 3
-
-# Format of date used when listing a task
-date_format = "%Y-%m-%d %I:%M:%S %P"
-```
+- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
