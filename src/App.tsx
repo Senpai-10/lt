@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { Category, Task } from './types';
+import classNames from 'classnames';
 import './App.css';
 
 function App() {
@@ -80,14 +81,17 @@ function App() {
     };
 
     const handleOnDrop = (e: React.DragEvent, category_name: string) => {
-        if (category_name == category || category == null) return
+        if (category_name == category || category == null) return;
 
-        let taskID = e.dataTransfer.getData("taskID") as string;
+        let taskID = e.dataTransfer.getData('taskID') as string;
 
-        console.log(`moved task: '${taskID}' -> category: '${category_name}'`)
-        invoke("update_task_category", { id: taskID, newCategory: category_name })
+        console.log(`moved task: '${taskID}' -> category: '${category_name}'`);
+        invoke('update_task_category', {
+            id: taskID,
+            newCategory: category_name,
+        });
         getTasks();
-    }
+    };
 
     return (
         <div className='container'>
@@ -99,17 +103,21 @@ function App() {
                     All
                 </button>
                 {categories.map((x) => (
-                    <button
-                        className={category == x.name ? 'current-category' : ''}
+                    <div
+                        className={classNames({
+                            category: true,
+                            'current-category': category == x.name,
+                        })}
                         key={x.name}
                         onClick={() => setCategory(x.name)}
                         onDrop={(e) => handleOnDrop(e, x.name)}
                         onDragOver={(e) => e.preventDefault()}
                     >
-                        {x.name}
-                    </button>
+                        <span>{x.name}</span>
+                        <span className='category-tasks-count'>2</span>
+                    </div>
                 ))}
-                <div className="add-category-container">
+                <div className='new-category-container'>
                     <input
                         className='new-category-input'
                         onKeyDown={(e) =>
@@ -141,7 +149,16 @@ function App() {
 
                         return (
                             <div key={task.id} className='task'>
-                                <div className="drag-icon" onDragStart={(e) => e.dataTransfer.setData("taskID", task.id)} draggable={true}></div>
+                                <div
+                                    className='drag-icon'
+                                    onDragStart={(e) =>
+                                        e.dataTransfer.setData(
+                                            'taskID',
+                                            task.id,
+                                        )
+                                    }
+                                    draggable={true}
+                                ></div>
                                 <input
                                     className='task-checkbox'
                                     onChange={() =>
@@ -193,7 +210,7 @@ function App() {
                     </>
                 ) : null}
             </div>
-        </div >
+        </div>
     );
 }
 
