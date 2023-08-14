@@ -8,16 +8,18 @@ function App() {
     const [data, setData] = useState<Task[]>();
     const [categoriesData, setCategories] = useState<CategoriesData>();
     const [category, setCategory] = useState<string | null>(null);
+    const [editingMode, setEditingMode] = useState<string | null>(null);
+    const [editingModeText, setEditingModeText] = useState('');
     const [newTaskInput, setNewTaskInput] = useState('');
     const [newCategoryInput, setNewCategoryInput] = useState('');
     const [tasksSearchQuery, setTasksSearchQuery] = useState('');
 
     const filteredData = useMemo(() => {
-        if (data == undefined) return []
+        if (data == undefined) return [];
         return data.filter((task) => {
-            return task.title.toLowerCase().includes(tasksSearchQuery)
-        })
-    }, [data, tasksSearchQuery])
+            return task.title.toLowerCase().includes(tasksSearchQuery);
+        });
+    }, [data, tasksSearchQuery]);
 
     const getTasks = () => {
         if (category != null) {
@@ -103,6 +105,18 @@ function App() {
         getTasks();
     };
 
+    const handleDoneEditing = (taskID: string) => {
+        setEditingMode(null);
+        updateTaskTitle(taskID, editingModeText);
+        setEditingModeText('');
+        getTasks()
+    };
+
+    const startEditingMode = (taskID: string, title: string) => {
+        setEditingMode(taskID)
+        setEditingModeText(title)
+    }
+
     return (
         <div className='container'>
             <div className='side-bar'>
@@ -115,7 +129,9 @@ function App() {
                     onClick={() => setCategory(null)}
                 >
                     <span>All</span>
-                    <span className='category-tasks-count'>{categoriesData.total_tasks}</span>
+                    <span className='category-tasks-count'>
+                        {categoriesData.total_tasks}
+                    </span>
                 </div>
                 {categoriesData.categories.map((x) => (
                     <div
@@ -129,7 +145,9 @@ function App() {
                         onDragOver={(e) => e.preventDefault()}
                     >
                         <span>{x.name}</span>
-                        <span className='category-tasks-count'>{x.total_tasks}</span>
+                        <span className='category-tasks-count'>
+                            {x.total_tasks}
+                        </span>
                     </div>
                 ))}
                 <div className='new-category-container'>
@@ -153,7 +171,11 @@ function App() {
                 </div>
             </div>
             <div className='main-content'>
-                <input placeholder='search' value={tasksSearchQuery} onChange={(e) => setTasksSearchQuery(e.currentTarget.value)} />
+                <input
+                    placeholder='search'
+                    value={tasksSearchQuery}
+                    onChange={(e) => setTasksSearchQuery(e.currentTarget.value)}
+                />
                 {data.length == 0 && category == null ? (
                     <div>
                         <p>empty list</p>
@@ -183,21 +205,26 @@ function App() {
                                     checked={isDone}
                                     type='checkbox'
                                 />
-                                <p
-                                    contentEditable={true}
-                                    suppressContentEditableWarning={true}
-                                    className={isDone ? 'task-done' : ''}
-                                    onInput={(e) =>
-                                        updateTaskTitle(
-                                            task.id,
-                                            e.currentTarget.textContent
-                                                ? e.currentTarget.textContent
-                                                : '',
-                                        )
-                                    }
-                                >
-                                    {task.title}
-                                </p>
+                                {editingMode == task.id ? (
+                                    <input
+                                        onKeyDown={(e) =>
+                                            e.code == 'Enter'
+                                                ? handleDoneEditing(task.id)
+                                                : null
+                                        }
+                                        placeholder='task title'
+                                        onChange={(e) =>
+                                            setEditingModeText(
+                                                e.currentTarget.value,
+                                            )
+                                        }
+                                        value={editingModeText}
+                                    />
+                                ) : (
+                                    <p className={isDone ? 'task-done' : ''} onDoubleClick={() => startEditingMode(task.id, task.title)}>
+                                        {task.title}
+                                    </p>
+                                )}
                                 <div className='task-extra'>
                                     <button
                                         className='remove-task-btn'
