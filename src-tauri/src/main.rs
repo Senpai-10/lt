@@ -28,6 +28,7 @@ fn main() {
             update_task_status::update_task_status,
             update_task_title::update_task_title,
             update_task_category::update_task_category,
+            remove_category::remove_category,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -45,6 +45,12 @@
     align-items: center;
 }
 
+.task-list-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
 .all-category {
     background-color: #00000025;
 }
@@ -82,19 +88,15 @@
     margin-left: auto;
 }
 
-.remove-task-btn {
+.remove-btn {
     box-shadow: none;
     border-color: #d83939;
     background: #d83939;
     padding: 6px 12px 6px 12px;
 }
 
-.remove-task-btn:hover {
+.remove-btn:hover {
     border-color: #d83939;
-}
-
-.task-on-category {
-    border: 1px dashed yellow;
 }
 
 .drag-icon {

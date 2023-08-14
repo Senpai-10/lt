@@ -117,6 +117,14 @@ function App() {
         setEditingModeText(title)
     }
 
+    const removeCategory = () => {
+        if (category == null) return
+
+        invoke('remove_category', { name: category })
+        setCategory(null)
+        getCategories()
+    }
+
     return (
         <div className='container'>
             <div className='side-bar'>
@@ -171,11 +179,16 @@ function App() {
                 </div>
             </div>
             <div className='main-content'>
-                <input
-                    placeholder='search'
-                    value={tasksSearchQuery}
-                    onChange={(e) => setTasksSearchQuery(e.currentTarget.value)}
-                />
+                <div className="task-list-nav">
+                    <input
+                        placeholder='search'
+                        value={tasksSearchQuery}
+                        onChange={(e) => setTasksSearchQuery(e.currentTarget.value)}
+                    />
+                    {
+                        category != null ? <button className='remove-btn' onClick={removeCategory}>Del {category}</button> : null
+                    }
+                </div>
                 {data.length == 0 && category == null ? (
                     <div>
                         <p>empty list</p>
@@ -227,7 +240,7 @@ function App() {
                                 )}
                                 <div className='task-extra'>
                                     <button
-                                        className='remove-task-btn'
+                                        className='remove-btn'
                                         onClick={() => removeTask(task.id)}
                                     >
                                         Del
