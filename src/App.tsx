@@ -109,7 +109,7 @@ function App() {
                         {x.name}
                     </button>
                 ))}
-                <div>
+                <div className="add-category-container">
                     <input
                         className='new-category-input'
                         onKeyDown={(e) =>

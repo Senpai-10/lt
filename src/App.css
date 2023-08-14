@@ -16,6 +16,11 @@
     background-color: #396cd8;
 }
 
+.add-category-container {
+    display: flex;
+    justify-content: space-between;
+}
+
 .new-category-input {
     width: 100px;
 }
