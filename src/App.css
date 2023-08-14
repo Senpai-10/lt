@@ -25,3 +25,30 @@
     width: 100%;
     overflow: scroll;
 }
+
+.task {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 4px;
+}
+
+.task-done {
+    color: gray;
+    text-decoration: line-through;
+}
+
+.task-checkbox {
+    cursor: pointer;
+}
+
+.remove-task-btn {
+    box-shadow: none;
+    background: none;
+    border-color: #d83939;
+}
+
+.remove-task-btn:hover {
+    border-color: #d83939;
+    background: #d83939;
+}

@@ -68,6 +68,13 @@ function App() {
         getTasks();
     }
 
+    const updateTaskStatus = (id: string, status: number) => {
+        if (id == "") return
+
+        invoke("update_task_status", { id: id, status: status })
+        getTasks();
+    }
+
     return (
         <div className='container'>
             <div className='side-bar'>
@@ -112,12 +119,18 @@ function App() {
                         <p>empty list</p>
                     </div>
                 ) : (
-                    data.map((task) => (
-                        <div key={task.id}>
-                            <span>{task.title}</span>
-                            <button onClick={() => removeTask(task.id)}>Del</button>
-                        </div>
-                    ))
+                    data.map((task) => {
+                        const isDone = task.status == 1 ? true : false;
+                        const newStatus = isDone ? 0 : 1
+
+                        return (
+                            <div key={task.id} className="task">
+                                <input className="task-checkbox" onClick={() => updateTaskStatus(task.id, newStatus)} checked={isDone} type="checkbox" />
+                                <p className={isDone ? "task-done" : ""}>{task.title}</p>
+                                <button className="remove-task-btn" onClick={() => removeTask(task.id)}>Del</button>
+                            </div>
+                        )
+                    })
                 )}
                 {category != null ? (
                     <>
@@ -131,7 +144,7 @@ function App() {
                             value={newTaskInput}
                             placeholder='task..'
                         />
-                        <button onClick={addTask}>add</button>
+                        {/*<button onClick={addTask}>add</button>*/}
                     </>
                 ) : null}
             </div>
