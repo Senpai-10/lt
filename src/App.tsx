@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { CategoriesData, Task } from './types';
 import classNames from 'classnames';
@@ -10,6 +10,14 @@ function App() {
     const [category, setCategory] = useState<string | null>(null);
     const [newTaskInput, setNewTaskInput] = useState('');
     const [newCategoryInput, setNewCategoryInput] = useState('');
+    const [tasksSearchQuery, setTasksSearchQuery] = useState('');
+
+    const filteredData = useMemo(() => {
+        if (data == undefined) return []
+        return data.filter((task) => {
+            return task.title.toLowerCase().includes(tasksSearchQuery)
+        })
+    }, [data, tasksSearchQuery])
 
     const getTasks = () => {
         if (category != null) {
@@ -145,12 +153,13 @@ function App() {
                 </div>
             </div>
             <div className='main-content'>
+                <input placeholder='search' value={tasksSearchQuery} onChange={(e) => setTasksSearchQuery(e.currentTarget.value)} />
                 {data.length == 0 && category == null ? (
                     <div>
                         <p>empty list</p>
                     </div>
                 ) : (
-                    data.map((task) => {
+                    filteredData.map((task: Task) => {
                         const isDone = task.status == 1 ? true : false;
                         const newStatus = isDone ? 0 : 1;
 
