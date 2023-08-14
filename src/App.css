@@ -20,7 +20,7 @@
 }
 
 .current-category {
-    background-color: #396cd8;
+    background-color: #396cd8 !important;
 }
 
 .category {
@@ -43,6 +43,10 @@
     margin-left: auto;
     border-radius: 8px;
     align-items: center;
+}
+
+.all-category {
+    background-color: #00000025;
 }
 
 .new-category-input {

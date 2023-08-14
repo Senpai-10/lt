@@ -96,12 +96,17 @@ function App() {
     return (
         <div className='container'>
             <div className='side-bar'>
-                <button
-                    className={category == null ? 'current-category' : ''}
+                <div
+                    className={classNames({
+                        'all-category': true,
+                        category: true,
+                        'current-category': category == null,
+                    })}
                     onClick={() => setCategory(null)}
                 >
-                    All
-                </button>
+                    <span>All</span>
+                    <span className='category-tasks-count'>2</span>
+                </div>
                 {categories.map((x) => (
                     <div
                         className={classNames({
