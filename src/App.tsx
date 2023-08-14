@@ -13,13 +13,17 @@ function App() {
     const [newTaskInput, setNewTaskInput] = useState('');
     const [newCategoryInput, setNewCategoryInput] = useState('');
     const [tasksSearchQuery, setTasksSearchQuery] = useState('');
+    const [hideDone, setHideDone] = useState(false)
 
     const filteredData = useMemo(() => {
         if (data == undefined) return [];
         return data.filter((task) => {
+            if (hideDone === true && task.status == 1) {
+                return false
+            }
             return task.title.toLowerCase().includes(tasksSearchQuery);
         });
-    }, [data, tasksSearchQuery]);
+    }, [data, tasksSearchQuery, hideDone]);
 
     const getTasks = () => {
         if (category != null) {
@@ -199,13 +203,19 @@ function App() {
             </div>
             <div className='main-content'>
                 <div className='task-list-nav'>
-                    <input
-                        placeholder='search'
-                        value={tasksSearchQuery}
-                        onChange={(e) =>
-                            setTasksSearchQuery(e.currentTarget.value)
-                        }
-                    />
+                    <div className="filtering-settings">
+                        <input
+                            placeholder='search'
+                            value={tasksSearchQuery}
+                            onChange={(e) =>
+                                setTasksSearchQuery(e.currentTarget.value)
+                            }
+                        />
+                        <label>
+                            Hide Done
+                            <input type="checkbox" checked={hideDone} onChange={() => setHideDone(!hideDone)} />
+                        </label>
+                    </div>
                     {category != null ? (
                         <button className='remove-btn' onClick={removeCategory}>
                             Del {category}
