@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { Category, Task } from './types';
 import './App.css';
@@ -79,6 +79,16 @@ function App() {
         invoke('update_task_title', { id: id, title: title });
     };
 
+    const handleOnDrop = (e: React.DragEvent, category_name: string) => {
+        if (category_name == category || category == null) return
+
+        let taskID = e.dataTransfer.getData("taskID") as string;
+
+        console.log(`moved task: '${taskID}' -> category: '${category_name}'`)
+        invoke("update_task_category", { id: taskID, newCategory: category_name })
+        getTasks();
+    }
+
     return (
         <div className='container'>
             <div className='side-bar'>
@@ -93,6 +103,8 @@ function App() {
                         className={category == x.name ? 'current-category' : ''}
                         key={x.name}
                         onClick={() => setCategory(x.name)}
+                        onDrop={(e) => handleOnDrop(e, x.name)}
+                        onDragOver={(e) => e.preventDefault()}
                     >
                         {x.name}
                     </button>
@@ -129,6 +141,7 @@ function App() {
 
                         return (
                             <div key={task.id} className='task'>
+                                <div className="drag-icon" onDragStart={(e) => e.dataTransfer.setData("taskID", task.id)} draggable={true}></div>
                                 <input
                                     className='task-checkbox'
                                     onChange={() =>
@@ -180,7 +193,7 @@ function App() {
                     </>
                 ) : null}
             </div>
-        </div>
+        </div >
     );
 }
 
