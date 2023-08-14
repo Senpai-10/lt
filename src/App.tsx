@@ -62,22 +62,22 @@ function App() {
     };
 
     const removeTask = (id: string) => {
-        if (id == "") return
+        if (id == '') return;
 
-        invoke("remove_task", { id: id })
+        invoke('remove_task', { id: id });
         getTasks();
-    }
+    };
 
     const updateTaskStatus = (id: string, status: number) => {
-        if (id == "") return
+        if (id == '') return;
 
-        invoke("update_task_status", { id: id, status: status })
+        invoke('update_task_status', { id: id, status: status });
         getTasks();
-    }
+    };
 
     const updateTaskTitle = (id: string, title: string) => {
-        invoke("update_task_title", { id: id, title: title })
-    }
+        invoke('update_task_title', { id: id, title: title });
+    };
 
     return (
         <div className='container'>
@@ -125,17 +125,43 @@ function App() {
                 ) : (
                     data.map((task) => {
                         const isDone = task.status == 1 ? true : false;
-                        const newStatus = isDone ? 0 : 1
+                        const newStatus = isDone ? 0 : 1;
 
                         return (
-                            <div key={task.id} className="task">
-                                <input className="task-checkbox" onChange={() => updateTaskStatus(task.id, newStatus)} checked={isDone} type="checkbox" />
-                                <p contentEditable={true} suppressContentEditableWarning={true} className={isDone ? "task-done" : ""} onInput={e => updateTaskTitle(task.id, e.currentTarget.textContent ? e.currentTarget.textContent : "")}>{task.title}</p>
-                                <div className="task-extra">
-                                    <button className="remove-task-btn" onClick={() => removeTask(task.id)}>Del</button>
+                            <div key={task.id} className='task'>
+                                <input
+                                    className='task-checkbox'
+                                    onChange={() =>
+                                        updateTaskStatus(task.id, newStatus)
+                                    }
+                                    checked={isDone}
+                                    type='checkbox'
+                                />
+                                <p
+                                    contentEditable={true}
+                                    suppressContentEditableWarning={true}
+                                    className={isDone ? 'task-done' : ''}
+                                    onInput={(e) =>
+                                        updateTaskTitle(
+                                            task.id,
+                                            e.currentTarget.textContent
+                                                ? e.currentTarget.textContent
+                                                : '',
+                                        )
+                                    }
+                                >
+                                    {task.title}
+                                </p>
+                                <div className='task-extra'>
+                                    <button
+                                        className='remove-task-btn'
+                                        onClick={() => removeTask(task.id)}
+                                    >
+                                        Del
+                                    </button>
                                 </div>
                             </div>
-                        )
+                        );
                     })
                 )}
                 {category != null ? (
