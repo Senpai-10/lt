@@ -30,6 +30,7 @@
     padding: 8px;
     border-radius: 8px;
     align-items: center;
+    background-color: #00000025;
 }
 
 .category:hover {
@@ -45,14 +46,14 @@
     align-items: center;
 }
 
+.category-tasks-all-done {
+    background: #3cd83915;
+}
+
 .task-list-nav {
     display: flex;
     justify-content: space-between;
     margin-bottom: 5px;
-}
-
-.all-category {
-    background-color: #00000025;
 }
 
 .new-category-input {

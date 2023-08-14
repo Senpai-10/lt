@@ -131,7 +131,7 @@ function App() {
             <div className='side-bar'>
                 <div
                     className={classNames({
-                        'all-category': true,
+                        "category-tasks-all-done": categoriesData.total_tasks_done == categoriesData.total_tasks && categoriesData.total_tasks != 0,
                         category: true,
                         'current-category': category == null,
                     })}
@@ -142,23 +142,6 @@ function App() {
                         {categoriesData.total_tasks_done}/{categoriesData.total_tasks}
                     </span>
                 </div>
-                {categoriesData.categories.map((x) => (
-                    <div
-                        className={classNames({
-                            category: true,
-                            'current-category': category == x.name,
-                        })}
-                        key={x.name}
-                        onClick={() => setCategory(x.name)}
-                        onDrop={(e) => handleOnDrop(e, x.name)}
-                        onDragOver={(e) => e.preventDefault()}
-                    >
-                        <span>{x.name}</span>
-                        <span className='category-tasks-count'>
-                            {x.total_tasks_done}/{x.total_tasks}
-                        </span>
-                    </div>
-                ))}
                 <div className='new-category-container'>
                     <input
                         className='new-category-input'
@@ -178,6 +161,24 @@ function App() {
                         +
                     </button>
                 </div>
+                {categoriesData.categories.map((x) => (
+                    <div
+                        className={classNames({
+                            "category-tasks-all-done": x.total_tasks_done == x.total_tasks && x.total_tasks != 0,
+                            category: true,
+                            'current-category': category == x.name,
+                        })}
+                        key={x.name}
+                        onClick={() => setCategory(x.name)}
+                        onDrop={(e) => handleOnDrop(e, x.name)}
+                        onDragOver={(e) => e.preventDefault()}
+                    >
+                        <span>{x.name}</span>
+                        <span className='category-tasks-count'>
+                            {x.total_tasks_done}/{x.total_tasks}
+                        </span>
+                    </div>
+                ))}
             </div>
             <div className='main-content'>
                 <div className="task-list-nav">
