@@ -45,6 +45,7 @@ function App() {
 
         invoke('add_category', { name: newCategoryInput });
         setNewCategoryInput('');
+        setCategory(newCategoryInput);
         getCategories();
     };
 
