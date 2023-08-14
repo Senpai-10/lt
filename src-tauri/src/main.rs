@@ -2,12 +2,29 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod commands;
+mod db;
+mod models;
+mod schema;
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
+use commands::*;
+use db::establish_connection;
+use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
+
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("migrations/");
 
 fn main() {
+    let mut connection = establish_connection();
+    connection
+        .run_pending_migrations(MIGRATIONS)
+        .expect("Error running migrations");
+
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![commands::get_tasks::get_tasks])
+        .invoke_handler(tauri::generate_handler![
+            get_tasks::get_tasks,
+            get_categories::get_categories,
+            add_task::add_task,
+            add_category::add_category,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
