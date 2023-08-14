@@ -127,7 +127,9 @@ function App() {
                             <div key={task.id} className="task">
                                 <input className="task-checkbox" onClick={() => updateTaskStatus(task.id, newStatus)} checked={isDone} type="checkbox" />
                                 <p className={isDone ? "task-done" : ""}>{task.title}</p>
-                                <button className="remove-task-btn" onClick={() => removeTask(task.id)}>Del</button>
+                                <div className="task-extra">
+                                    <button className="remove-task-btn" onClick={() => removeTask(task.id)}>Del</button>
+                                </div>
                             </div>
                         )
                     })

@@ -30,7 +30,10 @@
     display: flex;
     gap: 10px;
     align-items: center;
-    padding: 4px;
+    padding: 8px;
+    background-color: #0f0f0f69;
+    margin: 5px;
+    border-radius: 8px;
 }
 
 .task-done {
@@ -42,10 +45,15 @@
     cursor: pointer;
 }
 
+.task-extra {
+    margin-left: auto;
+}
+
 .remove-task-btn {
     box-shadow: none;
     background: none;
     border-color: #d83939;
+    padding: 6px;
 }
 
 .remove-task-btn:hover {
