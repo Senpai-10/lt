@@ -9,9 +9,8 @@ windows:
           - nvim .
     - run:
           - yarn tauri dev
-    - bacon:
+    - backend:
           - cd src-tauri/
-          - bacon -j clippy
     - git:
           - clear
           - gs
