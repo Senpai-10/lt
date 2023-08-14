@@ -75,6 +75,10 @@ function App() {
         getTasks();
     }
 
+    const updateTaskTitle = (id: string, title: string) => {
+        invoke("update_task_title", { id: id, title: title })
+    }
+
     return (
         <div className='container'>
             <div className='side-bar'>
@@ -125,8 +129,8 @@ function App() {
 
                         return (
                             <div key={task.id} className="task">
-                                <input className="task-checkbox" onClick={() => updateTaskStatus(task.id, newStatus)} checked={isDone} type="checkbox" />
-                                <p className={isDone ? "task-done" : ""}>{task.title}</p>
+                                <input className="task-checkbox" onChange={() => updateTaskStatus(task.id, newStatus)} checked={isDone} type="checkbox" />
+                                <p contentEditable={true} suppressContentEditableWarning={true} className={isDone ? "task-done" : ""} onInput={e => updateTaskTitle(task.id, e.currentTarget.textContent ? e.currentTarget.textContent : "")}>{task.title}</p>
                                 <div className="task-extra">
                                     <button className="remove-task-btn" onClick={() => removeTask(task.id)}>Del</button>
                                 </div>

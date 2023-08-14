@@ -51,12 +51,11 @@
 
 .remove-task-btn {
     box-shadow: none;
-    background: none;
     border-color: #d83939;
-    padding: 6px;
+    background: #d83939;
+    padding: 6px 12px 6px 12px;
 }
 
 .remove-task-btn:hover {
     border-color: #d83939;
-    background: #d83939;
 }
