@@ -44,6 +44,8 @@ function App() {
     }
 
     const addCategory = () => {
+        if (newCategoryInput == "") return
+
         invoke("add_category", { name: newCategoryInput });
         setNewCategoryInput("")
         getCategories();
@@ -61,14 +63,14 @@ function App() {
     return (
         <div className="container">
             <div className="side-bar">
-                <button onClick={() => setCategory(null)}>All</button>
+                <button className={category == null ? "current-category" : ""} onClick={() => setCategory(null)}>All</button>
                 {
                     categories.map((x) => (
-                        <button key={x.name} onClick={() => setCategory(x.name)}>{x.name}</button>
+                        <button className={category == x.name ? "current-category" : ""} key={x.name} onClick={() => setCategory(x.name)}>{x.name}</button>
                     ))
                 }
                 <div>
-                    <input className="new-category-input" onChange={(e) => setNewCategoryInput(e.currentTarget.value)} value={newCategoryInput} placeholder="category.." />
+                    <input className="new-category-input" onKeyDown={(e) => e.code == "Enter" ? addCategory() : null} onChange={(e) => setNewCategoryInput(e.currentTarget.value)} value={newCategoryInput} placeholder="category.." />
                     <button onClick={addCategory} style={{ fontWeight: "bold" }}>+</button>
                 </div>
             </div>
@@ -83,7 +85,7 @@ function App() {
                 {
                     category != null ? (
                         <>
-                            <input onChange={(e) => setNewTaskInput(e.currentTarget.value)} value={newTaskInput} placeholder="task.." />
+                            <input onKeyDown={(e) => e.code == "Enter" ? addTask() : null} onChange={(e) => setNewTaskInput(e.currentTarget.value)} value={newTaskInput} placeholder="task.." />
                             <button onClick={addTask}>add</button>
                         </>
                     ) : null

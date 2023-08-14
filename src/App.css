@@ -12,6 +12,10 @@
     width: 300px;
 }
 
+.current-category {
+    background-color: #396cd8;
+}
+
 .new-category-input {
     width: 100px;
 }
