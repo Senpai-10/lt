@@ -85,6 +85,7 @@ function App() {
 
         invoke('update_task_status', { id: id, status: status });
         getTasks();
+        getCategories();
     };
 
     const updateTaskTitle = (id: string, title: string) => {
@@ -138,7 +139,7 @@ function App() {
                 >
                     <span>All</span>
                     <span className='category-tasks-count'>
-                        {categoriesData.total_tasks}
+                        {categoriesData.total_tasks_done}/{categoriesData.total_tasks}
                     </span>
                 </div>
                 {categoriesData.categories.map((x) => (
@@ -154,7 +155,7 @@ function App() {
                     >
                         <span>{x.name}</span>
                         <span className='category-tasks-count'>
-                            {x.total_tasks}
+                            {x.total_tasks_done}/{x.total_tasks}
                         </span>
                     </div>
                 ))}

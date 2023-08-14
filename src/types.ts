@@ -1,10 +1,12 @@
 export interface Category {
     name: string;
+    total_tasks_done: number;
     total_tasks: number;
 }
 
 export interface CategoriesData {
     categories: Category[];
+    total_tasks_done: number;
     total_tasks: number;
 }
 
