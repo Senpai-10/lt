@@ -241,7 +241,7 @@ function App() {
                                         value={editingModeText}
                                     />
                                 ) : (
-                                    <p className={isDone ? 'task-done' : ''} onDoubleClick={() => startEditingMode(task.id, task.title)}>
+                                    <p className={classNames({ 'task-done': isDone, "priority-task": task.priority > 0 && task.status != 1 })} onDoubleClick={() => startEditingMode(task.id, task.title)}>
                                         {task.title}
                                     </p>
                                 )}

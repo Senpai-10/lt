@@ -89,6 +89,10 @@
     width: 50px;
 }
 
+.priority-task {
+    color: #d83939;
+}
+
 .task-extra {
     display: flex;
     margin-left: auto;
