@@ -11,13 +11,17 @@ pub fn get_tasks(category: Option<String>) -> Result<Vec<Task>, String> {
         Some(name) => {
             match schema::tasks::dsl::tasks
                 .filter(schema::tasks::category_name.eq(&name))
+                .order(schema::tasks::priority.desc())
                 .load(&mut connection)
             {
                 Ok(r) => Ok(r),
                 Err(e) => Err(e.to_string()),
             }
         }
-        None => match schema::tasks::dsl::tasks.load(&mut connection) {
+        None => match schema::tasks::dsl::tasks
+            .order(schema::tasks::priority.desc())
+            .load(&mut connection)
+        {
             Ok(r) => Ok(r),
             Err(e) => Err(e.to_string()),
         },
