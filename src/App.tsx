@@ -60,6 +60,13 @@ function App() {
         getTasks();
     };
 
+    const removeTask = (id: string) => {
+        if (id == "") return
+
+        invoke("remove_task", { id: id })
+        getTasks();
+    }
+
     return (
         <div className='container'>
             <div className='side-bar'>
@@ -107,6 +114,7 @@ function App() {
                     data.map((task) => (
                         <div key={task.id}>
                             <span>{task.title}</span>
+                            <button onClick={() => removeTask(task.id)}>Del</button>
                         </div>
                     ))
                 )}
