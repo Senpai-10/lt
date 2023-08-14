@@ -5,5 +5,6 @@ pub mod get_tasks;
 pub mod remove_category;
 pub mod remove_task;
 pub mod update_task_category;
+pub mod update_task_priority;
 pub mod update_task_status;
 pub mod update_task_title;

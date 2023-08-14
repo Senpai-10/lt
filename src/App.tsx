@@ -126,6 +126,11 @@ function App() {
         getCategories()
     }
 
+    const updateTaskPriority = (e: React.ChangeEvent<HTMLInputElement>, taskID: string) => {
+        invoke("update_task_priority", { id: taskID, newPriority: Number(e.currentTarget.value) })
+        getTasks();
+    }
+
     return (
         <div className='container'>
             <div className='side-bar'>
@@ -241,6 +246,7 @@ function App() {
                                     </p>
                                 )}
                                 <div className='task-extra'>
+                                    <input className="task-priority-input" onChange={(e) => updateTaskPriority(e, task.id)} value={task.priority} type="number" />
                                     <button
                                         className='remove-btn'
                                         onClick={() => removeTask(task.id)}

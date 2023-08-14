@@ -85,8 +85,14 @@
     cursor: pointer;
 }
 
+.task-priority-input {
+    width: 50px;
+}
+
 .task-extra {
+    display: flex;
     margin-left: auto;
+    gap: 10px;
 }
 
 .remove-btn {
