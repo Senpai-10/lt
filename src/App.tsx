@@ -110,33 +110,42 @@ function App() {
         setEditingMode(null);
         updateTaskTitle(taskID, editingModeText);
         setEditingModeText('');
-        getTasks()
+        getTasks();
     };
 
     const startEditingMode = (taskID: string, title: string) => {
-        setEditingMode(taskID)
-        setEditingModeText(title)
-    }
+        setEditingMode(taskID);
+        setEditingModeText(title);
+    };
 
     const removeCategory = () => {
-        if (category == null) return
+        if (category == null) return;
 
-        invoke('remove_category', { name: category })
-        setCategory(null)
-        getCategories()
-    }
+        invoke('remove_category', { name: category });
+        setCategory(null);
+        getCategories();
+    };
 
-    const updateTaskPriority = (e: React.ChangeEvent<HTMLInputElement>, taskID: string) => {
-        invoke("update_task_priority", { id: taskID, newPriority: Number(e.currentTarget.value) })
+    const updateTaskPriority = (
+        e: React.ChangeEvent<HTMLInputElement>,
+        taskID: string,
+    ) => {
+        invoke('update_task_priority', {
+            id: taskID,
+            newPriority: Number(e.currentTarget.value),
+        });
         getTasks();
-    }
+    };
 
     return (
         <div className='container'>
             <div className='side-bar'>
                 <div
                     className={classNames({
-                        "category-tasks-all-done": categoriesData.total_tasks_done == categoriesData.total_tasks && categoriesData.total_tasks != 0,
+                        'category-tasks-all-done':
+                            categoriesData.total_tasks_done ==
+                            categoriesData.total_tasks &&
+                            categoriesData.total_tasks != 0,
                         category: true,
                         'current-category': category == null,
                     })}
@@ -144,7 +153,8 @@ function App() {
                 >
                     <span>All</span>
                     <span className='category-tasks-count'>
-                        {categoriesData.total_tasks_done}/{categoriesData.total_tasks}
+                        {categoriesData.total_tasks_done}/
+                        {categoriesData.total_tasks}
                     </span>
                 </div>
                 <div className='new-category-container'>
@@ -169,7 +179,9 @@ function App() {
                 {categoriesData.categories.map((x) => (
                     <div
                         className={classNames({
-                            "category-tasks-all-done": x.total_tasks_done == x.total_tasks && x.total_tasks != 0,
+                            'category-tasks-all-done':
+                                x.total_tasks_done == x.total_tasks &&
+                                x.total_tasks != 0,
                             category: true,
                             'current-category': category == x.name,
                         })}
@@ -186,15 +198,19 @@ function App() {
                 ))}
             </div>
             <div className='main-content'>
-                <div className="task-list-nav">
+                <div className='task-list-nav'>
                     <input
                         placeholder='search'
                         value={tasksSearchQuery}
-                        onChange={(e) => setTasksSearchQuery(e.currentTarget.value)}
+                        onChange={(e) =>
+                            setTasksSearchQuery(e.currentTarget.value)
+                        }
                     />
-                    {
-                        category != null ? <button className='remove-btn' onClick={removeCategory}>Del {category}</button> : null
-                    }
+                    {category != null ? (
+                        <button className='remove-btn' onClick={removeCategory}>
+                            Del {category}
+                        </button>
+                    ) : null}
                 </div>
                 {data.length == 0 && category == null ? (
                     <div>
@@ -241,12 +257,32 @@ function App() {
                                         value={editingModeText}
                                     />
                                 ) : (
-                                    <p className={classNames({ 'task-done': isDone, "priority-task": task.priority > 0 && task.status != 1 })} onDoubleClick={() => startEditingMode(task.id, task.title)}>
+                                    <p
+                                        className={classNames({
+                                            'task-done': isDone,
+                                            'priority-task':
+                                                task.priority > 0 &&
+                                                task.status != 1,
+                                        })}
+                                        onDoubleClick={() =>
+                                            startEditingMode(
+                                                task.id,
+                                                task.title,
+                                            )
+                                        }
+                                    >
                                         {task.title}
                                     </p>
                                 )}
                                 <div className='task-extra'>
-                                    <input className="task-priority-input" onChange={(e) => updateTaskPriority(e, task.id)} value={task.priority} type="number" />
+                                    <input
+                                        className='task-priority-input'
+                                        onChange={(e) =>
+                                            updateTaskPriority(e, task.id)
+                                        }
+                                        value={task.priority}
+                                        type='number'
+                                    />
                                     <button
                                         className='remove-btn'
                                         onClick={() => removeTask(task.id)}
