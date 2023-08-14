@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
-import { Category, Task } from './types';
+import { CategoriesData, Task } from './types';
 import classNames from 'classnames';
 import './App.css';
 
 function App() {
     const [data, setData] = useState<Task[]>();
-    const [categories, setCategories] = useState<Category[]>();
+    const [categoriesData, setCategories] = useState<CategoriesData>();
     const [category, setCategory] = useState<string | null>(null);
     const [newTaskInput, setNewTaskInput] = useState('');
     const [newCategoryInput, setNewCategoryInput] = useState('');
@@ -37,7 +37,7 @@ function App() {
         getTasks();
     }, [category]);
 
-    if (data == undefined || categories == undefined) {
+    if (data == undefined || categoriesData == undefined) {
         return <h1>Loading</h1>;
     }
 
@@ -66,6 +66,7 @@ function App() {
         if (id == '') return;
 
         invoke('remove_task', { id: id });
+        getCategories();
         getTasks();
     };
 
@@ -90,6 +91,7 @@ function App() {
             id: taskID,
             newCategory: category_name,
         });
+        getCategories();
         getTasks();
     };
 
@@ -105,9 +107,9 @@ function App() {
                     onClick={() => setCategory(null)}
                 >
                     <span>All</span>
-                    <span className='category-tasks-count'>2</span>
+                    <span className='category-tasks-count'>{categoriesData.total_tasks}</span>
                 </div>
-                {categories.map((x) => (
+                {categoriesData.categories.map((x) => (
                     <div
                         className={classNames({
                             category: true,
@@ -119,7 +121,7 @@ function App() {
                         onDragOver={(e) => e.preventDefault()}
                     >
                         <span>{x.name}</span>
-                        <span className='category-tasks-count'>2</span>
+                        <span className='category-tasks-count'>{x.total_tasks}</span>
                     </div>
                 ))}
                 <div className='new-category-container'>
