@@ -22,6 +22,7 @@ pub struct NewTask {
 )]
 #[diesel(table_name = tasks)]
 #[diesel(belongs_to(Category, foreign_key = category_name))]
+#[diesel(treat_none_as_null = true)]
 pub struct Task {
     pub id: String,
     pub category_name: String,

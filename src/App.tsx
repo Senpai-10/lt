@@ -14,6 +14,7 @@ function App() {
     const [newCategoryInput, setNewCategoryInput] = useState('');
     const [tasksSearchQuery, setTasksSearchQuery] = useState('');
     const [hideDone, setHideDone] = useState(false)
+    const dateLocale = Intl.DateTimeFormat().resolvedOptions().locale;
 
     const filteredData = useMemo(() => {
         if (data == undefined) return [];
@@ -230,6 +231,13 @@ function App() {
                     filteredData.map((task: Task) => {
                         const isDone = task.status == 1 ? true : false;
                         const newStatus = isDone ? 0 : 1;
+                        const completion_date = () => {
+                            if (task.completion_date == undefined) return
+
+                            const date = new Date(task.completion_date * 1000)
+
+                            return <span title={date.toLocaleString(dateLocale)} className="task-completion-date">{date.toLocaleDateString(dateLocale)}</span>
+                        }
 
                         return (
                             <div key={task.id} className='task'>
@@ -288,6 +296,11 @@ function App() {
                                     </p>
                                 )}
                                 <div className='task-extra'>
+                                    {
+                                        task.completion_date != undefined ?
+                                            completion_date()
+                                            : null
+                                    }
                                     <input
                                         className='task-priority-input'
                                         onChange={(e) =>

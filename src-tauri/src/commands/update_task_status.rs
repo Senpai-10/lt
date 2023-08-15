@@ -31,6 +31,14 @@ pub fn update_task_status(id: String, status: i32) -> Result<usize, String> {
             Ok(v) => Ok(v),
             Err(e) => Err(e.to_string()),
         };
+    } else if status == 0 {
+        let _ = match diesel::update(task.clone())
+            .set(schema::tasks::completion_date.eq(None::<i32>))
+            .execute(&mut connection)
+        {
+            Ok(v) => Ok(v),
+            Err(e) => Err(e.to_string()),
+        };
     }
 
     match diesel::update(task)
