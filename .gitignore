@@ -1,4 +1,6 @@
 /node_modules
 /target
 
+.sass-cache/
+src/css/**/*.css.map
 .todo-dev

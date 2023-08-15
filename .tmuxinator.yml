@@ -9,8 +9,10 @@ windows:
           - nvim .
     - run:
           - yarn tauri dev
-    - backend:
+    - tauri backend:
           - cd src-tauri/
+    - sass build:
+          - sass --watch src:src/css/
     - git:
           - clear
           - gs
