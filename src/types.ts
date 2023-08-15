@@ -1,11 +1,11 @@
-export interface Category {
+export interface T_Category {
     name: string;
     total_tasks_done: number;
     total_tasks: number;
 }
 
 export interface CategoriesData {
-    categories: Category[];
+    categories: T_Category[];
     total_tasks_done: number;
     total_tasks: number;
 }

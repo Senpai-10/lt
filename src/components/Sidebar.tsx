@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import classNames from 'classnames';
-import { invoke } from '@tauri-apps/api/tauri';
 import { CategoriesData } from '../types';
 import '../css/components/Sidebar.css';
+import { NewCategoryInput } from './NewCategoryInput';
+import { Category } from './Category';
 
 interface Props {
     currentCategory: string | null;
@@ -20,30 +20,6 @@ export function Sidebar(props: Props) {
         getCategories,
         getTasks,
     } = props;
-    const [newCategoryInput, setNewCategoryInput] = useState('');
-
-    const addCategory = () => {
-        if (newCategoryInput == '') return;
-
-        invoke('add_category', { name: newCategoryInput });
-        setNewCategoryInput('');
-        setCurrentCategory(newCategoryInput);
-        getCategories();
-    };
-
-    const handleOnDrop = (e: React.DragEvent, category_name: string) => {
-        if (category_name == currentCategory || currentCategory == null) return;
-
-        let taskID = e.dataTransfer.getData('taskID') as string;
-
-        console.log(`moved task: '${taskID}' -> category: '${category_name}'`);
-        invoke('update_task_category', {
-            id: taskID,
-            newCategory: category_name,
-        });
-        getCategories();
-        getTasks();
-    };
 
     return (
         <div className='side-bar'>
@@ -64,39 +40,20 @@ export function Sidebar(props: Props) {
                     {categoriesData.total_tasks}
                 </span>
             </div>
-            <div className='new-category-container'>
-                <input
-                    className='new-category-input'
-                    onKeyDown={(e) =>
-                        e.code == 'Enter' ? addCategory() : null
-                    }
-                    onChange={(e) => setNewCategoryInput(e.currentTarget.value)}
-                    value={newCategoryInput}
-                    placeholder='category..'
-                />
-                <button onClick={addCategory} style={{ fontWeight: 'bold' }}>
-                    +
-                </button>
-            </div>
+            <NewCategoryInput
+                setCurrentCategory={setCurrentCategory}
+                getCategories={getCategories}
+            />
             {categoriesData.categories.map((x) => (
-                <div
-                    className={classNames({
-                        'category-tasks-all-done':
-                            x.total_tasks_done == x.total_tasks &&
-                            x.total_tasks != 0,
-                        category: true,
-                        'current-category': currentCategory == x.name,
-                    })}
+                <Category
                     key={x.name}
-                    onClick={() => setCurrentCategory(x.name)}
-                    onDrop={(e) => handleOnDrop(e, x.name)}
-                    onDragOver={(e) => e.preventDefault()}
-                >
-                    <span>{x.name}</span>
-                    <span className='category-tasks-count'>
-                        {x.total_tasks_done}/{x.total_tasks}
-                    </span>
-                </div>
+                    label={x.name}
+                    setCurrentCategory={setCurrentCategory}
+                    getCategories={getCategories}
+                    currentCategory={currentCategory}
+                    getTasks={getTasks}
+                    category={x}
+                />
             ))}
         </div>
     );
