@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
-import { CategoriesData, Task } from './types';
-import './css/components/app.css';
-import { Sidebar } from './components/sidebar';
-import { MainContent } from './components/main_content';
+import { CategoriesData, Task } from '../types';
+import '../css/components/app.css';
+import { Sidebar } from './sidebar';
+import { MainContent } from './main_content';
 
 function App() {
     const [data, setData] = useState<Task[]>();
