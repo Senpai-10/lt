@@ -1,20 +1,16 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { CategoriesData, Task } from './types';
-import classNames from 'classnames';
 import './css/components/app.css';
 import { Sidebar } from './components/sidebar';
+import { MainContent } from './components/main_content';
 
 function App() {
     const [data, setData] = useState<Task[]>();
     const [categoriesData, setCategories] = useState<CategoriesData>();
     const [category, setCategory] = useState<string | null>(null);
-    const [editingMode, setEditingMode] = useState<string | null>(null);
-    const [editingModeText, setEditingModeText] = useState('');
-    const [newTaskInput, setNewTaskInput] = useState('');
     const [tasksSearchQuery, setTasksSearchQuery] = useState('');
     const [hideDone, setHideDone] = useState(false);
-    const dateLocale = Intl.DateTimeFormat().resolvedOptions().locale;
 
     const filteredData = useMemo(() => {
         if (data == undefined) return [];
@@ -56,69 +52,6 @@ function App() {
         return <h1>Loading</h1>;
     }
 
-    const addTask = () => {
-        if (newTaskInput == '') return;
-
-        invoke('add_task', {
-            title: newTaskInput,
-            category: category == null ? 'main' : category,
-        });
-        setNewTaskInput('');
-        getCategories();
-        getTasks();
-    };
-
-    const removeTask = (id: string) => {
-        if (id == '') return;
-
-        invoke('remove_task', { id: id });
-        getCategories();
-        getTasks();
-    };
-
-    const updateTaskStatus = (id: string, status: number) => {
-        if (id == '') return;
-
-        invoke('update_task_status', { id: id, status: status });
-        getTasks();
-        getCategories();
-    };
-
-    const updateTaskTitle = (id: string, title: string) => {
-        invoke('update_task_title', { id: id, title: title });
-    };
-
-    const handleDoneEditing = (taskID: string) => {
-        setEditingMode(null);
-        updateTaskTitle(taskID, editingModeText);
-        setEditingModeText('');
-        getTasks();
-    };
-
-    const startEditingMode = (taskID: string, title: string) => {
-        setEditingMode(taskID);
-        setEditingModeText(title);
-    };
-
-    const removeCategory = () => {
-        if (category == null) return;
-
-        invoke('remove_category', { name: category });
-        setCategory(null);
-        getCategories();
-    };
-
-    const updateTaskPriority = (
-        e: React.ChangeEvent<HTMLInputElement>,
-        taskID: string,
-    ) => {
-        invoke('update_task_priority', {
-            id: taskID,
-            newPriority: Number(e.currentTarget.value),
-        });
-        getTasks();
-    };
-
     return (
         <div className='container'>
             <Sidebar
@@ -128,154 +61,17 @@ function App() {
                 getCategories={getCategories}
                 getTasks={getTasks}
             />
-            <div className='main-content'>
-                <div className='task-list-nav'>
-                    <div className='filtering-settings'>
-                        <input
-                            placeholder='search'
-                            value={tasksSearchQuery}
-                            onChange={(e) =>
-                                setTasksSearchQuery(e.currentTarget.value)
-                            }
-                        />
-                        <label>
-                            Hide Done
-                            <input
-                                type='checkbox'
-                                checked={hideDone}
-                                onChange={() => setHideDone(!hideDone)}
-                            />
-                        </label>
-                    </div>
-                    {category != null ? (
-                        <button className='remove-btn' onClick={removeCategory}>
-                            Del {category}
-                        </button>
-                    ) : null}
-                </div>
-                {data.length == 0 && category == null ? (
-                    <div>
-                        <p>empty list</p>
-                    </div>
-                ) : (
-                    filteredData.map((task: Task) => {
-                        const isDone = task.status == 1 ? true : false;
-                        const newStatus = isDone ? 0 : 1;
-                        const completion_date = () => {
-                            if (task.completion_date == undefined) return;
-
-                            const date = new Date(task.completion_date * 1000);
-
-                            return (
-                                <span
-                                    title={date.toLocaleString(dateLocale)}
-                                    className='task-completion-date'
-                                >
-                                    {date.toLocaleDateString(dateLocale)}
-                                </span>
-                            );
-                        };
-
-                        return (
-                            <div key={task.id} className='task'>
-                                <div className='task-begin-container'>
-                                    <div
-                                        className='drag-icon'
-                                        onDragStart={(e) =>
-                                            e.dataTransfer.setData(
-                                                'taskID',
-                                                task.id,
-                                            )
-                                        }
-                                        draggable={true}
-                                    ></div>
-                                    <input
-                                        className='task-checkbox'
-                                        onChange={() =>
-                                            updateTaskStatus(task.id, newStatus)
-                                        }
-                                        checked={isDone}
-                                        type='checkbox'
-                                    />
-                                </div>
-                                {editingMode == task.id ? (
-                                    <input
-                                        onKeyDown={(e) =>
-                                            e.code == 'Enter'
-                                                ? handleDoneEditing(task.id)
-                                                : null
-                                        }
-                                        placeholder='task title'
-                                        onChange={(e) =>
-                                            setEditingModeText(
-                                                e.currentTarget.value,
-                                            )
-                                        }
-                                        value={editingModeText}
-                                    />
-                                ) : (
-                                    <p
-                                        className={classNames({
-                                            'task-title': true,
-                                            'task-done': isDone,
-                                            'priority-task':
-                                                task.priority > 0 &&
-                                                task.status != 1,
-                                        })}
-                                        onDoubleClick={() =>
-                                            startEditingMode(
-                                                task.id,
-                                                task.title,
-                                            )
-                                        }
-                                    >
-                                        {task.title}
-                                    </p>
-                                )}
-                                <div className='task-extra'>
-                                    {task.completion_date != undefined
-                                        ? completion_date()
-                                        : null}
-                                    <input
-                                        className={classNames({
-                                            'task-priority-input': true,
-                                            'task-priority-input-disabled':
-                                                isDone,
-                                        })}
-                                        onChange={(e) =>
-                                            updateTaskPriority(e, task.id)
-                                        }
-                                        disabled={isDone}
-                                        value={task.priority}
-                                        type='number'
-                                    />
-                                    <button
-                                        className='remove-btn'
-                                        onClick={() => removeTask(task.id)}
-                                    >
-                                        Del
-                                    </button>
-                                </div>
-                            </div>
-                        );
-                    })
-                )}
-                {category != null ? (
-                    <>
-                        <input
-                            onKeyDown={(e) =>
-                                e.code == 'Enter' ? addTask() : null
-                            }
-                            onChange={(e) =>
-                                setNewTaskInput(e.currentTarget.value)
-                            }
-                            value={newTaskInput}
-                            placeholder='task..'
-                        />
-                        {/*<button onClick={addTask}>add</button>*/}
-                    </>
-                ) : null}
-            </div>
+            <MainContent
+                tasksList={filteredData}
+                currentCategory={category}
+                setCurrentCategory={setCategory}
+                tasksSearchQuery={tasksSearchQuery}
+                setTasksSearchQuery={setTasksSearchQuery}
+                setHideDone={setHideDone}
+                hideDone={hideDone}
+                getCategories={getCategories}
+                getTasks={getTasks}
+            />
         </div>
     );
 }

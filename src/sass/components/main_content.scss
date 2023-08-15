@@ -1,0 +1,115 @@
+.task-list-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    align-items: center;
+}
+
+.filtering-settings {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+}
+
+.main-content {
+    padding: 1rem;
+    width: 100%;
+    overflow: scroll;
+}
+
+.task {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 8px;
+    background-color: #0f0f0f69;
+    margin: 5px;
+    border-radius: 8px;
+}
+
+.task-begin-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.task-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-done {
+    color: gray;
+    text-decoration: line-through;
+}
+
+.task-checkbox {
+    cursor: pointer;
+}
+
+.task-completion-date {
+    color: gray;
+}
+
+.task-priority-input {
+    padding: 6px;
+    width: 50px;
+}
+
+// Remove the arrows from input
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+.task-priority-input-disabled {
+    color: gray;
+}
+
+.priority-task {
+    color: #d83939;
+}
+
+.task-extra {
+    display: flex;
+    margin-left: auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.remove-btn {
+    box-shadow: none;
+    border-color: #d83939;
+    background: #d83939;
+    padding: 6px 12px 6px 12px;
+}
+
+.remove-btn:hover {
+    border-color: #d83939;
+}
+
+.drag-icon {
+    cursor: pointer;
+    display: inline-block;
+    width: 13px;
+    height: 10px;
+}
+
+.drag-icon,
+.drag-icon::before {
+    background-image: radial-gradient(white 40%, transparent 40%);
+    background-size: 4px 4px;
+    background-position: 0 100%;
+    background-repeat: repeat-x;
+}
+
+.drag-icon::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 33%;
+}
