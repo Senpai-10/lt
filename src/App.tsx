@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { CategoriesData, Task } from './types';
 import classNames from 'classnames';
 import './css/components/app.css';
+import { Sidebar } from './components/sidebar';
 
 function App() {
     const [data, setData] = useState<Task[]>();
@@ -11,16 +12,15 @@ function App() {
     const [editingMode, setEditingMode] = useState<string | null>(null);
     const [editingModeText, setEditingModeText] = useState('');
     const [newTaskInput, setNewTaskInput] = useState('');
-    const [newCategoryInput, setNewCategoryInput] = useState('');
     const [tasksSearchQuery, setTasksSearchQuery] = useState('');
-    const [hideDone, setHideDone] = useState(false)
+    const [hideDone, setHideDone] = useState(false);
     const dateLocale = Intl.DateTimeFormat().resolvedOptions().locale;
 
     const filteredData = useMemo(() => {
         if (data == undefined) return [];
         return data.filter((task) => {
             if (hideDone === true && task.status == 1) {
-                return false
+                return false;
             }
             return task.title.toLowerCase().includes(tasksSearchQuery);
         });
@@ -56,15 +56,6 @@ function App() {
         return <h1>Loading</h1>;
     }
 
-    const addCategory = () => {
-        if (newCategoryInput == '') return;
-
-        invoke('add_category', { name: newCategoryInput });
-        setNewCategoryInput('');
-        setCategory(newCategoryInput);
-        getCategories();
-    };
-
     const addTask = () => {
         if (newTaskInput == '') return;
 
@@ -95,20 +86,6 @@ function App() {
 
     const updateTaskTitle = (id: string, title: string) => {
         invoke('update_task_title', { id: id, title: title });
-    };
-
-    const handleOnDrop = (e: React.DragEvent, category_name: string) => {
-        if (category_name == category || category == null) return;
-
-        let taskID = e.dataTransfer.getData('taskID') as string;
-
-        console.log(`moved task: '${taskID}' -> category: '${category_name}'`);
-        invoke('update_task_category', {
-            id: taskID,
-            newCategory: category_name,
-        });
-        getCategories();
-        getTasks();
     };
 
     const handleDoneEditing = (taskID: string) => {
@@ -144,67 +121,16 @@ function App() {
 
     return (
         <div className='container'>
-            <div className='side-bar'>
-                <div
-                    className={classNames({
-                        'category-tasks-all-done':
-                            categoriesData.total_tasks_done ==
-                            categoriesData.total_tasks &&
-                            categoriesData.total_tasks != 0,
-                        category: true,
-                        'current-category': category == null,
-                    })}
-                    onClick={() => setCategory(null)}
-                >
-                    <span>All</span>
-                    <span className='category-tasks-count'>
-                        {categoriesData.total_tasks_done}/
-                        {categoriesData.total_tasks}
-                    </span>
-                </div>
-                <div className='new-category-container'>
-                    <input
-                        className='new-category-input'
-                        onKeyDown={(e) =>
-                            e.code == 'Enter' ? addCategory() : null
-                        }
-                        onChange={(e) =>
-                            setNewCategoryInput(e.currentTarget.value)
-                        }
-                        value={newCategoryInput}
-                        placeholder='category..'
-                    />
-                    <button
-                        onClick={addCategory}
-                        style={{ fontWeight: 'bold' }}
-                    >
-                        +
-                    </button>
-                </div>
-                {categoriesData.categories.map((x) => (
-                    <div
-                        className={classNames({
-                            'category-tasks-all-done':
-                                x.total_tasks_done == x.total_tasks &&
-                                x.total_tasks != 0,
-                            category: true,
-                            'current-category': category == x.name,
-                        })}
-                        key={x.name}
-                        onClick={() => setCategory(x.name)}
-                        onDrop={(e) => handleOnDrop(e, x.name)}
-                        onDragOver={(e) => e.preventDefault()}
-                    >
-                        <span>{x.name}</span>
-                        <span className='category-tasks-count'>
-                            {x.total_tasks_done}/{x.total_tasks}
-                        </span>
-                    </div>
-                ))}
-            </div>
+            <Sidebar
+                categoriesData={categoriesData}
+                currentCategory={category}
+                setCurrentCategory={setCategory}
+                getCategories={getCategories}
+                getTasks={getTasks}
+            />
             <div className='main-content'>
                 <div className='task-list-nav'>
-                    <div className="filtering-settings">
+                    <div className='filtering-settings'>
                         <input
                             placeholder='search'
                             value={tasksSearchQuery}
@@ -214,7 +140,11 @@ function App() {
                         />
                         <label>
                             Hide Done
-                            <input type="checkbox" checked={hideDone} onChange={() => setHideDone(!hideDone)} />
+                            <input
+                                type='checkbox'
+                                checked={hideDone}
+                                onChange={() => setHideDone(!hideDone)}
+                            />
                         </label>
                     </div>
                     {category != null ? (
@@ -232,16 +162,23 @@ function App() {
                         const isDone = task.status == 1 ? true : false;
                         const newStatus = isDone ? 0 : 1;
                         const completion_date = () => {
-                            if (task.completion_date == undefined) return
+                            if (task.completion_date == undefined) return;
 
-                            const date = new Date(task.completion_date * 1000)
+                            const date = new Date(task.completion_date * 1000);
 
-                            return <span title={date.toLocaleString(dateLocale)} className="task-completion-date">{date.toLocaleDateString(dateLocale)}</span>
-                        }
+                            return (
+                                <span
+                                    title={date.toLocaleString(dateLocale)}
+                                    className='task-completion-date'
+                                >
+                                    {date.toLocaleDateString(dateLocale)}
+                                </span>
+                            );
+                        };
 
                         return (
                             <div key={task.id} className='task'>
-                                <div className="task-begin-container">
+                                <div className='task-begin-container'>
                                     <div
                                         className='drag-icon'
                                         onDragStart={(e) =>
@@ -296,15 +233,14 @@ function App() {
                                     </p>
                                 )}
                                 <div className='task-extra'>
-                                    {
-                                        task.completion_date != undefined ?
-                                            completion_date()
-                                            : null
-                                    }
+                                    {task.completion_date != undefined
+                                        ? completion_date()
+                                        : null}
                                     <input
                                         className={classNames({
                                             'task-priority-input': true,
-                                            "task-priority-input-disabled": isDone,
+                                            'task-priority-input-disabled':
+                                                isDone,
                                         })}
                                         onChange={(e) =>
                                             updateTaskPriority(e, task.id)
