@@ -233,24 +233,26 @@ function App() {
 
                         return (
                             <div key={task.id} className='task'>
-                                <div
-                                    className='drag-icon'
-                                    onDragStart={(e) =>
-                                        e.dataTransfer.setData(
-                                            'taskID',
-                                            task.id,
-                                        )
-                                    }
-                                    draggable={true}
-                                ></div>
-                                <input
-                                    className='task-checkbox'
-                                    onChange={() =>
-                                        updateTaskStatus(task.id, newStatus)
-                                    }
-                                    checked={isDone}
-                                    type='checkbox'
-                                />
+                                <div className="task-begin-container">
+                                    <div
+                                        className='drag-icon'
+                                        onDragStart={(e) =>
+                                            e.dataTransfer.setData(
+                                                'taskID',
+                                                task.id,
+                                            )
+                                        }
+                                        draggable={true}
+                                    ></div>
+                                    <input
+                                        className='task-checkbox'
+                                        onChange={() =>
+                                            updateTaskStatus(task.id, newStatus)
+                                        }
+                                        checked={isDone}
+                                        type='checkbox'
+                                    />
+                                </div>
                                 {editingMode == task.id ? (
                                     <input
                                         onKeyDown={(e) =>
@@ -269,6 +271,7 @@ function App() {
                                 ) : (
                                     <p
                                         className={classNames({
+                                            'task-title': true,
                                             'task-done': isDone,
                                             'priority-task':
                                                 task.priority > 0 &&
