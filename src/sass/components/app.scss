@@ -4,52 +4,6 @@
     max-height: 100vh;
 }
 
-.side-bar {
-    display: flex;
-    gap: 10px;
-    overflow: scroll;
-    flex-direction: column;
-    padding: 1rem;
-    width: 300px;
-    background-color: #00000015;
-}
-
-.new-category-container {
-    display: flex;
-    justify-content: space-between;
-}
-
-.current-category {
-    background-color: #396cd895 !important;
-}
-
-.category {
-    display: flex;
-    gap: 10px;
-    cursor: pointer;
-    padding: 8px;
-    border-radius: 8px;
-    align-items: center;
-    background-color: #00000025;
-}
-
-.category:hover {
-    background-color: #396cd830;
-}
-
-.category-tasks-count {
-    color: #9b9b9b;
-    background: #ffffff15;
-    padding: 4px 16px 4px 16px;
-    margin-left: auto;
-    border-radius: 8px;
-    align-items: center;
-}
-
-.category-tasks-all-done {
-    background: #3cd83915;
-}
-
 .task-list-nav {
     display: flex;
     justify-content: space-between;
@@ -61,10 +15,6 @@
     align-items: center;
     display: flex;
     gap: 10px;
-}
-
-.new-category-input {
-    width: 100px;
 }
 
 .main-content {
