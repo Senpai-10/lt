@@ -4,6 +4,7 @@ import { invoke } from '@tauri-apps/api/tauri';
 import { Task } from '../types';
 import { Navbar } from './Navbar';
 import '../css/components/MainContent.css';
+import { NewTaskInput } from './NewTaskInput';
 
 interface Props {
     tasksList: Task[];
@@ -31,20 +32,7 @@ export function MainContent(props: Props) {
     } = props;
     const [editingMode, setEditingMode] = useState<string | null>(null);
     const [editingModeText, setEditingModeText] = useState('');
-    const [newTaskInput, setNewTaskInput] = useState('');
     const dateLocale = Intl.DateTimeFormat().resolvedOptions().locale;
-
-    const addTask = () => {
-        if (newTaskInput == '') return;
-
-        invoke('add_task', {
-            title: newTaskInput,
-            category: currentCategory == null ? 'main' : currentCategory,
-        });
-        setNewTaskInput('');
-        getCategories();
-        getTasks();
-    };
 
     const removeTask = (id: string) => {
         if (id == '') return;
@@ -204,17 +192,11 @@ export function MainContent(props: Props) {
                 })
             )}
             {currentCategory != null ? (
-                <>
-                    <input
-                        onKeyDown={(e) =>
-                            e.code == 'Enter' ? addTask() : null
-                        }
-                        onChange={(e) => setNewTaskInput(e.currentTarget.value)}
-                        value={newTaskInput}
-                        placeholder='task..'
-                    />
-                    {/*<button onClick={addTask}>add</button>*/}
-                </>
+                <NewTaskInput
+                    currentCategory={currentCategory}
+                    getTasks={getTasks}
+                    getCategories={getCategories}
+                />
             ) : null}
         </div>
     );
