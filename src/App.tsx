@@ -302,10 +302,14 @@ function App() {
                                             : null
                                     }
                                     <input
-                                        className='task-priority-input'
+                                        className={classNames({
+                                            'task-priority-input': true,
+                                            "task-priority-input-disabled": isDone,
+                                        })}
                                         onChange={(e) =>
                                             updateTaskPriority(e, task.id)
                                         }
+                                        disabled={isDone}
                                         value={task.priority}
                                         type='number'
                                     />
