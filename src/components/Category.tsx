@@ -1,11 +1,12 @@
 import { invoke } from '@tauri-apps/api';
-import classNames from 'classnames';
-import { T_Category } from "../types"
+import { T_Category, CategoriesData } from "../types"
 import "../css/components/Category.css"
 
 interface Props {
     label: string
-    category: T_Category
+    category: T_Category | CategoriesData
+    styles: string
+    setCategoryTo: string | null,
     currentCategory: string | null
     setCurrentCategory: React.Dispatch<React.SetStateAction<string | null>>;
     getCategories: () => void;
@@ -13,10 +14,10 @@ interface Props {
 }
 
 export function Category(props: Props) {
-    const { label, category, currentCategory, setCurrentCategory, getCategories, getTasks } = props;
+    const { label, category, styles, setCategoryTo, currentCategory, setCurrentCategory, getCategories, getTasks } = props;
 
-    const handleOnDrop = (e: React.DragEvent, category_name: string) => {
-        if (category_name == currentCategory || currentCategory == null) return;
+    const handleOnDrop = (e: React.DragEvent, category_name: string | null) => {
+        if (category_name == currentCategory || currentCategory == null || category_name == null) return;
 
         let taskID = e.dataTransfer.getData('taskID') as string;
 
@@ -31,15 +32,9 @@ export function Category(props: Props) {
 
     return (
         <div
-            className={classNames({
-                'category-tasks-all-done':
-                    category.total_tasks_done == category.total_tasks &&
-                    category.total_tasks != 0,
-                category: true,
-                'current-category': currentCategory == category.name,
-            })}
-            onClick={() => setCurrentCategory(category.name)}
-            onDrop={(e) => handleOnDrop(e, category.name)}
+            className={styles}
+            onClick={() => setCurrentCategory(setCategoryTo)}
+            onDrop={(e) => handleOnDrop(e, setCategoryTo)}
             onDragOver={(e) => e.preventDefault()}
         >
             <span>{label}</span>
