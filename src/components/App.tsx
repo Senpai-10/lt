@@ -23,15 +23,9 @@ function App() {
     }, [data, tasksSearchQuery, hideDone]);
 
     const getTasks = () => {
-        if (category != null) {
-            invoke('get_tasks', { category: category }).then((res: any) => {
-                setData(res);
-            });
-        } else {
-            invoke('get_tasks').then((res: any) => {
-                setData(res);
-            });
-        }
+        invoke('get_tasks', { category: category }).then((res: any) => {
+            setData(res);
+        });
     };
 
     const getCategories = () => {
