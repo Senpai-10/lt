@@ -1,18 +1,18 @@
 import { useState } from 'react';
 import classNames from 'classnames';
 import { invoke } from '@tauri-apps/api/tauri';
-import { Task } from "../types"
+import { Task } from '../types';
 import { Navbar } from './Navbar';
 import '../css/components/MainContent.css';
 
 interface Props {
-    tasksList: Task[]
+    tasksList: Task[];
     currentCategory: string | null;
     setCurrentCategory: React.Dispatch<React.SetStateAction<string | null>>;
-    tasksSearchQuery: string
-    setTasksSearchQuery: React.Dispatch<React.SetStateAction<string>>
-    hideDone: boolean
-    setHideDone: React.Dispatch<React.SetStateAction<boolean>>
+    tasksSearchQuery: string;
+    setTasksSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+    hideDone: boolean;
+    setHideDone: React.Dispatch<React.SetStateAction<boolean>>;
     getCategories: () => void;
     getTasks: () => void;
 }
@@ -45,7 +45,6 @@ export function MainContent(props: Props) {
         getCategories();
         getTasks();
     };
-
 
     const removeTask = (id: string) => {
         if (id == '') return;
@@ -171,10 +170,7 @@ export function MainContent(props: Props) {
                                             task.status != 1,
                                     })}
                                     onDoubleClick={() =>
-                                        startEditingMode(
-                                            task.id,
-                                            task.title,
-                                        )
+                                        startEditingMode(task.id, task.title)
                                     }
                                 >
                                     {task.title}
@@ -187,8 +183,7 @@ export function MainContent(props: Props) {
                                 <input
                                     className={classNames({
                                         'task-priority-input': true,
-                                        'task-priority-input-disabled':
-                                            isDone,
+                                        'task-priority-input-disabled': isDone,
                                     })}
                                     onChange={(e) =>
                                         updateTaskPriority(e, task.id)
@@ -214,9 +209,7 @@ export function MainContent(props: Props) {
                         onKeyDown={(e) =>
                             e.code == 'Enter' ? addTask() : null
                         }
-                        onChange={(e) =>
-                            setNewTaskInput(e.currentTarget.value)
-                        }
+                        onChange={(e) => setNewTaskInput(e.currentTarget.value)}
                         value={newTaskInput}
                         placeholder='task..'
                     />
@@ -224,6 +217,5 @@ export function MainContent(props: Props) {
                 </>
             ) : null}
         </div>
-    )
+    );
 }
-
