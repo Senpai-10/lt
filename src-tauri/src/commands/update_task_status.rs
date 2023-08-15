@@ -25,6 +25,14 @@ pub fn update_task_status(id: String, status: i32) -> Result<usize, String> {
         };
 
         let _ = match diesel::update(task.clone())
+            .set(schema::tasks::priority.eq(-1))
+            .execute(&mut connection)
+        {
+            Ok(v) => Ok(v),
+            Err(e) => Err(e.to_string()),
+        };
+
+        let _ = match diesel::update(task.clone())
             .set(schema::tasks::modification_date.eq(since_the_epoch))
             .execute(&mut connection)
         {
@@ -34,6 +42,14 @@ pub fn update_task_status(id: String, status: i32) -> Result<usize, String> {
     } else if status == 0 {
         let _ = match diesel::update(task.clone())
             .set(schema::tasks::completion_date.eq(None::<i32>))
+            .execute(&mut connection)
+        {
+            Ok(v) => Ok(v),
+            Err(e) => Err(e.to_string()),
+        };
+
+        let _ = match diesel::update(task.clone())
+            .set(schema::tasks::priority.eq(0))
             .execute(&mut connection)
         {
             Ok(v) => Ok(v),
