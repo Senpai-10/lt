@@ -2,6 +2,7 @@ import { useState } from 'react';
 import classNames from 'classnames';
 import { invoke } from '@tauri-apps/api/tauri';
 import { Task } from "../types"
+import { Navbar } from './Navbar';
 import '../css/components/MainContent.css';
 
 interface Props {
@@ -78,14 +79,6 @@ export function MainContent(props: Props) {
         setEditingModeText(title);
     };
 
-    const removeCategory = () => {
-        if (currentCategory == null) return;
-
-        invoke('remove_category', { name: currentCategory });
-        setCurrentCategory(null);
-        getCategories();
-    };
-
     const updateTaskPriority = (
         e: React.ChangeEvent<HTMLInputElement>,
         taskID: string,
@@ -99,30 +92,15 @@ export function MainContent(props: Props) {
 
     return (
         <div className='main-content'>
-            <div className='task-list-nav'>
-                <div className='filtering-settings'>
-                    <input
-                        placeholder='search'
-                        value={tasksSearchQuery}
-                        onChange={(e) =>
-                            setTasksSearchQuery(e.currentTarget.value)
-                        }
-                    />
-                    <label>
-                        Hide Done
-                        <input
-                            type='checkbox'
-                            checked={hideDone}
-                            onChange={() => setHideDone(!hideDone)}
-                        />
-                    </label>
-                </div>
-                {currentCategory != null ? (
-                    <button className='remove-btn' onClick={removeCategory}>
-                        Del {currentCategory}
-                    </button>
-                ) : null}
-            </div>
+            <Navbar
+                currentCategory={currentCategory}
+                tasksSearchQuery={tasksSearchQuery}
+                hideDone={hideDone}
+                setCurrentCategory={setCurrentCategory}
+                setTasksSearchQuery={setTasksSearchQuery}
+                setHideDone={setHideDone}
+                getCategories={getCategories}
+            />
             {tasksList.length == 0 && currentCategory == null ? (
                 <div>
                     <p>empty list</p>
