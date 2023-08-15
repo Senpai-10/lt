@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { CategoriesData, Task } from './types';
 import classNames from 'classnames';
-import './App.css';
+import './css/components/app.css';
 
 function App() {
     const [data, setData] = useState<Task[]>();
