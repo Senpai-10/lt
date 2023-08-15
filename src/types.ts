@@ -10,7 +10,7 @@ export interface CategoriesData {
     total_tasks: number;
 }
 
-export interface Task {
+export interface T_Task {
     id: string;
     category_name: string;
     title: string;

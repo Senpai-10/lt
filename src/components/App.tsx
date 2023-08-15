@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
-import { CategoriesData, Task } from '../types';
+import { CategoriesData, T_Task } from '../types';
 import '../css/components/App.css';
 import { Sidebar } from './Sidebar';
 import { MainContent } from './MainContent';
 
 function App() {
-    const [data, setData] = useState<Task[]>();
+    const [data, setData] = useState<T_Task[]>();
     const [categoriesData, setCategories] = useState<CategoriesData>();
     const [category, setCategory] = useState<string | null>(null);
     const [tasksSearchQuery, setTasksSearchQuery] = useState('');
