@@ -2,7 +2,7 @@ import { useState } from 'react';
 import classNames from 'classnames';
 import { invoke } from '@tauri-apps/api/tauri';
 import { Task } from "../types"
-import '../css/components/main_content.css';
+import '../css/components/MainContent.css';
 
 interface Props {
     tasksList: Task[]

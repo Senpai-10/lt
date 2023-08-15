@@ -2,7 +2,7 @@ import { useState } from 'react';
 import classNames from 'classnames';
 import { invoke } from '@tauri-apps/api/tauri';
 import { CategoriesData } from '../types';
-import '../css/components/sidebar.css';
+import '../css/components/Sidebar.css';
 
 interface Props {
     currentCategory: string | null;
