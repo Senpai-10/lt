@@ -12,7 +12,7 @@ windows:
     - tauri backend:
           - cd src-tauri/
     - sass build:
-          - sass --watch src:src/css/
+          - sass --watch src/sass:src/css/
     - git:
           - clear
           - gs
