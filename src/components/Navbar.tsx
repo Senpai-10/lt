@@ -1,4 +1,5 @@
 import { invoke } from "@tauri-apps/api";
+import "../css/components/Navbar.css"
 
 interface Props {
     currentCategory: string | null;
@@ -45,6 +46,7 @@ export function Navbar(props: Props) {
                         onChange={() => setHideDone(!hideDone)}
                     />
                 </label>
+
             </div>
             {currentCategory != null ? (
                 <button className='remove-btn' onClick={removeCategory}>
