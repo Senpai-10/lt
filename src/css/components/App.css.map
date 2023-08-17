@@ -1,7 +1,1 @@
-{
-"version": 3,
-"mappings": "AAAA,UAAW;EACP,OAAO,EAAE,IAAI;EACb,MAAM,EAAE,KAAK;EACb,UAAU,EAAE,KAAK",
-"sources": ["../../sass/components/App.scss"],
-"names": [],
-"file": "App.css"
-}
+{"version":3,"sourceRoot":"","sources":["../../sass/components/App.scss"],"names":[],"mappings":"AAAA;EACI;EACA;EACA","file":"App.css"}

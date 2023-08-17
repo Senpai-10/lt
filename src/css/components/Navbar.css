@@ -2,11 +2,13 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 5px;
-  align-items: center; }
+  align-items: center;
+}
 
 .filtering-settings {
   align-items: center;
   display: flex;
-  gap: 10px; }
+  gap: 10px;
+}
 
 /*# sourceMappingURL=Navbar.css.map */

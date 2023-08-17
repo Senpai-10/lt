@@ -1,15 +1,18 @@
 .main-content {
   padding: 1rem;
   width: 100%;
-  overflow: scroll; }
+  overflow: scroll;
+}
 
 .remove-btn {
   box-shadow: none;
   border-color: #d83939;
   background: #d83939;
-  padding: 6px 12px 6px 12px; }
+  padding: 6px 12px 6px 12px;
+}
 
 .remove-btn:hover {
-  border-color: #d83939; }
+  border-color: #d83939;
+}
 
 /*# sourceMappingURL=MainContent.css.map */

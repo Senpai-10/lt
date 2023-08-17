@@ -1,5 +1,6 @@
 .current-category {
-  background-color: #396cd895 !important; }
+  background-color: rgba(57, 108, 216, 0.5843137255) !important;
+}
 
 .category {
   display: flex;
@@ -8,20 +9,24 @@
   padding: 8px;
   border-radius: 8px;
   align-items: center;
-  background-color: #00000025; }
+  background-color: rgba(0, 0, 0, 0.1450980392);
+}
 
 .category:hover {
-  background-color: #396cd830; }
+  background-color: rgba(57, 108, 216, 0.1882352941);
+}
 
 .category-tasks-count {
   color: #9b9b9b;
-  background: #ffffff15;
+  background: rgba(255, 255, 255, 0.0823529412);
   padding: 4px 16px 4px 16px;
   margin-left: auto;
   border-radius: 8px;
-  align-items: center; }
+  align-items: center;
+}
 
 .category-tasks-all-done {
-  background: #3cd83915; }
+  background: rgba(60, 216, 57, 0.0823529412);
+}
 
 /*# sourceMappingURL=Category.css.map */
