@@ -9,6 +9,21 @@ use nanoid::nanoid;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 #[tauri::command]
+pub fn add_category(name: String) -> Result<usize, String> {
+    let mut connection = establish_connection();
+
+    let new_category = NewCategory { name };
+
+    match diesel::insert_into(schema::categories::dsl::categories)
+        .values(new_category)
+        .execute(&mut connection)
+    {
+        Ok(r) => Ok(r),
+        Err(e) => Err(e.to_string()),
+    }
+}
+
+#[tauri::command]
 pub fn add_task(title: String, category: String) -> Result<usize, String> {
     let mut connection = establish_connection();
     let start = SystemTime::now();

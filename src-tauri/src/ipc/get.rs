@@ -1,5 +1,6 @@
 use crate::db::establish_connection;
 use crate::models::categories::Category;
+use crate::models::tasks::Task;
 use crate::schema;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -68,4 +69,29 @@ pub fn get_categories() -> CategoriesData {
     }
 
     categories_data
+}
+
+#[tauri::command]
+pub fn get_tasks(category: Option<String>) -> Result<Vec<Task>, String> {
+    let mut connection = establish_connection();
+
+    match category {
+        Some(name) => {
+            match schema::tasks::dsl::tasks
+                .filter(schema::tasks::category_name.eq(&name))
+                .order(schema::tasks::priority.desc())
+                .load(&mut connection)
+            {
+                Ok(r) => Ok(r),
+                Err(e) => Err(e.to_string()),
+            }
+        }
+        None => match schema::tasks::dsl::tasks
+            .order(schema::tasks::priority.desc())
+            .load(&mut connection)
+        {
+            Ok(r) => Ok(r),
+            Err(e) => Err(e.to_string()),
+        },
+    }
 }

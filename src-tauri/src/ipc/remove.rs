@@ -24,3 +24,15 @@ pub fn remove_category(name: String) -> Result<usize, String> {
         Err(e) => Err(e.to_string()),
     }
 }
+
+#[tauri::command]
+pub fn remove_task(id: String) -> Result<usize, String> {
+    let mut connection = establish_connection();
+
+    match diesel::delete(schema::tasks::dsl::tasks.filter(schema::tasks::id.eq(id)))
+        .execute(&mut connection)
+    {
+        Ok(v) => Ok(v),
+        Err(e) => Err(e.to_string()),
+    }
+}
