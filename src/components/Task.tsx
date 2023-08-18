@@ -78,7 +78,10 @@ export function Task(props: Props) {
     };
 
     return (
-        <div key={task.id} className='task'>
+        <div key={task.id} className={classNames({
+            task: true,
+            'priority-task': task.priority > 0 && task.status != 1
+        })}>
             <div className='task-begin-container'>
                 <div
                     className='drag-icon'
@@ -107,8 +110,7 @@ export function Task(props: Props) {
                 <p
                     className={classNames({
                         'task-title': true,
-                        'task-done': isDone,
-                        'priority-task': task.priority > 0 && task.status != 1,
+                        'task-done': isDone
                     })}
                     onDoubleClick={() => startEditingMode(task.id, task.title)}
                 >
@@ -131,7 +133,7 @@ export function Task(props: Props) {
                     className='remove-btn'
                     onClick={() => removeTask(task.id)}
                 >
-                    Del
+                    x
                 </button>
             </div>
         </div>

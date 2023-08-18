@@ -1,7 +1,1 @@
-{
-"version": 3,
-"mappings": "AAAA,SAAU;EACN,OAAO,EAAE,IAAI;EACb,GAAG,EAAE,IAAI;EACT,QAAQ,EAAE,MAAM;EAChB,cAAc,EAAE,MAAM;EACtB,OAAO,EAAE,IAAI;EACb,KAAK,EAAE,KAAK;EACZ,gBAAgB,EAAE,SAAS",
-"sources": ["../../sass/components/Sidebar.scss"],
-"names": [],
-"file": "Sidebar.css"
-}
+{"version":3,"sourceRoot":"","sources":["../../sass/components/Sidebar.scss"],"names":[],"mappings":"AAAA;EACI;EACA;EACA;EACA;EACA;EACA","file":"Sidebar.css"}

@@ -1,9 +1,11 @@
+@use '../vars';
+
 .task {
     display: flex;
     gap: 10px;
     align-items: center;
     padding: 8px;
-    background-color: #0f0f0f69;
+    // background-color: rgba(#000000, 0.2);
     margin: 5px;
     border-radius: 8px;
 }
@@ -35,7 +37,9 @@
 
 .task-priority-input {
     padding: 6px;
-    width: 50px;
+    width: 2rem;
+    background: rgba(#000000, 0.1);
+    text-align: center;
 }
 
 // Remove the arrows from input
@@ -52,7 +56,7 @@ input[type='number']::-webkit-outer-spin-button {
 }
 
 .priority-task {
-    color: #d83939;
+    background-color: rgba(vars.$red, 0.3);
 }
 
 .task-extra {

@@ -2,17 +2,18 @@
   padding: 1rem;
   width: 100%;
   overflow: scroll;
+  background-color: rgba(0, 0, 0, 0.15);
 }
 
 .remove-btn {
   box-shadow: none;
-  border-color: #d83939;
-  background: #d83939;
+  color: #d83939;
   padding: 6px 12px 6px 12px;
 }
 
 .remove-btn:hover {
-  border-color: #d83939;
+  background: rgba(216, 57, 57, 0.2);
+  color: rgba(216, 57, 57, 0.8);
 }
 
 /*# sourceMappingURL=MainContent.css.map */
