@@ -43,7 +43,7 @@ function App() {
     }, [category]);
 
     if (data == undefined || categoriesData == undefined) {
-        return <h1>Loading</h1>;
+        return;
     }
 
     return (
