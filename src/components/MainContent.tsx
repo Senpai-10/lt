@@ -1,6 +1,4 @@
 import { T_Task, TasksDisplay } from '../types';
-import { Navbar } from './Navbar';
-import { NewTaskInput } from './NewTaskInput';
 import { Task } from './Task';
 import '../css/components/MainContent.css';
 import EditIcon from '../assets/edit.svg';
