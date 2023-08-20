@@ -1,0 +1,36 @@
+.sidebar-item {
+  display: flex;
+  padding: 10px 20px 10px 20px;
+  justify-content: space-between;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.25s;
+}
+
+.sidebar-item-tasks-count {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0 10px 0 10px;
+  border-radius: 4px;
+}
+
+.sidebar-item-active {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-item-all-tasks {
+  outline: 2px solid #7954ee;
+  margin-bottom: 20px;
+}
+
+.sidebar-item-all-tasks-active {
+  background-color: #7954ee;
+  margin-bottom: 20px;
+}
+
+.sidebar-item-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*# sourceMappingURL=SidebarItem.css.map */

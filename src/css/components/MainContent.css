@@ -1,19 +1,54 @@
 .main-content {
-  padding: 1rem;
-  width: 100%;
+  flex: 1;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-options {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.category-name {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.remove-category {
+  cursor: pointer;
+}
+
+.sp {
+  border: 1px solid rgba(184, 184, 184, 0.15);
+  border-radius: 50%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   overflow: scroll;
-  background-color: rgba(0, 0, 0, 0.15);
 }
 
-.remove-btn {
-  box-shadow: none;
-  color: #d83939;
-  padding: 6px 12px 6px 12px;
+.new-task {
+  display: flex;
+  margin-top: auto;
+  gap: 10px;
+  padding-top: 20px;
 }
 
-.remove-btn:hover {
-  background: rgba(216, 57, 57, 0.2);
-  color: rgba(216, 57, 57, 0.8);
+.new-task-input {
+  width: 100%;
 }
 
 /*# sourceMappingURL=MainContent.css.map */

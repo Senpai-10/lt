@@ -1,10 +1,26 @@
-.side-bar {
+.sidebar {
   display: flex;
   gap: 10px;
-  overflow: scroll;
   flex-direction: column;
-  padding: 1rem;
-  width: 300px;
+  padding: 20px;
+  width: 250px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.category-list {
+  overflow: scroll;
+}
+
+.sidebar-new-category {
+  margin-top: auto;
+  display: flex;
+  gap: 10px;
+  padding-top: 10px;
+  justify-content: space-between;
+}
+
+.sidebar-new-category-input {
+  width: 142px;
 }
 
 /*# sourceMappingURL=Sidebar.css.map */

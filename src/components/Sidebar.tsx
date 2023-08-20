@@ -1,73 +1,78 @@
-import classNames from 'classnames';
 import { CategoriesData } from '../types';
-import { NewCategoryInput } from './NewCategoryInput';
-import { Category } from './Category';
+import { invoke } from '@tauri-apps/api';
+import PlusIcon from '../assets/plus.svg';
 import '../css/components/Sidebar.css';
+import { SidebarItem } from './SidebarItem';
+import { useState } from 'react';
 
 interface Props {
     currentCategory: string | null;
     setCurrentCategory: React.Dispatch<React.SetStateAction<string | null>>;
     categoriesData: CategoriesData;
-    getCategories: () => void;
-    getTasks: () => void;
+    getCategories: () => void
 }
 
 export function Sidebar(props: Props) {
     const {
         categoriesData,
+        getCategories,
         currentCategory,
         setCurrentCategory,
-        getCategories,
-        getTasks,
     } = props;
 
-    const allCategoryStyles = classNames({
-        'category-tasks-all-done':
-            categoriesData.total_tasks_done == categoriesData.total_tasks &&
-            categoriesData.total_tasks != 0,
-        category: true,
-        'current-category': currentCategory == null,
-    });
+    const [newCategory, setNewCategory] = useState('');
+
+    const handleAddCategory = () => {
+        if (newCategory == '') return;
+
+        invoke('add_category', { name: newCategory }).then(() => {
+            getCategories()
+        });
+
+        setNewCategory('')
+    };
 
     return (
-        <div className='side-bar'>
-            <Category
-                label='All'
-                setCategoryTo={null}
-                styles={allCategoryStyles}
-                currentCategory={currentCategory}
+        <div className='sidebar'>
+            <SidebarItem
+                name='All Tasks'
+                type='all-tasks'
+                is_active={currentCategory == null}
+                total={{
+                    tasks: categoriesData.total_tasks,
+                    done: categoriesData.total_tasks_done,
+                }}
                 setCurrentCategory={setCurrentCategory}
-                category={categoriesData}
-                getTasks={getTasks}
-                getCategories={getCategories}
             />
-            <NewCategoryInput
-                setCurrentCategory={setCurrentCategory}
-                getCategories={getCategories}
-            />
-            {categoriesData.categories.map((x) => {
-                const styles = classNames({
-                    'category-tasks-all-done':
-                        x.total_tasks_done == x.total_tasks &&
-                        x.total_tasks != 0,
-                    category: true,
-                    'current-category': currentCategory == x.name,
-                });
 
-                return (
-                    <Category
+            <div className='category-list'>
+                {categoriesData.categories.map((x) => (
+                    <SidebarItem
                         key={x.name}
-                        label={x.name}
-                        setCategoryTo={x.name}
-                        styles={styles}
+                        name={x.name}
+                        type='category-name'
+                        total={{
+                            tasks: x.total_tasks,
+                            done: x.total_tasks_done,
+                        }}
+                        is_active={x.name == currentCategory}
                         setCurrentCategory={setCurrentCategory}
-                        getCategories={getCategories}
-                        currentCategory={currentCategory}
-                        getTasks={getTasks}
-                        category={x}
                     />
-                );
-            })}
+                ))}
+            </div>
+
+            <div className='sidebar-new-category'>
+                <input
+                    className='sidebar-new-category-input'
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.currentTarget.value)}
+                    onKeyDown={(e) => e.key == "Enter" ? handleAddCategory() : null}
+                    placeholder='Add a category'
+                />
+                <button onClick={handleAddCategory}>
+                    <img src={PlusIcon} />
+                </button>
+            </div>
         </div>
     );
 }

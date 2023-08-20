@@ -2,18 +2,16 @@
 
 .task {
     display: flex;
-    gap: 10px;
-    align-items: center;
-    padding: 8px;
-    // background-color: rgba(#000000, 0.2);
-    margin: 5px;
-    border-radius: 8px;
+    gap: 5px;
+    padding: 5px;
+    background-color: rgba(#ffffff, 0.05);
+    border-radius: 4px;
 }
 
-.task-begin-container {
+.task-status {
     display: flex;
-    gap: 10px;
     align-items: center;
+    cursor: pointer;
 }
 
 .task-title {
@@ -22,68 +20,35 @@
     text-overflow: ellipsis;
 }
 
-.task-done {
-    color: gray;
+.task-desc {
+    color: vars.$task_desc_color;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.task-title-desc {
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.task-extra-icon {
+    margin-left: auto;
+}
+
+.done-task-title {
+    color: vars.$done_color;
     text-decoration: line-through;
 }
 
-.task-checkbox {
-    cursor: pointer;
+.done-task-desc {
+    color: darken(vars.$done_color, 4) !important;
+    text-decoration: line-through;
 }
 
-.task-completion-date {
-    color: gray;
-}
-
-.task-priority-input {
-    padding: 6px;
-    width: 2rem;
-    background: rgba(#000000, 0.1);
-    text-align: center;
-}
-
-// Remove the arrows from input
-input[type='number']::-webkit-inner-spin-button,
-input[type='number']::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0;
-}
-
-.task-priority-input-disabled {
-    color: gray;
-}
-
-.priority-task {
-    background-color: rgba(vars.$red, 0.3);
-}
-
-.task-extra {
+.task-extra-icon {
     display: flex;
-    margin-left: auto;
     gap: 10px;
-    align-items: center;
-}
-
-.drag-icon {
-    cursor: pointer;
-    display: inline-block;
-    width: 13px;
-    height: 10px;
-}
-
-.drag-icon,
-.drag-icon::before {
-    background-image: radial-gradient(white 40%, transparent 40%);
-    background-size: 4px 4px;
-    background-position: 0 100%;
-    background-repeat: repeat-x;
-}
-
-.drag-icon::before {
-    content: '';
-    display: block;
-    width: 100%;
-    height: 33%;
 }

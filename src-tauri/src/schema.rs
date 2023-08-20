@@ -11,6 +11,7 @@ diesel::table! {
         id -> Text,
         category_name -> Text,
         title -> Text,
+        desc -> Nullable<Text>,
         status -> Integer,
         priority -> Integer,
         creation_date -> Integer,

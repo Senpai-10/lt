@@ -52,6 +52,7 @@ pub fn add_task(title: String, category: String) -> Result<usize, String> {
         id: nanoid!(),
         category_name: category,
         title,
+        desc: None,
         status: 0,
         priority: 0,
         creation_date: since_the_epoch,

@@ -9,7 +9,7 @@ pub struct NewTask {
     pub id: String,
     pub category_name: String,
     pub title: String,
-    // status 0: todo, 1: INPROGRESS, 2: DONE
+    pub desc: Option<String>,
     pub status: i32,
     pub priority: i32,
     pub creation_date: i32,
@@ -27,7 +27,7 @@ pub struct Task {
     pub id: String,
     pub category_name: String,
     pub title: String,
-    // status 0: todo, 1: INPROGRESS, 2: DONE
+    pub desc: Option<String>,
     pub status: i32,
     pub priority: i32,
     pub creation_date: i32,

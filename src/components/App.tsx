@@ -1,26 +1,29 @@
 import { useState, useEffect, useMemo } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
-import { CategoriesData, T_Task } from '../types';
+import { TasksDisplay, CategoriesData, T_Task } from '../types';
 import '../css/components/App.css';
 import { Sidebar } from './Sidebar';
 import { MainContent } from './MainContent';
 
 function App() {
     const [data, setData] = useState<T_Task[]>();
-    const [categoriesData, setCategories] = useState<CategoriesData>();
+    const [categoriesData, setCategoriesData] = useState<CategoriesData>();
     const [category, setCategory] = useState<string | null>(null);
     const [tasksSearchQuery, setTasksSearchQuery] = useState('');
-    const [hideDone, setHideDone] = useState(false);
+    const [showTasks, setShowTasks] = useState<TasksDisplay>('all');
 
     const filteredData = useMemo(() => {
         if (data == undefined) return [];
         return data.filter((task) => {
-            if (hideDone === true && task.status == 1) {
+            if (showTasks === "active" && task.status == 1) {
                 return false;
+            } else if (showTasks === "done" && task.status == 0) {
+                return false
             }
+
             return task.title.toLowerCase().includes(tasksSearchQuery);
         });
-    }, [data, tasksSearchQuery, hideDone]);
+    }, [data, tasksSearchQuery, showTasks]);
 
     const getTasks = () => {
         invoke('get_tasks', { category: category }).then((res: any) => {
@@ -30,7 +33,7 @@ function App() {
 
     const getCategories = () => {
         invoke('get_categories').then((data: any) => {
-            setCategories(data);
+            setCategoriesData(data);
         });
     };
 
@@ -50,10 +53,9 @@ function App() {
         <div className='container'>
             <Sidebar
                 categoriesData={categoriesData}
-                currentCategory={category}
                 setCurrentCategory={setCategory}
+                currentCategory={category}
                 getCategories={getCategories}
-                getTasks={getTasks}
             />
             <MainContent
                 tasksList={filteredData}
@@ -61,8 +63,8 @@ function App() {
                 setCurrentCategory={setCategory}
                 tasksSearchQuery={tasksSearchQuery}
                 setTasksSearchQuery={setTasksSearchQuery}
-                setHideDone={setHideDone}
-                hideDone={hideDone}
+                showTasks={showTasks}
+                setShowTasks={setShowTasks}
                 getCategories={getCategories}
                 getTasks={getTasks}
             />
