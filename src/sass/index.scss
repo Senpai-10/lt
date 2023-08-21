@@ -52,9 +52,6 @@ button {
     background-color: vars.$primary_color;
     transition: background-color 0.25s;
     outline: none;
-}
-
-button {
     cursor: pointer;
 
     &:hover {
