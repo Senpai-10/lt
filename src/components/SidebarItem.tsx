@@ -22,9 +22,13 @@ export function SidebarItem(props: Props) {
             className={classNames({
                 'sidebar-item': true,
                 'sidebar-item-active': is_active,
-                'done-category': type == "category-name" && total.tasks == total.done && total.tasks != 0,
+                'done-category':
+                    type == 'category-name' &&
+                    total.tasks == total.done &&
+                    total.tasks != 0,
                 'sidebar-item-all-tasks': type == 'all-tasks',
-                'sidebar-item-all-tasks-active': type == 'all-tasks' && is_active,
+                'sidebar-item-all-tasks-active':
+                    type == 'all-tasks' && is_active,
             })}
         >
             <span className='sidebar-item-name'>{name}</span>

@@ -1,31 +1,34 @@
-import { invoke } from "@tauri-apps/api";
-import { useState } from "react";
+import { invoke } from '@tauri-apps/api';
+import { useState } from 'react';
 
 interface Props {
     task_id: string;
     task_title: string;
     task_desc?: string;
     setEditTaskPopup: React.Dispatch<React.SetStateAction<boolean>>;
-    getTasks: () => void
+    getTasks: () => void;
 }
 
 export function Popup(props: Props) {
-    const [taskTitle, setTaskTitle] = useState(props.task_title)
-    const [taskDesc, setTaskDesc] = useState(props.task_desc)
+    const [taskTitle, setTaskTitle] = useState(props.task_title);
+    const [taskDesc, setTaskDesc] = useState(props.task_desc);
 
     const closePopup = () => {
-        props.setEditTaskPopup(false)
+        props.setEditTaskPopup(false);
 
         if (taskTitle != props.task_title) {
-            invoke('update_task_title', { id: props.task_id, title: taskTitle })
-            props.getTasks()
+            invoke('update_task_title', {
+                id: props.task_id,
+                title: taskTitle,
+            });
+            props.getTasks();
         }
 
         if (taskDesc != props.task_desc) {
-            invoke('update_task_desc', { id: props.task_id, desc: taskDesc })
-            props.getTasks()
+            invoke('update_task_desc', { id: props.task_id, desc: taskDesc });
+            props.getTasks();
         }
-    }
+    };
 
     return (
         <>
@@ -44,10 +47,7 @@ export function Popup(props: Props) {
                     value={taskDesc}
                 />
             </div>
-            <div
-                className='popup-close-detector'
-                onClick={closePopup}
-            ></div>
+            <div className='popup-close-detector' onClick={closePopup}></div>
         </>
     );
 }

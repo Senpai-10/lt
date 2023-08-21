@@ -15,10 +15,10 @@ function App() {
     const filteredData = useMemo(() => {
         if (data == undefined) return [];
         return data.filter((task) => {
-            if (showTasks === "active" && task.status == 1) {
+            if (showTasks === 'active' && task.status == 1) {
                 return false;
-            } else if (showTasks === "done" && task.status == 0) {
-                return false
+            } else if (showTasks === 'done' && task.status == 0) {
+                return false;
             }
 
             return task.title.toLowerCase().includes(tasksSearchQuery);

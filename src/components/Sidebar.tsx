@@ -9,7 +9,7 @@ interface Props {
     currentCategory: string | null;
     setCurrentCategory: React.Dispatch<React.SetStateAction<string | null>>;
     categoriesData: CategoriesData;
-    getCategories: () => void
+    getCategories: () => void;
 }
 
 export function Sidebar(props: Props) {
@@ -26,10 +26,10 @@ export function Sidebar(props: Props) {
         if (newCategory == '') return;
 
         invoke('add_category', { name: newCategory }).then(() => {
-            getCategories()
+            getCategories();
         });
 
-        setNewCategory('')
+        setNewCategory('');
     };
 
     return (
@@ -66,7 +66,9 @@ export function Sidebar(props: Props) {
                     className='sidebar-new-category-input'
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.currentTarget.value)}
-                    onKeyDown={(e) => e.key == "Enter" ? handleAddCategory() : null}
+                    onKeyDown={(e) =>
+                        e.key == 'Enter' ? handleAddCategory() : null
+                    }
                     placeholder='Add a category'
                 />
                 <button onClick={handleAddCategory}>

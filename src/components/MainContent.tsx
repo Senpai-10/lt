@@ -79,7 +79,11 @@ export function MainContent(props: Props) {
                         <option value='active'>active</option>
                         <option value='done'>done</option>
                     </select>
-                    <img className="remove-icon" onClick={handleRemoveCategory} src={TrashIcon} />
+                    <img
+                        className='remove-icon'
+                        onClick={handleRemoveCategory}
+                        src={TrashIcon}
+                    />
                 </div>
             </div>
             <div className='sp'></div>
@@ -95,12 +99,14 @@ export function MainContent(props: Props) {
                     );
                 })}
             </div>
-            <div className="new-task">
+            <div className='new-task'>
                 <input
-                    className="new-task-input"
+                    className='new-task-input'
                     value={newTask}
                     onChange={(e) => setNewTask(e.currentTarget.value)}
-                    onKeyDown={(e) => e.key == "Enter" ? handleAddTask() : null}
+                    onKeyDown={(e) =>
+                        e.key == 'Enter' ? handleAddTask() : null
+                    }
                     placeholder='Add a task'
                 />
                 <button onClick={handleAddTask}>
