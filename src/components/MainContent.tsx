@@ -80,8 +80,7 @@ export function MainContent(props: Props) {
                         <option value='active'>active</option>
                         <option value='done'>done</option>
                     </select>
-                    <img src={EditIcon} />
-                    <img className="remove-category" onClick={handleRemoveCategory} src={TrashIcon} />
+                    <img className="remove-icon" onClick={handleRemoveCategory} src={TrashIcon} />
                 </div>
             </div>
             <div className='sp'></div>

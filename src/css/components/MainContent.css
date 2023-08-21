@@ -22,7 +22,7 @@
   font-weight: bold;
 }
 
-.remove-category {
+.remove-icon {
   cursor: pointer;
 }
 
@@ -38,6 +38,12 @@
   flex-direction: column;
   gap: 10px;
   overflow: scroll;
+  padding: 10px;
+}
+
+img {
+  width: 20px;
+  height: 20px;
 }
 
 .new-task {
