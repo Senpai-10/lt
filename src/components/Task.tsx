@@ -45,9 +45,9 @@ export function Task(props: Props) {
         <div className='task'>
             <div className='task-status' onClick={toggleStatus}>
                 {task.status != 0 ? (
-                    <img src={CheckboxCheckedIcon} />
+                    <img className="task-status-toggle-icon" src={CheckboxCheckedIcon} />
                 ) : (
-                    <img src={CheckboxUncheckedIcon} />
+                    <img className="task-status-toggle-icon" src={CheckboxUncheckedIcon} />
                 )}
             </div>
             <div className='task-title-desc'>
