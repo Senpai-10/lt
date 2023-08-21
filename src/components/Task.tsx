@@ -27,6 +27,13 @@ export function Task(props: Props) {
         );
     };
 
+    const handleRemoveTask = () => {
+        invoke('remove_task', { id: task.id }).then(() => {
+            getTasks();
+            getCategories();
+        })
+    }
+
     return (
         <div className='task'>
             <div className='task-status' onClick={toggleStatus}>
@@ -58,7 +65,7 @@ export function Task(props: Props) {
             </div>
             <div className='task-extra-icon'>
                 <img src={ShowMore} />
-                <img src={TrashIcon} />
+                <img className="remove-icon" onClick={handleRemoveTask} src={TrashIcon} />
             </div>
         </div>
     );
