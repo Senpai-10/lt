@@ -33,4 +33,9 @@
   text-overflow: ellipsis;
 }
 
+.done-category {
+  color: #6f6f6f;
+  text-decoration: line-through;
+}
+
 /*# sourceMappingURL=SidebarItem.css.map */

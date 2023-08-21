@@ -34,3 +34,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.done-category {
+    color: vars.$done_color;
+    text-decoration: line-through;
+}
