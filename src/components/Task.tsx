@@ -73,7 +73,7 @@ export function Task(props: Props) {
                         'done-task-desc': task.status != 0,
                     })}
                 >
-                    {task.desc || 'desc..'}
+                    {task.desc}
                 </span>
             </div>
             <div className='task-extra-icon'>
