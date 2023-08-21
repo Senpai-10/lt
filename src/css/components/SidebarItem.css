@@ -24,7 +24,9 @@
 
 .sidebar-item-all-tasks-active {
   background-color: #7954ee;
+  box-shadow: 5px 5px 50px 0px rgba(121, 84, 238, 0.5);
   margin-bottom: 20px;
+  transition: box-shadow 300ms;
 }
 
 .sidebar-item-name {
