@@ -1,7 +1,6 @@
 import { T_Task, TasksDisplay } from '../types';
 import { Task } from './Task';
 import '../css/components/MainContent.css';
-import EditIcon from '../assets/edit.svg';
 import PlusIcon from '../assets/plus.svg';
 import TrashIcon from '../assets/trash.svg';
 import { useState } from 'react';
