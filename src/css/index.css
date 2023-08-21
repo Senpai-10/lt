@@ -4,7 +4,7 @@
   line-height: 24px;
   font-weight: 400;
   color: #bec0cd;
-  background-color: #1b1c30;
+  background-color: #1e1b26;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -29,6 +29,10 @@ input {
   background-color: rgba(217, 217, 217, 0.05);
   transition: background-color 0.25s;
   outline: none;
+}
+textarea:focus,
+input:focus {
+  outline: 1px solid #7954ee;
 }
 
 button {
