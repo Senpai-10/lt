@@ -1,7 +1,29 @@
 @use 'vars';
 
+@font-face {
+    font-family: 'Recursive';
+    src:
+        local('RecMonoCasual'),
+        url(./fonts/RecMonoCasual-Regular-1.085.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Recursive';
+    font-weight: 900;
+    src:
+        local('RecMonoCasual'),
+        url(./fonts/RecMonoCasual-Bold-1.085.ttf) format('truetype');
+}
+
+@font-face {
+    font-family: 'Recursive';
+    src:
+        local('RecMonoCasual'),
+        url(./fonts/RecMonoCasual-Italic-1.085.ttf) format('truetype');
+}
+
 :root {
-    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+    font-family: 'Recursive';
     font-size: 16px;
     line-height: 24px;
     font-weight: 400;
@@ -9,7 +31,6 @@
     color: vars.$text_color;
     background-color: vars.$background_color;
 
-    font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
