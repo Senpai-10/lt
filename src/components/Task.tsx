@@ -8,7 +8,7 @@ import CheckboxUncheckedIcon from '../assets/unchecked_checkbox.svg';
 import ShowMore from '../assets/showmore.svg';
 import TrashIcon from '../assets/trash.svg';
 import { useState } from 'react';
-import { Popup } from './Popup';
+import { TaskEditPopup } from './TaskEditPopup';
 
 interface Props {
     task: T_Task;
@@ -89,12 +89,12 @@ export function Task(props: Props) {
                 />
             </div>
             {editTaskPopup ? (
-                <Popup
+                <TaskEditPopup
                     task_id={task.id}
                     task_title={task.title}
                     task_desc={task.desc}
                     getTasks={getTasks}
-                    setEditTaskPopup={setEditTaskPopup}
+                    trigger={setEditTaskPopup}
                 />
             ) : null}
         </div>

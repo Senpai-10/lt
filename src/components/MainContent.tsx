@@ -3,8 +3,10 @@ import { Task } from './Task';
 import '../css/components/MainContent.css';
 import PlusIcon from '../assets/plus.svg';
 import TrashIcon from '../assets/trash.svg';
+import SettingsIcon from '../assets/settings.svg';
 import { useState } from 'react';
 import { invoke } from '@tauri-apps/api';
+import { SettingsPopup } from './SettingsPopup';
 
 interface Props {
     tasksList: T_Task[];
@@ -35,6 +37,7 @@ export function MainContent(props: Props) {
         getTasks,
     } = props;
     const [newTask, setNewTask] = useState('');
+    const [settingsTriggerPopup, setSettingsTriggerPopup] = useState(false)
 
     const handleAddTask = () => {
         if (newTask == '' || currentCategory == null) return;
@@ -57,6 +60,10 @@ export function MainContent(props: Props) {
             getCategories();
         });
     };
+
+    const handleOpenSettings = () => {
+        setSettingsTriggerPopup(true)
+    }
 
     return (
         <div className='main-content'>
@@ -84,6 +91,12 @@ export function MainContent(props: Props) {
                         <option value='active'>active</option>
                         <option value='done'>done</option>
                     </select>
+                    <img
+                        className="settings-icon"
+                        title="App settings"
+                        onClick={handleOpenSettings}
+                        src={SettingsIcon}
+                    />
                     <img
                         className='remove-icon'
                         onClick={handleRemoveCategory}
@@ -119,6 +132,10 @@ export function MainContent(props: Props) {
                     <img src={PlusIcon} />
                 </button>
             </div>
+            {
+                settingsTriggerPopup ? <SettingsPopup trigger={setSettingsTriggerPopup} />
+                    : null
+            }
         </div>
     );
 }

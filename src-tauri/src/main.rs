@@ -31,7 +31,12 @@ fn main() {
             remove_category,
             update_task_priority,
             update_task_desc,
-            quit_app
+            quit_app,
+            get_current_theme,
+            get_theme_css,
+            get_current_theme_css,
+            set_theme,
+            get_themes,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

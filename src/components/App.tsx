@@ -4,6 +4,7 @@ import { TasksDisplay, CategoriesData, T_Task } from '../types';
 import '../css/components/App.css';
 import { Sidebar } from './Sidebar';
 import { MainContent } from './MainContent';
+import { loadCurrentTheme } from '../helpers';
 
 function App() {
     const [data, setData] = useState<T_Task[]>();
@@ -78,6 +79,7 @@ function App() {
 
     useEffect(() => {
         getCategories();
+        loadCurrentTheme();
     }, []);
 
     useEffect(() => {

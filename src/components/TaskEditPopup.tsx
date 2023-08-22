@@ -5,16 +5,16 @@ interface Props {
     task_id: string;
     task_title: string;
     task_desc?: string;
-    setEditTaskPopup: React.Dispatch<React.SetStateAction<boolean>>;
+    trigger: React.Dispatch<React.SetStateAction<boolean>>;
     getTasks: () => void;
 }
 
-export function Popup(props: Props) {
+export function TaskEditPopup(props: Props) {
     const [taskTitle, setTaskTitle] = useState(props.task_title);
     const [taskDesc, setTaskDesc] = useState(props.task_desc);
 
     const closePopup = () => {
-        props.setEditTaskPopup(false);
+        props.trigger(false);
 
         if (taskTitle != props.task_title) {
             invoke('update_task_title', {
