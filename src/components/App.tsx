@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 import { TasksDisplay, CategoriesData, T_Task } from '../types';
 import '../css/components/App.css';
@@ -12,9 +12,32 @@ function App() {
     const [tasksSearchQuery, setTasksSearchQuery] = useState('');
     const [showTasks, setShowTasks] = useState<TasksDisplay>('all');
 
+    const addCategoryInputRef = useRef<HTMLInputElement>(null)
+    const searchInputRef = useRef<HTMLInputElement>(null)
+    const addTaskInputRef = useRef<HTMLInputElement>(null)
+
     const handleKeyPress = (event: KeyboardEvent) => {
-        if (event.ctrlKey === true && event.key == 'q') {
-            invoke('quit_app')
+        if (event.ctrlKey === true) {
+            switch (event.key) {
+                case 'q':
+                    invoke('quit_app')
+                    break;
+
+                case 'f':
+                    searchInputRef.current?.focus()
+                    break;
+
+                case 'c':
+                    addCategoryInputRef.current?.focus()
+                    break;
+
+                case 't':
+                    addTaskInputRef.current?.focus()
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 
@@ -71,6 +94,7 @@ function App() {
                 categoriesData={categoriesData}
                 setCurrentCategory={setCategory}
                 currentCategory={category}
+                addCategoryInputRef={addCategoryInputRef}
                 getCategories={getCategories}
             />
             <MainContent
@@ -81,6 +105,8 @@ function App() {
                 setTasksSearchQuery={setTasksSearchQuery}
                 showTasks={showTasks}
                 setShowTasks={setShowTasks}
+                addTaskInputRef={addTaskInputRef}
+                searchInputRef={searchInputRef}
                 getCategories={getCategories}
                 getTasks={getTasks}
             />

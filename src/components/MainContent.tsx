@@ -3,7 +3,7 @@ import { Task } from './Task';
 import '../css/components/MainContent.css';
 import PlusIcon from '../assets/plus.svg';
 import TrashIcon from '../assets/trash.svg';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { invoke } from '@tauri-apps/api';
 
 interface Props {
@@ -14,6 +14,8 @@ interface Props {
     setTasksSearchQuery: React.Dispatch<React.SetStateAction<string>>;
     showTasks: TasksDisplay;
     setShowTasks: React.Dispatch<React.SetStateAction<TasksDisplay>>;
+    addTaskInputRef: React.RefObject<HTMLInputElement>;
+    searchInputRef: React.RefObject<HTMLInputElement>;
     getCategories: () => void;
     getTasks: () => void;
 }
@@ -27,12 +29,12 @@ export function MainContent(props: Props) {
         setTasksSearchQuery,
         showTasks,
         setShowTasks,
+        addTaskInputRef,
+        searchInputRef,
         getCategories,
         getTasks,
     } = props;
     const [newTask, setNewTask] = useState('');
-    const addTaskInput = useRef<HTMLInputElement>(null)
-    const SearchInput = useRef<HTMLInputElement>(null)
 
     const handleAddTask = () => {
         if (newTask == '' || currentCategory == null) return;
@@ -56,24 +58,6 @@ export function MainContent(props: Props) {
         });
     };
 
-    const handleKeyPress = (event: KeyboardEvent) => {
-        if (event.ctrlKey === true && event.key == 't') {
-            addTaskInput.current?.focus()
-        } else if (event.ctrlKey === true && event.key == 'f') {
-            SearchInput.current?.focus()
-        }
-    }
-
-    useEffect(() => {
-        // attach the event listener
-        document.addEventListener('keydown', handleKeyPress);
-
-        // remove the event listener
-        return () => {
-            document.removeEventListener('keydown', handleKeyPress);
-        };
-    }, []);
-
     return (
         <div className='main-content'>
             <div className='header'>
@@ -82,7 +66,7 @@ export function MainContent(props: Props) {
                 </span>
                 <div className='header-options'>
                     <input
-                        ref={SearchInput}
+                        ref={searchInputRef}
                         placeholder='Search'
                         value={tasksSearchQuery}
                         onChange={(e) =>
@@ -123,7 +107,7 @@ export function MainContent(props: Props) {
             <div className='new-task'>
                 <input
                     className='new-task-input'
-                    ref={addTaskInput}
+                    ref={addTaskInputRef}
                     value={newTask}
                     onChange={(e) => setNewTask(e.currentTarget.value)}
                     onKeyDown={(e) =>

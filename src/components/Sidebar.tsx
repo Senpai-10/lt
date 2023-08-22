@@ -3,12 +3,13 @@ import { invoke } from '@tauri-apps/api';
 import PlusIcon from '../assets/plus.svg';
 import '../css/components/Sidebar.css';
 import { SidebarItem } from './SidebarItem';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 interface Props {
     currentCategory: string | null;
     setCurrentCategory: React.Dispatch<React.SetStateAction<string | null>>;
     categoriesData: CategoriesData;
+    addCategoryInputRef: React.RefObject<HTMLInputElement>;
     getCategories: () => void;
 }
 
@@ -18,10 +19,10 @@ export function Sidebar(props: Props) {
         getCategories,
         currentCategory,
         setCurrentCategory,
+        addCategoryInputRef,
     } = props;
 
     const [newCategory, setNewCategory] = useState('');
-    const addCategoryInput = useRef<HTMLInputElement>(null);
 
     const handleAddCategory = () => {
         if (newCategory == '') return;
@@ -33,22 +34,6 @@ export function Sidebar(props: Props) {
 
         setNewCategory('');
     };
-
-    const handleKeyPress = (event: KeyboardEvent) => {
-        if (event.ctrlKey === true && event.key == 'c' && addCategoryInput != null) {
-            addCategoryInput.current?.focus()
-        }
-    }
-
-    useEffect(() => {
-        // attach the event listener
-        document.addEventListener('keydown', handleKeyPress);
-
-        // remove the event listener
-        return () => {
-            document.removeEventListener('keydown', handleKeyPress);
-        };
-    }, []);
 
     return (
         <div className='sidebar'>
@@ -82,7 +67,7 @@ export function Sidebar(props: Props) {
             <div className='sidebar-new-category'>
                 <input
                     className='sidebar-new-category-input'
-                    ref={addCategoryInput}
+                    ref={addCategoryInputRef}
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.currentTarget.value)}
                     onKeyDown={(e) =>
