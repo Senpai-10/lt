@@ -12,6 +12,22 @@ function App() {
     const [tasksSearchQuery, setTasksSearchQuery] = useState('');
     const [showTasks, setShowTasks] = useState<TasksDisplay>('all');
 
+    const handleKeyPress = (event: KeyboardEvent) => {
+        if (event.ctrlKey === true && event.key == 'q') {
+            invoke('quit_app')
+        }
+    }
+
+    useEffect(() => {
+        // attach the event listener
+        document.addEventListener('keydown', handleKeyPress);
+
+        // remove the event listener
+        return () => {
+            document.removeEventListener('keydown', handleKeyPress);
+        };
+    }, []);
+
     const filteredData = useMemo(() => {
         if (data == undefined) return [];
         return data.filter((task) => {
