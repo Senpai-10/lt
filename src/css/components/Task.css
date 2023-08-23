@@ -13,6 +13,7 @@
 }
 
 .task-title {
+    color: var(--task_title_color);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -37,12 +38,12 @@
 }
 
 .done-task-title {
-    color: var(--done_color);
+    color: var(--done-task-title-color);
     text-decoration: line-through;
 }
 
 .done-task-desc {
-    color: var(--done_color);
+    color: var(--done-task-desc-color);
     text-decoration: line-through;
 }
 

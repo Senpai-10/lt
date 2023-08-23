@@ -30,8 +30,11 @@
     --primary_hover_color: #6a41ec;
     --background_color: #1e1b26;
     --text_color: #bec0cd;
+    --task_title_color: var(--text_color);
     --task_desc_color: #7c7e8b;
     --done_color: #6f6f6f;
+    --done-task-title-color: var(--done_color);
+    --done-task-desc-color: var(--done_color);
     --input-textarea-button-fg: #cdcdcd;
     --input-textarea-bg: #d9d9d910;
     --header-sp: #b8b8b815;
