@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+
 import '../css/components/SidebarItem.css';
 
 interface Props {

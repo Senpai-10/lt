@@ -1,12 +1,14 @@
 import { CategoriesData, T_Task, TasksDisplay } from '../types';
+import { useState } from 'react';
+import { invoke } from '@tauri-apps/api';
+
 import { Task } from './Task';
-import '../css/components/MainContent.css';
 import PlusIcon from '../assets/plus.svg';
 import TrashIcon from '../assets/trash.svg';
 import SettingsIcon from '../assets/settings.svg';
-import { useState } from 'react';
-import { invoke } from '@tauri-apps/api';
 import { SettingsPopup } from './SettingsPopup';
+
+import '../css/components/MainContent.css';
 
 interface Props {
     tasksList: T_Task[];
@@ -79,7 +81,7 @@ export function MainContent(props: Props) {
     return (
         <div className='main-content'>
             <div className='header'>
-                <span className='category-name'>
+                <span className='header-category-name'>
                     {currentCategory != null ? currentCategory : 'All Tasks'}
                 </span>
                 <div className='header-options'>
@@ -115,7 +117,7 @@ export function MainContent(props: Props) {
                     />
                 </div>
             </div>
-            <div className='sp'></div>
+            <div className='separator'></div>
             <div className='tasks-list'>
                 {tasksList.map((task) => {
                     return (
@@ -128,7 +130,7 @@ export function MainContent(props: Props) {
                     );
                 })}
             </div>
-            <div className='new-task'>
+            <div className='new-task-container'>
                 <input
                     className='new-task-input'
                     ref={addTaskInputRef}

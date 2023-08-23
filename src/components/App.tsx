@@ -1,10 +1,12 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
+
 import { TasksDisplay, CategoriesData, T_Task } from '../types';
-import '../css/components/App.css';
 import { Sidebar } from './Sidebar';
 import { MainContent } from './MainContent';
 import { loadCurrentTheme } from '../helpers';
+
+import '../css/components/App.css';
 
 function App() {
     const [data, setData] = useState<T_Task[]>();

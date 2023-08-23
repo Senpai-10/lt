@@ -1,6 +1,8 @@
 import { invoke } from '@tauri-apps/api';
 import { useState } from 'react';
 
+import "../css/components/Popup.css"
+
 interface Props {
     task_id: string;
     task_title: string;
@@ -41,7 +43,7 @@ export function TaskEditPopup(props: Props) {
                 />
                 <h4>Description</h4>
                 <textarea
-                    className='popup-task-desc'
+                    style={{ flex: 1 }}
                     placeholder='Task Description'
                     onChange={(e) => setTaskDesc(e.currentTarget.value)}
                     value={taskDesc}

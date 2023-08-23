@@ -1,7 +1,10 @@
 import { invoke } from '@tauri-apps/api';
 import { useEffect, useState } from "react";
-import "../css/components/SettingsPopup.css";
+
 import { loadTheme } from '../helpers';
+
+import '../css/components/Popup.css'
+import "../css/components/SettingsPopup.css";
 
 interface Props {
     trigger: React.Dispatch<React.SetStateAction<boolean>>;
@@ -43,7 +46,7 @@ export function SettingsPopup(props: Props) {
     return (
         <>
             <div className='popup'>
-                <div className="settings-options">
+                <div className="popup-settings-options">
                     <span>Theme</span>
                     <select value={selectedTheme} onChange={(e) => setSelectedTheme(e.currentTarget.value)}>
                         {themes.map((theme) => (
@@ -51,7 +54,7 @@ export function SettingsPopup(props: Props) {
                         ))}
                     </select>
                 </div>
-                <button onClick={saveSettings} className="save-settings-btn">Save</button>
+                <button onClick={saveSettings} className="popup-save-settings-btn">Save</button>
             </div>
             <div className='popup-close-detector' onClick={closePopup}></div>
         </>

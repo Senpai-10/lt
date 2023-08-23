@@ -1,9 +1,11 @@
 import { CategoriesData } from '../types';
-import { invoke } from '@tauri-apps/api';
-import PlusIcon from '../assets/plus.svg';
-import '../css/components/Sidebar.css';
-import { SidebarItem } from './SidebarItem';
 import { useState } from 'react';
+import { invoke } from '@tauri-apps/api';
+
+import PlusIcon from '../assets/plus.svg';
+import { SidebarItem } from './SidebarItem';
+
+import '../css/components/Sidebar.css';
 
 interface Props {
     currentCategory: string | null;
@@ -48,7 +50,7 @@ export function Sidebar(props: Props) {
                 setCurrentCategory={setCurrentCategory}
             />
 
-            <div className='category-list'>
+            <div className='sidebar-category-list'>
                 {categoriesData.categories.map((x) => (
                     <SidebarItem
                         key={x.name}
@@ -64,7 +66,7 @@ export function Sidebar(props: Props) {
                 ))}
             </div>
 
-            <div className='sidebar-new-category'>
+            <div className='sidebar-new-category-container'>
                 <input
                     className='sidebar-new-category-input'
                     ref={addCategoryInputRef}

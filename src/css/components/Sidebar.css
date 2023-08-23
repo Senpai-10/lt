@@ -7,11 +7,11 @@
     border-right: 1px solid var(--sidebar-border-right);
 }
 
-.category-list {
+.sidebar-category-list {
     overflow: scroll;
 }
 
-.sidebar-new-category {
+.sidebar-new-category-container {
     margin-top: auto;
     display: flex;
     gap: 10px;

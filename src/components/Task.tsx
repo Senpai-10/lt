@@ -1,14 +1,15 @@
 import classNames from 'classnames';
+import { useState } from 'react';
 import { invoke } from '@tauri-apps/api';
-import { T_Task } from '../types';
-import '../css/components/Task.css';
 
+import { T_Task } from '../types';
+import { TaskEditPopup } from './TaskEditPopup';
 import CheckboxCheckedIcon from '../assets/checked_checkbox.svg';
 import CheckboxUncheckedIcon from '../assets/unchecked_checkbox.svg';
 import ShowMore from '../assets/showmore.svg';
 import TrashIcon from '../assets/trash.svg';
-import { useState } from 'react';
-import { TaskEditPopup } from './TaskEditPopup';
+
+import '../css/components/Task.css';
 
 interface Props {
     task: T_Task;
@@ -56,7 +57,7 @@ export function Task(props: Props) {
                     />
                 )}
             </div>
-            <div className='task-title-desc'>
+            <div className='task-text-container'>
                 <span
                     className={classNames({
                         'task-title': true,

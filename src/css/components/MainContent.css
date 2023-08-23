@@ -17,7 +17,7 @@
     align-items: center;
 }
 
-.category-name {
+.header-category-name {
     font-size: 25px;
     font-weight: bold;
 }
@@ -30,7 +30,7 @@
     cursor: pointer;
 }
 
-.sp {
+.separator {
     border: 1px solid var(--header-sp);
     border-radius: 50%;
     margin-top: 20px;
@@ -55,7 +55,7 @@ img {
     height: 30px;
 }
 
-.new-task {
+.new-task-container {
     display: flex;
     margin-top: auto;
     gap: 10px;
