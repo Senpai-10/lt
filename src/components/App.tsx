@@ -101,6 +101,7 @@ function App() {
             />
             <MainContent
                 tasksList={filteredData}
+                categoriesData={categoriesData}
                 currentCategory={category}
                 setCurrentCategory={setCategory}
                 tasksSearchQuery={tasksSearchQuery}

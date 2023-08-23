@@ -1,4 +1,4 @@
-import { T_Task, TasksDisplay } from '../types';
+import { CategoriesData, T_Task, TasksDisplay } from '../types';
 import { Task } from './Task';
 import '../css/components/MainContent.css';
 import PlusIcon from '../assets/plus.svg';
@@ -10,6 +10,7 @@ import { SettingsPopup } from './SettingsPopup';
 
 interface Props {
     tasksList: T_Task[];
+    categoriesData: CategoriesData;
     currentCategory: string | null;
     setCurrentCategory: React.Dispatch<React.SetStateAction<string | null>>;
     tasksSearchQuery: string;
@@ -25,6 +26,7 @@ interface Props {
 export function MainContent(props: Props) {
     const {
         tasksList,
+        categoriesData,
         currentCategory,
         setCurrentCategory,
         tasksSearchQuery,
@@ -55,8 +57,17 @@ export function MainContent(props: Props) {
     const handleRemoveCategory = () => {
         if (currentCategory == null) return;
 
+        const currentCategoryIndex = categoriesData.categories.findIndex((cat) => cat.name == currentCategory)
+
         invoke('remove_category', { name: currentCategory }).then(() => {
-            setCurrentCategory(null);
+            if (currentCategoryIndex == 0) {
+                // Focus on `All Tasks` Category
+                setCurrentCategory(null);
+            } else {
+                // Focus on the category before current category
+                setCurrentCategory(categoriesData.categories[currentCategoryIndex - 1].name)
+            }
+
             getCategories();
         });
     };
