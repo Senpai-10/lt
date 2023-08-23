@@ -11,8 +11,6 @@ windows:
           - yarn tauri dev
     - tauri backend:
           - cd src-tauri/
-    - sass build:
-          - sass --watch src/sass:src/css/
     - git:
           - clear
           - gs

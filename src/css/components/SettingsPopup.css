@@ -1,11 +1,9 @@
 .settings-options {
-  display: flex;
-  gap: 10px;
-  align-items: center;
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 .save-settings-btn {
-  margin-top: auto;
+    margin-top: auto;
 }
-
-/*# sourceMappingURL=SettingsPopup.css.map */

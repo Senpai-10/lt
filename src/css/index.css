@@ -1,67 +1,90 @@
 @font-face {
-  font-family: "Recursive";
-  src: local("RecMonoCasual"), url(./fonts/RecMonoCasual-Regular-1.085.ttf) format("truetype");
+    font-family: 'Recursive';
+    src:
+        local('RecMonoCasual'),
+        url(./fonts/RecMonoCasual-Regular-1.085.ttf) format('truetype');
 }
+
 @font-face {
-  font-family: "Recursive";
-  font-weight: 900;
-  src: local("RecMonoCasual"), url(./fonts/RecMonoCasual-Bold-1.085.ttf) format("truetype");
+    font-family: 'Recursive';
+    font-weight: 900;
+    src:
+        local('RecMonoCasual'),
+        url(./fonts/RecMonoCasual-Bold-1.085.ttf) format('truetype');
 }
+
 @font-face {
-  font-family: "Recursive";
-  src: local("RecMonoCasual"), url(./fonts/RecMonoCasual-Italic-1.085.ttf) format("truetype");
+    font-family: 'Recursive';
+    src:
+        local('RecMonoCasual'),
+        url(./fonts/RecMonoCasual-Italic-1.085.ttf) format('truetype');
 }
+
 :root {
-  font-family: "Recursive";
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  color: #bec0cd;
-  background-color: #1e1b26;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
+    font-family: 'Recursive';
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+
+    --primary_color: #7954ee;
+    --primary_hover_color: #6a41ec;
+    --background_color: #1e1b26;
+    --text_color: #bec0cd;
+    --task_desc_color: #7c7e8b;
+    --done_color: #6f6f6f;
+    --input-textarea-button-fg: #cdcdcd;
+    --input-textarea-bg: #d9d9d910;
+    --header-sp: #b8b8b815;
+
+    --border-radius: 4px;
+
+    color: var(--text_color);
+    background-color: var(--background_color);
+
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
 }
 
 * {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 textarea,
 input {
-  border-radius: 4px;
-  border: none;
-  padding: 8px 10px 8px 20px;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  color: #cdcdcd;
-  background-color: rgba(217, 217, 217, 0.05);
-  transition: background-color 0.25s;
-  outline: none;
+    border-radius: var(--border-radius);
+    border: none;
+    padding: 8px 10px 8px 20px;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--input-textarea-button-fg);
+    background-color: var(--input-textarea-bg);
+    transition: background-color 0.25s;
+    outline: none;
 }
+
 textarea:focus,
 input:focus {
-  outline: 1px solid #7954ee;
+    outline: 1px solid var(--primary_color);
 }
 
 button {
-  border-radius: 4px;
-  border: none;
-  padding: 7px 21px 7px 21px;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  color: #cdcdcd;
-  background-color: #7954ee;
-  transition: background-color 0.25s;
-  outline: none;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #6a41ec;
+    border-radius: var(--border-radius);
+    border: none;
+    padding: 7px 21px 7px 21px;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    color: var(--input-textarea-button-fg);
+    background-color: var(--primary_color);
+    transition: background-color 0.25s;
+    outline: none;
+    cursor: pointer;
 }
 
-/*# sourceMappingURL=index.css.map */
+button:hover {
+    background-color: var(--primary_hover_color);
+}

@@ -1,43 +1,40 @@
 .sidebar-item {
-  display: flex;
-  padding: 10px 20px 10px 20px;
-  justify-content: space-between;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.25s;
+    display: flex;
+    padding: 10px 20px 10px 20px;
+    justify-content: space-between;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.25s;
 }
 
 .sidebar-item-tasks-count {
-  background-color: rgba(255, 255, 255, 0.1);
-  padding: 0 10px 0 10px;
-  border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0 10px 0 10px;
+    border-radius: var(--border-radius);
 }
 
 .sidebar-item-active {
-  background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 .sidebar-item-all-tasks {
-  outline: 2px solid #7954ee;
-  margin-bottom: 20px;
+    outline: 2px solid var(--primary_color);
+    margin-bottom: 20px;
 }
 
 .sidebar-item-all-tasks-active {
-  background-color: #7954ee;
-  box-shadow: 5px 5px 50px 0px rgba(121, 84, 238, 0.5);
-  margin-bottom: 20px;
-  transition: box-shadow 300ms;
+    background-color: var(--primary_color);
+    margin-bottom: 20px;
+    transition: box-shadow 300ms;
 }
 
 .sidebar-item-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .done-category {
-  color: #6f6f6f;
-  text-decoration: line-through;
+    color: var(--done_color);
+    text-decoration: line-through;
 }
-
-/*# sourceMappingURL=SidebarItem.css.map */

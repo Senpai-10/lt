@@ -1,69 +1,67 @@
 .main-content {
-  flex: 1;
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
+    flex: 1;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .header-options {
-  display: flex;
-  gap: 10px;
-  align-items: center;
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 .category-name {
-  font-size: 25px;
-  font-weight: bold;
+    font-size: 25px;
+    font-weight: bold;
 }
 
 .settings-icon {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .remove-icon {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .sp {
-  border: 1px solid rgba(184, 184, 184, 0.15);
-  border-radius: 50%;
-  margin-top: 20px;
-  margin-bottom: 20px;
+    border: 1px solid var(--header-sp);
+    border-radius: 50%;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .tasks-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  overflow: scroll;
-  padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow: scroll;
+    padding: 10px;
 }
 
 img {
-  width: 20px;
-  height: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 .task-status-toggle-icon {
-  width: 30px;
-  height: 30px;
+    width: 30px;
+    height: 30px;
 }
 
 .new-task {
-  display: flex;
-  margin-top: auto;
-  gap: 10px;
-  padding-top: 20px;
+    display: flex;
+    margin-top: auto;
+    gap: 10px;
+    padding-top: 20px;
 }
 
 .new-task-input {
-  width: 100%;
+    width: 100%;
 }
-
-/*# sourceMappingURL=MainContent.css.map */
