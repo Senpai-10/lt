@@ -22,6 +22,7 @@ export function SettingsPopup(props: Props) {
         })
         invoke('get_current_theme').then((v: any) => {
             setCurrentTheme(v)
+            setSelectedTheme(v)
         })
     }, [])
 
