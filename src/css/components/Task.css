@@ -2,7 +2,7 @@
     display: flex;
     gap: 5px;
     padding: 5px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--task-bg);
     border-radius: var(--border-radius);
 }
 

@@ -35,6 +35,13 @@
     --input-textarea-button-fg: #cdcdcd;
     --input-textarea-bg: #d9d9d910;
     --header-sp: #b8b8b815;
+    --sidebar-border-right: rgba(255, 255, 255, 0.05);
+    --task-bg: rgba(255, 255, 255, 0.05);
+
+    --selected-category-fg: var(--text_color);
+    --selected-category-bg: rgba(255, 255, 255, 0.05);
+    --category-tasks-count-fg: var(--text_color);
+    --category-tasks-count-bg: rgba(255, 255, 255, 0.1);
 
     --border-radius: 4px;
 

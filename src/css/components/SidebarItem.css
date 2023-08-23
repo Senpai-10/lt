@@ -8,16 +8,19 @@
 }
 
 .sidebar-item-tasks-count {
-    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--category-tasks-count-fg);
+    background-color: var(--category-tasks-count-bg);
     padding: 0 10px 0 10px;
     border-radius: var(--border-radius);
 }
 
 .sidebar-item-active {
-    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--selected-category-fg);
+    background-color: var(--selected-category-bg);
 }
 
 .sidebar-item-all-tasks {
+    background: none;
     outline: 2px solid var(--primary_color);
     margin-bottom: 20px;
 }
