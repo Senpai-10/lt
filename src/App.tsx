@@ -1,12 +1,11 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 
-import { TasksDisplay, CategoriesData, T_Task } from '../types';
-import { Sidebar } from './Sidebar';
-import { MainContent } from './MainContent';
-import { loadCurrentTheme } from '../helpers';
+import { TasksDisplay, CategoriesData, T_Task } from './types';
+import { Sidebar } from './components/Sidebar';
+import { MainContent } from './components/MainContent';
 
-import '../css/components/App.css';
+import './css/components/App.css';
 
 function App() {
     const [data, setData] = useState<T_Task[]>();
@@ -15,34 +14,34 @@ function App() {
     const [tasksSearchQuery, setTasksSearchQuery] = useState('');
     const [showTasks, setShowTasks] = useState<TasksDisplay>('all');
 
-    const addCategoryInputRef = useRef<HTMLInputElement>(null)
-    const searchInputRef = useRef<HTMLInputElement>(null)
-    const addTaskInputRef = useRef<HTMLInputElement>(null)
+    const addCategoryInputRef = useRef<HTMLInputElement>(null);
+    const searchInputRef = useRef<HTMLInputElement>(null);
+    const addTaskInputRef = useRef<HTMLInputElement>(null);
 
     const handleKeyPress = (event: KeyboardEvent) => {
         if (event.ctrlKey === true) {
             switch (event.key) {
                 case 'q':
-                    invoke('quit_app')
+                    invoke('quit_app');
                     break;
 
                 case 'f':
-                    searchInputRef.current?.focus()
+                    searchInputRef.current?.focus();
                     break;
 
                 case 'c':
-                    addCategoryInputRef.current?.focus()
+                    addCategoryInputRef.current?.focus();
                     break;
 
                 case 't':
-                    addTaskInputRef.current?.focus()
+                    addTaskInputRef.current?.focus();
                     break;
 
                 default:
                     break;
             }
         }
-    }
+    };
 
     useEffect(() => {
         // attach the event listener
@@ -81,7 +80,6 @@ function App() {
 
     useEffect(() => {
         getCategories();
-        loadCurrentTheme();
     }, []);
 
     useEffect(() => {
