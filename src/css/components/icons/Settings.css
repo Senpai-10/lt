@@ -1,0 +1,7 @@
+.settings-icon {
+    cursor: pointer;
+}
+
+.settings-icon path {
+    fill: var(--settings-icon-fill);
+}

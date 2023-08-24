@@ -2,7 +2,7 @@ import { CategoriesData } from '../types';
 import { useState } from 'react';
 import { invoke } from '@tauri-apps/api';
 
-import PlusIcon from '../assets/plus.svg';
+import { PlusIcon } from './icons/Plus';
 import { SidebarItem } from './SidebarItem';
 
 import '../css/components/Sidebar.css';
@@ -78,7 +78,7 @@ export function Sidebar(props: Props) {
                     placeholder='Add a category'
                 />
                 <button onClick={handleAddCategory}>
-                    <img src={PlusIcon} />
+                    <PlusIcon />
                 </button>
             </div>
         </div>

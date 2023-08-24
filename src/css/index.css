@@ -46,6 +46,17 @@
     --category-tasks-count-fg: var(--text_color);
     --category-tasks-count-bg: rgba(255, 255, 255, 0.1);
 
+    /* Icons BEGIN */
+    --icon-fill: #d9d9d9;
+    --task-status-done-icon-fill: var(--primary_color);
+    --task-status-todo-icon-fill: var(--icon-fill);
+    --plus-icon-fill: var(--icon-fill);
+    --settings-icon-fill: var(--icon-fill);
+    --showmore-icon-fill: var(--icon-fill);
+    --trash-icon-fill: var(--icon-fill);
+    --trash-icon-hover-fill: #ff5a5a;
+    /* Icons END */
+
     --border-radius: 4px;
 
     color: var(--text_color);

@@ -1,0 +1,7 @@
+.showmore-icon {
+    cursor: pointer;
+}
+
+.showmore-icon path {
+    fill: var(--showmore-icon-fill);
+}

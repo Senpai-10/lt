@@ -22,14 +22,6 @@
     font-weight: bold;
 }
 
-.settings-icon {
-    cursor: pointer;
-}
-
-.remove-icon {
-    cursor: pointer;
-}
-
 .separator {
     border: 1px solid var(--header-sp);
     border-radius: 50%;

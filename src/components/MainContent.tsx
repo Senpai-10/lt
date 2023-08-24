@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { invoke } from '@tauri-apps/api';
 
 import { Task } from './Task';
-import PlusIcon from '../assets/plus.svg';
-import TrashIcon from '../assets/trash.svg';
-import SettingsIcon from '../assets/settings.svg';
+import { PlusIcon } from './icons/Plus';
+import { SettingsIcon } from './icons/Settings';
+import { TrashIcon } from './icons/Trash';
 import { SettingsPopup } from './SettingsPopup';
 
 import '../css/components/MainContent.css';
@@ -104,17 +104,15 @@ export function MainContent(props: Props) {
                         <option value='active'>active</option>
                         <option value='done'>done</option>
                     </select>
-                    <img
-                        className="settings-icon"
+                    <div
                         title="App settings"
                         onClick={handleOpenSettings}
-                        src={SettingsIcon}
-                    />
-                    <img
-                        className='remove-icon'
-                        onClick={handleRemoveCategory}
-                        src={TrashIcon}
-                    />
+                    >
+                        <SettingsIcon />
+                    </div>
+                    <div onClick={handleRemoveCategory}>
+                        <TrashIcon />
+                    </div>
                 </div>
             </div>
             <div className='separator'></div>
@@ -142,13 +140,13 @@ export function MainContent(props: Props) {
                     placeholder='Add a task'
                 />
                 <button onClick={handleAddTask}>
-                    <img src={PlusIcon} />
+                    <PlusIcon />
                 </button>
             </div>
             {
                 settingsTriggerPopup ? <SettingsPopup trigger={setSettingsTriggerPopup} />
                     : null
             }
-        </div>
+        </div >
     );
 }

@@ -1,0 +1,11 @@
+.trash-icon {
+    cursor: pointer;
+}
+
+.trash-icon path {
+    fill: var(--trash-icon-fill);
+}
+
+.trash-icon:hover path {
+    fill: var(--trash-icon-hover-fill);
+}

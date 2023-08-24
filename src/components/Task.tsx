@@ -4,10 +4,9 @@ import { invoke } from '@tauri-apps/api';
 
 import { T_Task } from '../types';
 import { TaskEditPopup } from './TaskEditPopup';
-import CheckboxCheckedIcon from '../assets/checked_checkbox.svg';
-import CheckboxUncheckedIcon from '../assets/unchecked_checkbox.svg';
-import ShowMore from '../assets/showmore.svg';
-import TrashIcon from '../assets/trash.svg';
+import { CheckedCheckBoxIcon, UncheckedCheckBoxIcon } from './icons/Checkbox';
+import { ShowMoreIcon } from './icons/ShowMore';
+import { TrashIcon } from './icons/Trash';
 
 import '../css/components/Task.css';
 
@@ -46,15 +45,9 @@ export function Task(props: Props) {
         <div className='task'>
             <div className='task-status' onClick={toggleStatus}>
                 {task.status != 0 ? (
-                    <img
-                        className='task-status-toggle-icon'
-                        src={CheckboxCheckedIcon}
-                    />
+                    <CheckedCheckBoxIcon />
                 ) : (
-                    <img
-                        className='task-status-toggle-icon'
-                        src={CheckboxUncheckedIcon}
-                    />
+                    <UncheckedCheckBoxIcon />
                 )}
             </div>
             <div className='task-text-container'>
@@ -78,16 +71,12 @@ export function Task(props: Props) {
                 </span>
             </div>
             <div className='task-extra-icon'>
-                <img
-                    className='show-more-icon'
-                    onClick={handleShowPopup}
-                    src={ShowMore}
-                />
-                <img
-                    className='remove-icon'
-                    onClick={handleRemoveTask}
-                    src={TrashIcon}
-                />
+                <div onClick={handleShowPopup}>
+                    <ShowMoreIcon />
+                </div>
+                <div onClick={handleRemoveTask}>
+                    <TrashIcon />
+                </div>
             </div>
             {editTaskPopup ? (
                 <TaskEditPopup
