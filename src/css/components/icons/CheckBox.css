@@ -1,3 +1,13 @@
+.task-status-done-icon {
+    width: 32px;
+    height: 32px;
+}
+
+.task-status-todo-icon {
+    width: 32px;
+    height: 32px;
+}
+
 .task-status-done-icon path {
     fill: var(--task-status-done-icon-fill);
 }
