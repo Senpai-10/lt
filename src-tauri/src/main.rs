@@ -34,7 +34,6 @@ fn main() {
             quit_app,
             get_current_theme,
             get_theme_css,
-            get_current_theme_css,
             set_theme,
             get_themes,
         ])

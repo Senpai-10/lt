@@ -98,25 +98,14 @@ pub fn get_current_theme() -> String {
 }
 
 #[tauri::command]
-pub fn get_theme_css(target_theme: String) -> String {
-    let theme_name = target_theme;
-
-    if theme_name == "default" {
-        return String::new();
-    }
-
-    let theme_file = get_themes_dir_path().join(format!("{}.css", theme_name));
-
-    match std::fs::read_to_string(theme_file) {
-        Ok(css_string) => css_string,
-        Err(_) => String::new(),
-    }
-}
-
-#[tauri::command]
-pub fn get_current_theme_css() -> String {
-    let config = get_config();
-    let theme_name = config.theme;
+pub fn get_theme_css(target_theme: Option<String>) -> String {
+    let theme_name = match target_theme {
+        Some(n) => n,
+        None => {
+            let config = get_config();
+            config.theme
+        }
+    };
 
     if theme_name == "default" {
         return String::new();
