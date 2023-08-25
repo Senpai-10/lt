@@ -30,7 +30,7 @@ export function Sidebar(props: Props) {
         if (newCategory == '') return;
 
         invoke('add_category', { name: newCategory }).then(() => {
-            setCurrentCategory(newCategory)
+            setCurrentCategory(newCategory);
             getCategories();
         });
 

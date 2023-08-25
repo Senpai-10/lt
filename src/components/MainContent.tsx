@@ -41,7 +41,7 @@ export function MainContent(props: Props) {
         getTasks,
     } = props;
     const [newTask, setNewTask] = useState('');
-    const [settingsTriggerPopup, setSettingsTriggerPopup] = useState(false)
+    const [settingsTriggerPopup, setSettingsTriggerPopup] = useState(false);
 
     const handleAddTask = () => {
         if (newTask == '' || currentCategory == null) return;
@@ -59,7 +59,9 @@ export function MainContent(props: Props) {
     const handleRemoveCategory = () => {
         if (currentCategory == null) return;
 
-        const currentCategoryIndex = categoriesData.categories.findIndex((cat) => cat.name == currentCategory)
+        const currentCategoryIndex = categoriesData.categories.findIndex(
+            (cat) => cat.name == currentCategory,
+        );
 
         invoke('remove_category', { name: currentCategory }).then(() => {
             if (currentCategoryIndex == 0) {
@@ -67,7 +69,9 @@ export function MainContent(props: Props) {
                 setCurrentCategory(null);
             } else {
                 // Focus on the category before current category
-                setCurrentCategory(categoriesData.categories[currentCategoryIndex - 1].name)
+                setCurrentCategory(
+                    categoriesData.categories[currentCategoryIndex - 1].name,
+                );
             }
 
             getCategories();
@@ -75,8 +79,8 @@ export function MainContent(props: Props) {
     };
 
     const handleOpenSettings = () => {
-        setSettingsTriggerPopup(true)
-    }
+        setSettingsTriggerPopup(true);
+    };
 
     return (
         <div className='main-content'>
@@ -104,10 +108,7 @@ export function MainContent(props: Props) {
                         <option value='active'>active</option>
                         <option value='done'>done</option>
                     </select>
-                    <div
-                        title="App settings"
-                        onClick={handleOpenSettings}
-                    >
+                    <div title='App settings' onClick={handleOpenSettings}>
                         <SettingsIcon />
                     </div>
                     <div onClick={handleRemoveCategory}>
@@ -143,10 +144,9 @@ export function MainContent(props: Props) {
                     <PlusIcon />
                 </button>
             </div>
-            {
-                settingsTriggerPopup ? <SettingsPopup trigger={setSettingsTriggerPopup} />
-                    : null
-            }
-        </div >
+            {settingsTriggerPopup ? (
+                <SettingsPopup trigger={setSettingsTriggerPopup} />
+            ) : null}
+        </div>
     );
 }

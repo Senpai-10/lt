@@ -57,10 +57,12 @@ export function TaskEditPopup(props: Props) {
                     onChange={(e) => setTaskDesc(e.currentTarget.value)}
                     value={taskDesc}
                 />
-                <span className="task-desc">Creation: {creation_date}</span>
-                <span className="task-desc">Last mod: {modification_date}</span>
+                <span className='task-desc'>Creation: {creation_date}</span>
+                <span className='task-desc'>Last mod: {modification_date}</span>
                 {task.completion_date ? (
-                    <span className="task-desc">Completion: {completion_date}</span>
+                    <span className='task-desc'>
+                        Completion: {completion_date}
+                    </span>
                 ) : null}
             </div>
             <div className='popup-close-detector' onClick={closePopup} />
