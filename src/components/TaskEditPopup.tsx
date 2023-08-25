@@ -1,36 +1,45 @@
 import { invoke } from '@tauri-apps/api';
 import { useState } from 'react';
 
-import "../css/components/Popup.css"
+import '../css/components/Popup.css';
+import { T_Task } from '../types';
 
 interface Props {
-    task_id: string;
-    task_title: string;
-    task_desc?: string;
+    task: T_Task;
     trigger: React.Dispatch<React.SetStateAction<boolean>>;
     getTasks: () => void;
 }
 
 export function TaskEditPopup(props: Props) {
-    const [taskTitle, setTaskTitle] = useState(props.task_title);
-    const [taskDesc, setTaskDesc] = useState(props.task_desc);
+    const { task, trigger, getTasks } = props;
+
+    const [taskTitle, setTaskTitle] = useState(task.title);
+    const [taskDesc, setTaskDesc] = useState(task.desc);
 
     const closePopup = () => {
-        props.trigger(false);
+        trigger(false);
 
-        if (taskTitle != props.task_title) {
+        if (taskTitle != task.title) {
             invoke('update_task_title', {
-                id: props.task_id,
+                id: task.id,
                 title: taskTitle,
             });
-            props.getTasks();
+            getTasks();
         }
 
-        if (taskDesc != props.task_desc) {
-            invoke('update_task_desc', { id: props.task_id, desc: taskDesc });
-            props.getTasks();
+        if (taskDesc != task.desc) {
+            invoke('update_task_desc', { id: task.id, desc: taskDesc });
+            getTasks();
         }
     };
+
+    let creation_date = new Date(task.creation_date * 1000).toLocaleString();
+    let modification_date = new Date(
+        task.modification_date * 1000,
+    ).toLocaleString();
+    let completion_date = new Date(
+        (task.completion_date || 0) * 1000,
+    ).toLocaleString();
 
     return (
         <>
@@ -48,6 +57,11 @@ export function TaskEditPopup(props: Props) {
                     onChange={(e) => setTaskDesc(e.currentTarget.value)}
                     value={taskDesc}
                 />
+                <span className="task-desc">Creation: {creation_date}</span>
+                <span className="task-desc">Last mod: {modification_date}</span>
+                {task.completion_date ? (
+                    <span className="task-desc">Completion: {completion_date}</span>
+                ) : null}
             </div>
             <div className='popup-close-detector' onClick={closePopup}></div>
         </>

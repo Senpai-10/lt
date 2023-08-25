@@ -80,9 +80,7 @@ export function Task(props: Props) {
             </div>
             {editTaskPopup ? (
                 <TaskEditPopup
-                    task_id={task.id}
-                    task_title={task.title}
-                    task_desc={task.desc}
+                    task={task}
                     getTasks={getTasks}
                     trigger={setEditTaskPopup}
                 />
