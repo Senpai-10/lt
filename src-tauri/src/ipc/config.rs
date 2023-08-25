@@ -129,7 +129,7 @@ pub fn set_theme(new_theme: String) {
 }
 
 #[tauri::command]
-pub fn get_themes() -> Vec<String> {
+pub fn get_available_themes() -> Vec<String> {
     let themes_dir = get_themes_dir_path();
     let mut themes: Vec<String> = vec!["default".to_string()];
 

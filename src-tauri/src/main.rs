@@ -35,7 +35,7 @@ fn main() {
             get_current_theme,
             get_theme_css,
             set_theme,
-            get_themes,
+            get_available_themes,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

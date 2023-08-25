@@ -20,7 +20,7 @@ export function SettingsPopup(props: Props) {
     const [selectedTheme, setSelectedTheme] = useState<string>()
 
     useEffect(() => {
-        invoke("get_themes").then((data: any) => {
+        invoke("get_available_themes").then((data: any) => {
             setThemes(data)
         })
         invoke('get_current_theme').then((v: any) => {
