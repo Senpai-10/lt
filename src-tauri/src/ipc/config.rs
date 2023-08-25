@@ -15,6 +15,23 @@ impl Default for Config {
     }
 }
 
+fn get_config_dir_path() -> PathBuf {
+    let lt_dir = path::config_dir().unwrap().join("lt");
+
+    if !lt_dir.exists() {
+        match std::fs::create_dir_all(&lt_dir) {
+            Ok(_) => {
+                println!("lt config directory created! {}", lt_dir.to_str().unwrap());
+            }
+            Err(e) => {
+                eprintln!("Error creating lt config directory: {e}")
+            }
+        }
+    }
+
+    lt_dir
+}
+
 fn get_config() -> Config {
     let p = get_config_dir_path().join("config.toml");
 
@@ -38,23 +55,6 @@ fn get_config() -> Config {
         Ok(v) => toml::from_str(&v).unwrap(),
         Err(_) => Config::default(),
     }
-}
-
-fn get_config_dir_path() -> PathBuf {
-    let lt_dir = path::config_dir().unwrap().join("lt");
-
-    if !lt_dir.exists() {
-        match std::fs::create_dir_all(&lt_dir) {
-            Ok(_) => {
-                println!("lt config directory created! {}", lt_dir.to_str().unwrap());
-            }
-            Err(e) => {
-                eprintln!("Error creating lt config directory: {e}")
-            }
-        }
-    }
-
-    lt_dir
 }
 
 fn write_config(config: Config) {
