@@ -101,10 +101,7 @@ pub fn get_current_theme() -> String {
 pub fn get_theme_css(target_theme: Option<String>) -> String {
     let theme_name = match target_theme {
         Some(n) => n,
-        None => {
-            let config = get_config();
-            config.theme
-        }
+        None => get_current_theme(),
     };
 
     if theme_name == "default" {
