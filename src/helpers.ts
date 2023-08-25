@@ -16,9 +16,9 @@ function getCustomThemeContainer(): HTMLElement {
 
 export function loadTheme(theme: string | null) {
     invoke('get_theme_css', { targetTheme: theme }).then((css: any) => {
-        // Inject css
         const themeContainer = getCustomThemeContainer();
 
+        // Inject css
         themeContainer.innerHTML = css;
     });
 }
