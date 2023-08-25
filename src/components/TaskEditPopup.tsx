@@ -63,7 +63,7 @@ export function TaskEditPopup(props: Props) {
                     <span className="task-desc">Completion: {completion_date}</span>
                 ) : null}
             </div>
-            <div className='popup-close-detector' onClick={closePopup}></div>
+            <div className='popup-close-detector' onClick={closePopup} />
         </>
     );
 }

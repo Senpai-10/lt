@@ -115,7 +115,7 @@ export function MainContent(props: Props) {
                     </div>
                 </div>
             </div>
-            <div className='separator'></div>
+            <div className='separator' />
             <div className='tasks-list'>
                 {tasksList.map((task) => {
                     return (
