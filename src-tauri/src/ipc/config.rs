@@ -143,28 +143,21 @@ pub fn get_themes() -> Vec<String> {
     };
 
     for theme in themes_dir_content.flatten() {
-        if !theme.path().is_file() {
+        let theme_name = theme.file_name().to_str().unwrap().to_string();
+
+        if !theme.path().is_file() || !theme_name.ends_with(".css") {
             continue;
         }
 
-        if theme
+        let file_name_without_stem = theme
             .path()
-            .file_name()
+            .file_stem()
             .unwrap()
             .to_str()
             .unwrap()
-            .ends_with(".css")
-        {
-            themes.push(
-                theme
-                    .path()
-                    .file_stem()
-                    .unwrap()
-                    .to_str()
-                    .unwrap()
-                    .to_string(),
-            )
-        }
+            .to_string();
+
+        themes.push(file_name_without_stem)
     }
 
     themes
