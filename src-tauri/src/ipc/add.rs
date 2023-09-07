@@ -55,9 +55,9 @@ pub fn add_task(title: String, category: String) -> Result<usize, String> {
         desc: None,
         status: 0,
         priority: 0,
-        creation_date: since_the_epoch,
-        completion_date: None,
-        modification_date: since_the_epoch,
+        created_at: since_the_epoch,
+        done_at: None,
+        updated_at: since_the_epoch,
     };
 
     match diesel::insert_into(schema::tasks::dsl::tasks)

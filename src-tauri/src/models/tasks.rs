@@ -12,9 +12,9 @@ pub struct NewTask {
     pub desc: Option<String>,
     pub status: i32,
     pub priority: i32,
-    pub creation_date: i32,
-    pub completion_date: Option<i32>,
-    pub modification_date: i32,
+    pub done_at: Option<i32>,
+    pub created_at: i32,
+    pub updated_at: i32,
 }
 
 #[derive(
@@ -30,7 +30,7 @@ pub struct Task {
     pub desc: Option<String>,
     pub status: i32,
     pub priority: i32,
-    pub creation_date: i32,
-    pub completion_date: Option<i32>,
-    pub modification_date: i32,
+    pub done_at: Option<i32>,
+    pub created_at: i32,
+    pub updated_at: i32,
 }

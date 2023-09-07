@@ -19,7 +19,7 @@ export interface T_Task {
     desc?: string;
     status: number;
     priority: number;
-    creation_date: number;
-    completion_date?: number;
-    modification_date: number;
+    created_at: number;
+    done_at?: number;
+    updated_at: number;
 }

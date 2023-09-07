@@ -33,12 +33,12 @@ export function TaskEditPopup(props: Props) {
         }
     };
 
-    let creation_date = new Date(task.creation_date * 1000).toLocaleString();
-    let modification_date = new Date(
-        task.modification_date * 1000,
+    let created_at = new Date(task.created_at * 1000).toLocaleString();
+    let updated_at = new Date(
+        task.updated_at * 1000,
     ).toLocaleString();
-    let completion_date = new Date(
-        (task.completion_date || 0) * 1000,
+    let done_at = new Date(
+        (task.done_at || 0) * 1000,
     ).toLocaleString();
 
     return (
@@ -57,11 +57,11 @@ export function TaskEditPopup(props: Props) {
                     onChange={(e) => setTaskDesc(e.currentTarget.value)}
                     value={taskDesc}
                 />
-                <span className='task-desc'>Creation: {creation_date}</span>
-                <span className='task-desc'>Last mod: {modification_date}</span>
-                {task.completion_date ? (
+                <span className='task-desc'>Created at: {created_at}</span>
+                <span className='task-desc'>Last mod: {updated_at}</span>
+                {task.done_at ? (
                     <span className='task-desc'>
-                        Completion: {completion_date}
+                        Done at: {done_at}
                     </span>
                 ) : null}
             </div>

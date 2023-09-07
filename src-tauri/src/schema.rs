@@ -14,9 +14,9 @@ diesel::table! {
         desc -> Nullable<Text>,
         status -> Integer,
         priority -> Integer,
-        creation_date -> Integer,
-        completion_date -> Nullable<Integer>,
-        modification_date -> Integer,
+        done_at -> Nullable<Integer>,
+        created_at -> Integer,
+        updated_at -> Integer,
     }
 }
 

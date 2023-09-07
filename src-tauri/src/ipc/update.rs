@@ -16,7 +16,7 @@ pub fn update_task_category(id: String, new_category: String) -> Result<usize, S
         .as_secs() as i32;
 
     let _ = match diesel::update(task.clone())
-        .set(schema::tasks::modification_date.eq(since_the_epoch))
+        .set(schema::tasks::updated_at.eq(since_the_epoch))
         .execute(&mut connection)
     {
         Ok(v) => Ok(v),
@@ -45,7 +45,7 @@ pub fn update_task_priority(id: String, new_priority: i32) -> Result<usize, Stri
         .as_secs() as i32;
 
     let _ = match diesel::update(task.clone())
-        .set(schema::tasks::modification_date.eq(since_the_epoch))
+        .set(schema::tasks::updated_at.eq(since_the_epoch))
         .execute(&mut connection)
     {
         Ok(v) => Ok(v),
@@ -75,7 +75,7 @@ pub fn update_task_status(id: String, status: i32) -> Result<usize, String> {
             .as_secs() as i32;
 
         let _ = match diesel::update(task.clone())
-            .set(schema::tasks::completion_date.eq(since_the_epoch))
+            .set(schema::tasks::done_at.eq(since_the_epoch))
             .execute(&mut connection)
         {
             Ok(v) => Ok(v),
@@ -91,7 +91,7 @@ pub fn update_task_status(id: String, status: i32) -> Result<usize, String> {
         };
 
         let _ = match diesel::update(task.clone())
-            .set(schema::tasks::modification_date.eq(since_the_epoch))
+            .set(schema::tasks::updated_at.eq(since_the_epoch))
             .execute(&mut connection)
         {
             Ok(v) => Ok(v),
@@ -99,7 +99,7 @@ pub fn update_task_status(id: String, status: i32) -> Result<usize, String> {
         };
     } else if status == 0 {
         let _ = match diesel::update(task.clone())
-            .set(schema::tasks::completion_date.eq(None::<i32>))
+            .set(schema::tasks::done_at.eq(None::<i32>))
             .execute(&mut connection)
         {
             Ok(v) => Ok(v),
@@ -137,7 +137,7 @@ pub fn update_task_title(id: String, title: String) -> Result<usize, String> {
         .as_secs() as i32;
 
     let _ = match diesel::update(task.clone())
-        .set(schema::tasks::modification_date.eq(since_the_epoch))
+        .set(schema::tasks::updated_at.eq(since_the_epoch))
         .execute(&mut connection)
     {
         Ok(v) => Ok(v),
@@ -166,7 +166,7 @@ pub fn update_task_desc(id: String, desc: String) -> Result<usize, String> {
         .as_secs() as i32;
 
     let _ = match diesel::update(task.clone())
-        .set(schema::tasks::modification_date.eq(since_the_epoch))
+        .set(schema::tasks::updated_at.eq(since_the_epoch))
         .execute(&mut connection)
     {
         Ok(v) => Ok(v),
