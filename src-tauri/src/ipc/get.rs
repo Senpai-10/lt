@@ -1,7 +1,7 @@
-use crate::db::establish_connection;
 use crate::models::categories::Category;
 use crate::models::tasks::Task;
 use crate::schema;
+use crate::{db::establish_connection, models::subtasks::SubTask};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -71,27 +71,55 @@ pub fn get_categories() -> CategoriesData {
     categories_data
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct TaskInRes {
+    #[serde(flatten)]
+    pub task: Task,
+    pub sub_tasks: Vec<TaskInRes>,
+}
+
+fn get_sub_tasks(conn: &mut SqliteConnection, parent_task: &Task) -> Vec<TaskInRes> {
+    schema::subtasks::table
+        .filter(schema::subtasks::parent_id.eq(&parent_task.id))
+        .load::<SubTask>(conn)
+        .unwrap()
+        .into_iter()
+        .map(|subtask| {
+            let task = schema::tasks::table
+                .filter(schema::tasks::id.eq(subtask.id))
+                .get_result::<Task>(conn)
+                .unwrap();
+
+            TaskInRes {
+                sub_tasks: get_sub_tasks(conn, &task),
+                task,
+            }
+        })
+        .collect::<Vec<TaskInRes>>()
+}
+
 #[tauri::command]
-pub fn get_tasks(category: Option<String>) -> Result<Vec<Task>, String> {
+pub fn get_tasks(category: Option<String>) -> Result<Vec<TaskInRes>, String> {
     let mut connection = establish_connection();
 
-    match category {
-        Some(name) => {
-            match schema::tasks::dsl::tasks
-                .filter(schema::tasks::category_name.eq(&name))
-                .order(schema::tasks::priority.desc())
-                .load(&mut connection)
-            {
-                Ok(r) => Ok(r),
-                Err(e) => Err(e.to_string()),
-            }
-        }
-        None => match schema::tasks::dsl::tasks
-            .order(schema::tasks::priority.desc())
-            .load(&mut connection)
-        {
-            Ok(r) => Ok(r),
-            Err(e) => Err(e.to_string()),
-        },
+    let mut query = schema::tasks::table.into_boxed();
+
+    if let Some(category_name) = category {
+        query = query.filter(schema::tasks::category_name.eq(category_name))
+    }
+
+    match query
+        .filter(schema::tasks::is_child_task.eq(0))
+        .order(schema::tasks::priority.desc())
+        .load::<Task>(&mut connection)
+    {
+        Ok(r) => Ok(r
+            .into_iter()
+            .map(|task| TaskInRes {
+                sub_tasks: get_sub_tasks(&mut connection, &task),
+                task,
+            })
+            .collect::<Vec<TaskInRes>>()),
+        Err(e) => Err(e.to_string()),
     }
 }

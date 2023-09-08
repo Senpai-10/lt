@@ -23,6 +23,7 @@ fn main() {
             get_tasks,
             get_categories,
             add_task,
+            add_subtask,
             add_category,
             remove_task,
             update_task_status,

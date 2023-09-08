@@ -1,4 +1,4 @@
-import { CategoriesData, T_Task, TasksDisplay } from '../types';
+import { CategoriesData, T_TaskInRes, TasksDisplay } from '../types';
 import { useState } from 'react';
 import { invoke } from '@tauri-apps/api';
 
@@ -11,7 +11,7 @@ import { SettingsPopup } from './SettingsPopup';
 import '../css/components/MainContent.css';
 
 interface Props {
-    tasksList: T_Task[];
+    tasksList: T_TaskInRes[];
     categoriesData: CategoriesData;
     currentCategory: string | null;
     setCurrentCategory: React.Dispatch<React.SetStateAction<string | null>>;
@@ -122,6 +122,7 @@ export function MainContent(props: Props) {
                     return (
                         <Task
                             key={task.id}
+                            indent={0}
                             task={task}
                             getCategories={getCategories}
                             getTasks={getTasks}

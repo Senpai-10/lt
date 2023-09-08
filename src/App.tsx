@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { invoke } from '@tauri-apps/api/tauri';
 
-import { TasksDisplay, CategoriesData, T_Task } from './types';
+import { TasksDisplay, CategoriesData, T_TaskInRes } from './types';
 import { Sidebar } from './components/Sidebar';
 import { MainContent } from './components/MainContent';
 
 import './css/components/App.css';
 
 function App() {
-    const [data, setData] = useState<T_Task[]>();
+    const [data, setData] = useState<T_TaskInRes[]>();
     const [categoriesData, setCategoriesData] = useState<CategoriesData>();
     const [category, setCategory] = useState<string | null>(null);
     const [tasksSearchQuery, setTasksSearchQuery] = useState('');
@@ -69,6 +69,7 @@ function App() {
     const getTasks = () => {
         invoke('get_tasks', { category: category }).then((res: any) => {
             setData(res);
+            console.log(res)
         });
     };
 

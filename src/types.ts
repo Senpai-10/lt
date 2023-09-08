@@ -12,7 +12,7 @@ export interface CategoriesData {
     total_tasks: number;
 }
 
-export interface T_Task {
+export interface T_TaskInRes {
     id: string;
     category_name: string;
     title: string;
@@ -22,4 +22,6 @@ export interface T_Task {
     created_at: number;
     done_at?: number;
     updated_at: number;
+    sub_tasks: T_TaskInRes[],
 }
+
