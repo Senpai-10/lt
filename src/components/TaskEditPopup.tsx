@@ -2,10 +2,10 @@ import { invoke } from '@tauri-apps/api';
 import { useState } from 'react';
 
 import '../css/components/Popup.css';
-import { T_Task } from '../types';
+import { T_TaskInRes } from '../types';
 
 interface Props {
-    task: T_Task;
+    task: T_TaskInRes;
     trigger: React.Dispatch<React.SetStateAction<boolean>>;
     getTasks: () => void;
 }
