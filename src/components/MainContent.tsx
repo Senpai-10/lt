@@ -133,6 +133,8 @@ export function MainContent(props: Props) {
             <div className='new-task-container'>
                 <input
                     className='new-task-input'
+                    disabled={currentCategory == null}
+                    title={currentCategory == null ? "Disabled" : undefined}
                     ref={addTaskInputRef}
                     value={newTask}
                     onChange={(e) => setNewTask(e.currentTarget.value)}
@@ -141,7 +143,12 @@ export function MainContent(props: Props) {
                     }
                     placeholder='Add a task'
                 />
-                <button onClick={handleAddTask}>
+                <button
+                    disabled={currentCategory == null}
+                    title={currentCategory == null ? "Disabled" : undefined}
+                    className="new-task-btn"
+                    onClick={handleAddTask}
+                >
                     <PlusIcon />
                 </button>
             </div>

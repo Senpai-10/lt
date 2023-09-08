@@ -40,6 +40,7 @@
     --header-sp: #b8b8b815;
     --sidebar-border-right: rgba(255, 255, 255, 0.05);
     --task-bg: rgba(255, 255, 255, 0.05);
+    --new-task-btn-disabled-bg: gray;
 
     --selected-category-fg: var(--text_color);
     --selected-category-bg: rgba(255, 255, 255, 0.05);

@@ -57,3 +57,7 @@ img {
 .new-task-input {
     width: 100%;
 }
+
+.new-task-btn:disabled {
+    background-color: var(--new-task-btn-disabled-bg);
+}
