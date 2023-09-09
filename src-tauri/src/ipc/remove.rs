@@ -37,24 +37,30 @@ pub fn remove_task(id: String) -> Result<usize, String> {
         Err(e) => Err(e.to_string()),
     };
 
+    cleanup_subtasks(&mut connection, id);
+
+    result
+}
+
+fn cleanup_subtasks(connection: &mut SqliteConnection, id: String) {
     _ = diesel::delete(schema::subtasks::table.filter(schema::subtasks::id.eq(&id)))
-        .execute(&mut connection);
+        .execute(connection);
 
     // Cleanup subtasks
     let q: Result<Vec<SubTask>, _> = schema::subtasks::table
         .select(SubTask::as_select())
         .filter(schema::subtasks::parent_id.eq(&id))
-        .load(&mut connection);
+        .load(connection);
 
     if let Ok(subtasks) = q {
         for sub_task in subtasks {
-            _ = diesel::delete(schema::tasks::table.filter(schema::tasks::id.eq(sub_task.id)))
-                .execute(&mut connection);
+            _ = diesel::delete(schema::tasks::table.filter(schema::tasks::id.eq(&sub_task.id)))
+                .execute(connection);
+
+            cleanup_subtasks(connection, sub_task.id);
         }
     }
 
     _ = diesel::delete(schema::subtasks::table.filter(schema::subtasks::parent_id.eq(&id)))
-        .execute(&mut connection);
-
-    result
+        .execute(connection);
 }

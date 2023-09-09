@@ -18,7 +18,6 @@ CREATE TABLE tasks (
     updated_at                  INT NOT NULL,
 
     FOREIGN KEY(category_name)  REFERENCES categories(name) ON DELETE CASCADE
-
 );
 
 CREATE TABLE subtasks (
