@@ -110,7 +110,7 @@ pub fn get_tasks(category: Option<String>) -> Result<Vec<TaskInRes>, String> {
 
     match query
         .filter(schema::tasks::is_child_task.eq(0))
-        .order(schema::tasks::priority.desc())
+        .order(schema::tasks::created_at)
         .load::<Task>(&mut connection)
     {
         Ok(r) => Ok(r
